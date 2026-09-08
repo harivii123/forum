@@ -10,8 +10,8 @@ func CreateTables(db *sql.DB) {
 	_, err := db.Exec(
 		`CREATE TABLE IF NOT EXISTS user (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		username TEXT NOT NULL,
-		email TEXT NOT NULL,
+		username TEXT NOT NULL UNIQUE,
+		email TEXT NOT NULL UNIQUE,
 		password TEXT NOT NULL,
 		profile_picture BLOB
 		)`)
@@ -44,6 +44,41 @@ func CreateTables(db *sql.DB) {
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
 		body TEXT NOT NULL
 		)`)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	_, err = db.Exec(
+		`CREATE TABLE IF NOT EXISTS category (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		name TEXT NOT NULL UNIQUE
+		)`)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	_, err = db.Exec(
+		`CREATE TABLE IF NOT EXISTS cookies (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		cookie_key TEXT NOT NULL UNIQUE,
+		user_id INTEGER,
+		created_at TEXT NOT NULL,
+		expires_at TEXT NOT NULL,
+		last_active TEXT NOT NULL,
+		FOREIGN KEY (user_id) REFERENCES user(id)
+		)`)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	_, err = db.Exec(
+		`CREATE TABLE IF NOT EXISTS category_post (
+		category_id INTEGER NOT NULL,
+		post_id INTEGER NOT NULL,
+		PRIMARY KEY (category_id, post_id),
+		FOREIGN KEY (category_id) REFERENCE category(id) ON DELETE CASCADE,
+		FOREIGN KEY (post_id) REFERENCE post(id) ON DELETE CASCADE
+		);`)
 	if err != nil {
 		log.Fatal(err)
 	}
