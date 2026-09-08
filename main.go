@@ -2,7 +2,7 @@ package main
 
 import (
 	"database/sql"
-	"html/template"
+	"forum/handlers"
 	"log"
 	"net/http"
 
@@ -19,16 +19,16 @@ func main() {
 	}
 	defer db.Close()
 
-	t, err := template.ParseFiles("") //html paths here
-	if err != nil {
-		log.Fatal(err)
-	}
-	log.Println(t) 
-	
-	fs := http.FileServer(http.Dir("./static/"))
-	log.Println(fs)
+	log.Printf("\nTables: %s", CreateTables(db))
+
+	holder := handlers.NewHolder(db)
 
 	mux := http.NewServeMux()
+	mux.HandleFunc("/", holder.LoadFrontPage)
+	mux.HandleFunc("/post/", holder.LoadPostPage)
+	mux.HandleFunc("/login/", holder.LoadRegistryPage)
+	mux.HandleFunc("/profile/", holder.LoadProfilePage)
+
 
 	//handlefunc yada yada
 

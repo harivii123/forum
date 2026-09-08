@@ -3,10 +3,13 @@ package main
 import (
 	"database/sql"
 	"log"
+	"strings"
 )
 
-func CreateTables(db *sql.DB) {
+func CreateTables(db *sql.DB) string {
 
+	var sb strings.Builder
+	
 	_, err := db.Exec(
 		`CREATE TABLE IF NOT EXISTS user (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -18,6 +21,8 @@ func CreateTables(db *sql.DB) {
 	if err != nil {
 		log.Fatal(err)
 	}
+	sb.WriteString("\nuser")
+	
 
 	_, err = db.Exec(
 		`CREATE TABLE IF NOT EXISTS post (
@@ -33,6 +38,7 @@ func CreateTables(db *sql.DB) {
 	if err != nil {
 		log.Fatal(err)
 	}
+	sb.WriteString("\npost")
 
 	_, err = db.Exec(
 		`CREATE TABLE IF NOT EXISTS like (
@@ -48,6 +54,7 @@ func CreateTables(db *sql.DB) {
 	if err != nil {
 		log.Fatal(err)
 	}
+	sb.WriteString("\nlike")
 
 	_, err = db.Exec(
 		`CREATE TABLE IF NOT EXISTS comment (
@@ -61,6 +68,7 @@ func CreateTables(db *sql.DB) {
 	if err != nil {
 		log.Fatal(err)
 	}
+	sb.WriteString("\ncomment")
 
 	_, err = db.Exec(
 		`CREATE TABLE IF NOT EXISTS category (
@@ -70,6 +78,7 @@ func CreateTables(db *sql.DB) {
 	if err != nil {
 		log.Fatal(err)
 	}
+	sb.WriteString("\ncategory")
 
 	_, err = db.Exec(
 		`CREATE TABLE IF NOT EXISTS cookies (
@@ -84,6 +93,7 @@ func CreateTables(db *sql.DB) {
 	if err != nil {
 		log.Fatal(err)
 	}
+	sb.WriteString("\ncookies")
 
 	_, err = db.Exec(
 		`CREATE TABLE IF NOT EXISTS category_post (
@@ -96,4 +106,7 @@ func CreateTables(db *sql.DB) {
 	if err != nil {
 		log.Fatal(err)
 	}
+	sb.WriteString("\ncategory_post")
+
+	return sb.String()
 }
