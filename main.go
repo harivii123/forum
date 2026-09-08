@@ -23,8 +23,10 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	log.Println(t) 
 	
 	fs := http.FileServer(http.Dir("./static/"))
+	log.Println(fs)
 
 	mux := http.NewServeMux()
 
