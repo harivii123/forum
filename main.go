@@ -2,7 +2,8 @@ package main
 
 import (
 	"database/sql"
-	"forum/handlers"
+	"forum/internal/database"
+	"forum/internal/handlers"
 	"log"
 	"net/http"
 
@@ -19,16 +20,23 @@ func main() {
 	}
 	defer db.Close()
 
-	log.Printf("\nTables: %s", CreateTables(db))
+	if err := db.Ping(); err != nil {
+		log.Fatal(err)
+	}
+
+	tables, err := database.CreateSchema(db)
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Printf("Tables:%s", tables)
 
 	holder := handlers.NewHolder(db)
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/", holder.LoadFrontPage)
-	mux.HandleFunc("/post/", holder.LoadPostPage)
-	mux.HandleFunc("/login/", holder.LoadRegistryPage)
-	mux.HandleFunc("/profile/", holder.LoadProfilePage)
-
+	mux.HandleFunc("/{$}", holder.LoadFrontPage)
+	mux.HandleFunc("/post", holder.LoadPostPage)
+	mux.HandleFunc("/login", holder.LoadRegistryPage)
+	mux.HandleFunc("/profile", holder.LoadProfilePage)
 
 	//handlefunc yada yada
 
