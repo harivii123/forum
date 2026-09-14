@@ -33,10 +33,10 @@ func main() {
 	holder := handlers.NewHolder(db)
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/{$}", holder.LoadFrontPage)
-	mux.HandleFunc("/post", holder.LoadPostPage)
-	mux.HandleFunc("/login", holder.LoadRegistryPage)
-	mux.HandleFunc("/profile", holder.LoadProfilePage)
+	mux.HandleFunc("/", holder.LoadFrontPage)
+	mux.HandleFunc("/post/", holder.LoadPostPage)
+	mux.HandleFunc("/login/", holder.LoadRegistryPage)
+	mux.HandleFunc("/profile/", holder.LoadProfilePage)
 
 	//handlefunc yada yada
 
