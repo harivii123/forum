@@ -37,3 +37,38 @@ If you want to seed database, use this:
 ```
 go run -tags "fts5" . -seed 
 ```
+
+### Login 
+LOGIN  
+
+email + password  
+       ↓  
+SELECT user by email  
+       ↓  
+bcrypt compare  
+       ↓  
+password correct?  
+       ↓ yes  
+generate UUID  
+       ↓  
+INSERT session into DB  
+       ↓  
+put UUID in cookie  
+       ↓  
+browser stores cookie  
+       ↓  
+redirect /  
+
+For the next request:
+
+    BROWSER
+    Cookie: session_id=UUID
+            ↓
+    SERVER
+    read cookie
+            ↓
+    SELECT session WHERE id = UUID
+            ↓
+    get user_id
+            ↓
+    "Ah, this is user 3"
