@@ -20,6 +20,14 @@ var schema = []struct {
 		)
 	`},
 
+	{"user_fts",`
+		CREATE VIRTUAL TABLE IF NOT EXISTS user_fts USING fts5(
+			username,
+			content='user',
+			content_rowid='id'
+		)
+	`},
+
 	{"post", `
 		CREATE TABLE IF NOT EXISTS post (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -29,6 +37,15 @@ var schema = []struct {
 			image BLOB,
 			created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 			FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
+		)
+	`},
+
+	{"post_fts",`
+		CREATE VIRTUAL TABLE IF NOT EXISTS post_fts USING fts5(
+			title,
+			body,
+			content='post',
+			content_rowid='id'
 		)
 	`},
 
@@ -44,12 +61,28 @@ var schema = []struct {
 		)
 	`},
 
+	{"comment_fts",`
+		CREATE VIRTUAL TABLE IF NOT EXISTS comment_fts USING fts5(
+			body,
+			content='comment',
+			content_rowid='id'
+		)
+	`},
+
 	{"category", `
 		CREATE TABLE IF NOT EXISTS category (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			name TEXT NOT NULL UNIQUE
 		)
 	`},
+
+	// {"category_fts", ` //not sure if we need to search this tbh. Better to use filters
+	// 	CREATE VIRTUAL TABLE IF NOT EXISTS category_fts USING fts5(
+	// 		name,
+	// 		content='category',
+	// 		content_id='id'
+	// 	)
+	// `},
 
 	{"category_post", `
 		CREATE TABLE IF NOT EXISTS category_post (
