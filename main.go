@@ -37,6 +37,7 @@ func main() {
 	mux.HandleFunc("/post", holder.LoadPostPage)
 	mux.HandleFunc("/login", holder.LoadRegistryPage)
 	mux.HandleFunc("/profile", holder.LoadProfilePage)
+	
 
 	//handlefunc yada yada
 
