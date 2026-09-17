@@ -2,7 +2,9 @@ package handlers
 
 import (
 	"forum/internal/service"
+	"forum/internal/models"
 	"net/http"
+	"log"
 )
 
 func (h *Holder) LoadRegistryPage(w http.ResponseWriter, r *http.Request) {
@@ -11,11 +13,8 @@ func (h *Holder) LoadRegistryPage(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Holder) LoadFrontPage(w http.ResponseWriter, r *http.Request) {
-	pageData, err := h.GetFrontPageData() // <--not made yet
-	if err != nil {
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-		return
-	}
+	pageData := &models.FrontPage{} // <--not made yet
+
 
 	frontPage := h.engine.Render("index.html", map[string]any{
 		"PageData": pageData,
@@ -30,10 +29,10 @@ func (h *Holder) LoadFrontPage(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	// log.Println(match)
+	log.Println(match)
 
 	w.WriteHeader(http.StatusOK)
-	something_here.Execute(w, match) //<-- dont know how to use the fancy template parser yet
+	//something_here.Execute(w, match) //<-- dont know how to use the fancy template parser yet
 }
 
 //func (h *Holder) CreatePost(w http.ResponseWriter, r *http.Request) {

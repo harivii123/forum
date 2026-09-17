@@ -6,9 +6,10 @@ import (
 	"text/template"
 )
 
-// templates/*.html embeds files. So if we go build our app, the app works in any computer even if they don't have the templates in their computer cos this embeds them into binars
+//go:embed templates/components/*.html
 var templateComponents embed.FS
 
+//go:embed templates/pages/*.html
 var templatePages embed.FS
 
 type Engine struct {
@@ -34,7 +35,7 @@ func (e *Engine) ParseTemplates() {
 		for _, component := range components {
 			template.Must(tpl.ParseFS(templateComponents, "templates/components/"+component))
 		}
-		e.templates[name] = template.Must(tpl.ParseFS(viewTemplateFiles, "templates/pages/"+name))
+		e.templates[name] = template.Must(tpl.ParseFS(templatePages, "templates/pages/"+name))
 	}
 
 	if pages, err := templatePages.ReadDir("templates/pages"); err == nil {
