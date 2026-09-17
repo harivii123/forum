@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"forum/internal/service"
-	"html/template"
 	"net/http"
 )
 
@@ -12,22 +11,17 @@ func (h *Holder) LoadRegistryPage(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Holder) LoadFrontPage(w http.ResponseWriter, r *http.Request) {
-	pageData, err := h.GetFrontPageData()
+	pageData, err := h.GetFrontPageData() // <--not made yet
 	if err != nil {
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
-	
+
 	frontPage := h.engine.Render("index.html", map[string]any{
 		"PageData": pageData,
 	})
 
 	w.Write(frontPage)
-	t, err := template.ParseFiles("./internal/templates/index.html")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
 
 	mainSearchValue := r.URL.Query().Get("search")
 	// log.Println(mainSearchValue)
@@ -39,7 +33,7 @@ func (h *Holder) LoadFrontPage(w http.ResponseWriter, r *http.Request) {
 	// log.Println(match)
 
 	w.WriteHeader(http.StatusOK)
-	err = t.Execute(w, match)
+	something_here.Execute(w, match) //<-- dont know how to use the fancy template parser yet
 }
 
 //func (h *Holder) CreatePost(w http.ResponseWriter, r *http.Request) {
@@ -55,5 +49,3 @@ func (h *Holder) LoadProfilePage(w http.ResponseWriter, r *http.Request) {
 	// get stuff from db insert into page bang
 	// can be maybe also used to checkout other profiles not just ur own?
 }
-
-// takes value from main search bar and finds all matches using fts(fast text search)

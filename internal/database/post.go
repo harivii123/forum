@@ -2,10 +2,10 @@ package database
 
 import (
 	"database/sql"
-	"time"
+	"forum/internal/models"
 )
 
-func GetPostsByCategory(db *sql.DB, categoryName string) ([]Post, error) {
+func GetPostsByCategory(db *sql.DB, categoryName string) ([]models.Post, error) {
 	rows, err := db.Query(`
         SELECT p.id, p.user_id, p.title, p.body, p.created
         FROM post p
@@ -18,9 +18,9 @@ func GetPostsByCategory(db *sql.DB, categoryName string) ([]Post, error) {
 	}
 	defer rows.Close()
 
-	var posts []Post
+	var posts []models.Post
 	for rows.Next() {
-		var p Post
+		var p models.Post
 		if err := rows.Scan(&p.ID, &p.UserID, &p.Title, &p.Body, &p.Created); err != nil {
 			return nil, err
 		}

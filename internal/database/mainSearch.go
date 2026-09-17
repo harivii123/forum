@@ -2,7 +2,6 @@ package database
 
 import (
 	"database/sql"
-	"log"
 )
 
 type SearchResult struct {
