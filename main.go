@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"forum/internal/database"
 	"forum/internal/handlers"
+	"forum/internal/template"
 	"log"
 	"net/http"
 
@@ -30,7 +31,10 @@ func main() {
 	}
 	log.Printf("Tables:%s", tables)
 
-	holder := handlers.NewHolder(db)
+	templateEngine := template.NewEngine("")
+	templateEngine.ParseTemplates()
+
+	holder := handlers.NewHolder(db, templateEngine)
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/{$}", holder.LoadFrontPage)

@@ -12,6 +12,17 @@ func (h *Holder) LoadRegistryPage(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Holder) LoadFrontPage(w http.ResponseWriter, r *http.Request) {
+	pageData, err := h.GetFrontPageData()
+	if err != nil {
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+	
+	frontPage := h.engine.Render("index.html", map[string]any{
+		"PageData": pageData,
+	})
+
+	w.Write(frontPage)
 	t, err := template.ParseFiles("./internal/templates/index.html")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -30,6 +41,10 @@ func (h *Holder) LoadFrontPage(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	err = t.Execute(w, match)
 }
+
+//func (h *Holder) CreatePost(w http.ResponseWriter, r *http.Request) {
+// http.Redirect(w, r, "/", http.StatusSeeOther)
+//}
 
 func (h *Holder) LoadPostPage(w http.ResponseWriter, r *http.Request) {
 	//get sttuff from url/body

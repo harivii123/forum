@@ -5,15 +5,6 @@ import (
 	"time"
 )
 
-type Post struct {
-	ID         int
-	UserID     int
-	Title      string
-	Body       string
-	Created    time.Time
-	Categories []string
-}
-
 func GetPostsByCategory(db *sql.DB, categoryName string) ([]Post, error) {
 	rows, err := db.Query(`
         SELECT p.id, p.user_id, p.title, p.body, p.created
