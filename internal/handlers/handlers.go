@@ -1,10 +1,8 @@
 package handlers
 
 import (
-	"fmt"
-	"forum/internal/database"
+	"forum/internal/service"
 	"html/template"
-	"log"
 	"net/http"
 )
 
@@ -21,13 +19,13 @@ func (h *Holder) LoadFrontPage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	mainSearchValue := r.URL.Query().Get("search")
-	log.Println(mainSearchValue)
-	match, err := h.MainSearch(mainSearchValue)
+	// log.Println(mainSearchValue)
+	match, err := service.MainSearch(mainSearchValue, h.db)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	log.Println(match)
+	// log.Println(match)
 
 	w.WriteHeader(http.StatusOK)
 	err = t.Execute(w, match)
@@ -44,16 +42,3 @@ func (h *Holder) LoadProfilePage(w http.ResponseWriter, r *http.Request) {
 }
 
 // takes value from main search bar and finds all matches using fts(fast text search)
-func (h *Holder) MainSearch(mainSearchValue string) (match []database.SearchResult, err error) {
-
-	if mainSearchValue == "" {
-		return nil, nil
-	}
-	match, err = database.FindAMatch(h.db, mainSearchValue)
-	if err != nil {
-		return nil, nil
-	}
-
-	fmt.Println(match) //template.Execute(w, match)
-	return match, nil
-}
