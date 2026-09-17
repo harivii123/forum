@@ -1,5 +1,12 @@
 package template
 
+import (
+	"math"
+	"text/template"
+	"time"
+	"fmt"
+)
+
 type funcMap struct {
 	basePath string
 }
@@ -7,11 +14,11 @@ type funcMap struct {
 func (f *funcMap) Map() template.FuncMap {
 	return template.FuncMap{
 		"truncate": truncate,
-		"elapsed": elapsed,
+		"elapsed":  elapsed,
 	}
 }
 
-//{{ truncate .Post.Body Math.maxInt }}
+// {{ truncate .Post.Body Math.maxInt }}
 func truncate(str string, max int) string {
 	if max <= 0 {
 		panic("truncate: max must be greater than zero")
@@ -27,7 +34,7 @@ func truncate(str string, max int) string {
 	return str
 }
 
-//{{ elapsed .Post.Created }}
+// {{ elapsed .Post.Created }}
 func elapsed(t time.Time) string {
 	if t.IsZero() {
 		return "not yet"
@@ -63,7 +70,7 @@ func elapsed(t time.Time) string {
 
 func pluralize(n int, word string) string {
 	if n == 1 {
-		return fmt.Stringf("%d %s", n, word)
+		return fmt.Sprintf("%d %s", n, word)
 	}
 	return fmt.Sprintf("%d %ss", n, word)
 }

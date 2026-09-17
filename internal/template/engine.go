@@ -1,19 +1,25 @@
 package template
 
-//templates/*.html embeds files. So if we go build our app, the app works in any computer even if they don't have the templates in their computer cos this embeds them into binars
+import (
+	"bytes"
+	"embed"
+	"text/template"
+)
+
+// templates/*.html embeds files. So if we go build our app, the app works in any computer even if they don't have the templates in their computer cos this embeds them into binars
 var templateComponents embed.FS
 
 var templatePages embed.FS
 
 type Engine struct {
-	templates map[string]*template.template
-	funcMap *funcMap
+	templates map[string]*template.Template
+	funcMap   *funcMap
 }
 
 func NewEngine(basePath string) *Engine {
 	return &Engine{
 		templates: make(map[string]*template.Template),
-		funcMap: &funcMap{basePath: basePath},
+		funcMap:   &funcMap{basePath: basePath},
 	}
 }
 
@@ -42,7 +48,7 @@ func (e *Engine) ParseTemplates() {
 	}
 }
 
-func (e *Engine) Render(name string, data map[string]any) [byte] {
+func (e *Engine) Render(name string, data map[string]any) []byte {
 	tpl, ok := e.templates[name]
 	if !ok {
 		panic("The template " + name + " does not exists.")

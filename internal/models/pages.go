@@ -1,7 +1,7 @@
 package models
 
 type FrontPage struct {
-	Posts []Post
-	Categories []Category
-	Session Session
+	Posts      []Post     //needs implementation
+	Categories []Category //needs implementation
+	Session    Session    //needs implementation
 }

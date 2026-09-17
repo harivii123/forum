@@ -4,9 +4,9 @@ import (
 	"database/sql"
 	"forum/internal/database"
 )
-
+// takes value from main search bar and finds all matches using fts(fast text search)
 func MainSearch(mainSearchValue string, db *sql.DB) (match []database.SearchResult, err error) {
-
+	//if "" nothing happens
 	if mainSearchValue == "" {
 		// log.Println(4)
 		return nil, nil
