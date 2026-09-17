@@ -2,6 +2,7 @@ package database
 
 import (
 	"database/sql"
+	"log"
 )
 
 type SearchResult struct {
@@ -35,7 +36,7 @@ func FindAMatch(tx *sql.Tx, searchValue string) ([]SearchResult, error) {
 		JOIN comment_fts fts ON c.id = fts.rowid
 		WHERE comment_fts MATCH ?`, searchValue, searchValue, searchValue) // searchValue 3 times for all 3 tables.
 	if err != nil {
-		// log.Println(1, err)
+		log.Println(1, err)
 		return nil, err
 	}
 	defer rows.Close()

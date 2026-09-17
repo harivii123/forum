@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"forum/internal/service"
-	"forum/internal/models"
 	"net/http"
 	"log"
 )
@@ -13,25 +12,19 @@ func (h *Holder) LoadRegistryPage(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Holder) LoadFrontPage(w http.ResponseWriter, r *http.Request) {
-	pageData := &models.FrontPage{} // <--not made yet
-
-
-	frontPage := h.engine.Render("index.html", map[string]any{
-		"PageData": pageData,
-	})
-
-	w.Write(frontPage)
-
 	mainSearchValue := r.URL.Query().Get("search")
-	// log.Println(mainSearchValue)
+	log.Println(mainSearchValue)
 	match, err := service.MainSearch(mainSearchValue, h.db)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	log.Println(match)
-
+	frontPage := h.engine.Render("index.html", map[string]any{
+		"Match": match,
+	})
 	w.WriteHeader(http.StatusOK)
+	w.Write(frontPage)
 	//something_here.Execute(w, match) //<-- dont know how to use the fancy template parser yet
 }
 
