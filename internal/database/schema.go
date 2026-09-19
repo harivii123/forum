@@ -24,7 +24,8 @@ var schema = []struct {
 		CREATE VIRTUAL TABLE IF NOT EXISTS user_fts USING fts5(
 			username,
 			content='user',
-			content_rowid='id'
+			content_rowid='id',
+				tokenize='trigram'
 		)
 	`},
 
@@ -44,8 +45,11 @@ var schema = []struct {
 		CREATE VIRTUAL TABLE IF NOT EXISTS post_fts USING fts5(
 			title,
 			body,
-			content='post',
-			content_rowid='id'
+			author,
+				comments,
+				commenters,
+				categories,
+				tokenize='trigram'
 		)
 	`},
 
