@@ -32,3 +32,8 @@ POST /posts/{id}/comments  → comment
 
 POST /posts/{id}/vote      → like/dislike post
 POST /comments/{id}/vote   → like/dislike comment
+
+If you want to seed database, use this:
+```
+go run -tags "fts5" . -seed 
+```
