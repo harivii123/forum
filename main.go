@@ -6,6 +6,7 @@ import (
 	"forum/internal/database"
 	"forum/internal/handlers"
 	"forum/internal/template"
+	"io/fs"
 	"log"
 	"net/http"
 
@@ -47,6 +48,8 @@ func main() {
 	holder := handlers.NewHolder(db, templateEngine)
 
 	mux := http.NewServeMux()
+	sub, _ := fs.Sub(template.Statics, "static")
+	mux.Handle("GET /static/", http.StripPrefix("/static/", http.FileServer(http.FS(sub))))
 	mux.HandleFunc("/{$}", holder.LoadFrontPage)
 	mux.HandleFunc("/post", holder.LoadPostPage)
 	mux.HandleFunc("/login", holder.LoadRegistryPage)
