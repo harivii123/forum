@@ -1,9 +1,10 @@
 package handlers
 
 import (
+	"forum/internal/models"
 	"forum/internal/service"
-	"net/http"
 	"log"
+	"net/http"
 )
 
 func (h *Holder) LoadRegistryPage(w http.ResponseWriter, r *http.Request) {
@@ -12,16 +13,17 @@ func (h *Holder) LoadRegistryPage(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Holder) LoadFrontPage(w http.ResponseWriter, r *http.Request) {
+	page := &models.FrontPage{}
 	mainSearchValue := r.URL.Query().Get("search")
 	log.Println(mainSearchValue)
-	match, err := service.MainSearch(mainSearchValue, h.db)
+	posts, err := service.MainSearch(mainSearchValue, h.db)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	log.Println(match)
+	page.Posts = posts
 	frontPage := h.engine.Render("index.html", map[string]any{
-		"Match": match,
+		"FrontPage": page,
 	})
 	w.WriteHeader(http.StatusOK)
 	w.Write(frontPage)
