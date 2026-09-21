@@ -9,8 +9,8 @@ import (
 func CreatePost(tx *sql.Tx, newPost models.Post) (err error) {
 	fmt.Println("here")
 	_, err = tx.Exec(`
-		INSERT INTO post (user_id, title, body, image, created_at) VALUES (?, ?, ?, ?, ?)
-		`, newPost.UserID, newPost.Title, newPost.Body, newPost.Image, newPost.Created,
+		INSERT INTO post (user_id, title, body, created_at) VALUES (?, ?, ?, ?)
+		`, newPost.UserID, newPost.Title, newPost.Body, newPost.Created,
 	)
 	if err != nil {
 		return err
