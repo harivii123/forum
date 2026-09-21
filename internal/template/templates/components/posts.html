@@ -9,9 +9,9 @@
             </div>
             <div>
                 {{ range .Categories }}
-                    <div>
-                        {{ .PostCategory }}
-                    </div>
+                    <span>
+                        {{ . }}
+                    </span>
                 {{ end }}
             </div>
         </div>
