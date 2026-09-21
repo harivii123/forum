@@ -4,12 +4,15 @@
 <head>
 	<meta charset="UTF-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link rel="stylesheet" href="/static/styles/styles.css">
 	<title>Lioooooon rawr</title>
 </head>
 <body>
-    {{ template "search-bar" . }}
+	{{ template "video-background" . }}
+	{{ template "header" . }}
     <p>bob</p>
 	{{ template "post" . }}
+	<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </body>
 </html>
 {{end}}
