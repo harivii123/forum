@@ -3,6 +3,7 @@ package service
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"forum/internal/database"
 	"forum/internal/models"
 	"net/http"
@@ -28,6 +29,6 @@ func CreatePost(newPost models.Post, db *sql.DB) (error, int) {
 	if err != nil {
 		return err, http.StatusInternalServerError
 	}
-
+	fmt.Println(newPost)
 	return nil, http.StatusOK
 }

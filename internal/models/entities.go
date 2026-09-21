@@ -4,9 +4,9 @@ import "time"
 
 type Post struct {
 	ID         int
-	UserID     int
-	Title      string
-	Body       string
-	Created    time.Time
-	Categories []string
+	UserID     int       `json:"userid"`
+	Title      string    `json:"title"`
+	Body       string    `json:"body"`
+	Created    time.Time `json:"created"`
+	Categories []string  `json:"categories"`
 }
