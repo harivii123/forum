@@ -2,9 +2,11 @@ package main
 
 import (
 	"database/sql"
+	"flag"
 	"forum/internal/database"
 	"forum/internal/handlers"
 	"forum/internal/template"
+	"io/fs"
 	"log"
 	"net/http"
 
@@ -14,6 +16,8 @@ import (
 const port = ":8080"
 
 func main() {
+	seed := flag.Bool("seed", false, "fill an empty database with example data")
+	flag.Parse()
 
 	db, err := sql.Open("sqlite3", "./database.db?_foreign_keys=on")
 	if err != nil {
@@ -25,11 +29,18 @@ func main() {
 		log.Fatal(err)
 	}
 
-	tables, err := database.CreateSchema(db)
+	err = database.CreateSchemas(db)
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Printf("Tables:%s", tables)
+
+	if *seed {
+		if err := database.Seed(db); err != nil {
+			log.Fatal(err)
+		}
+		log.Println("Example data seeded")
+	}
+	//log.Printf("Tables:%s", tables)
 
 	templateEngine := template.NewEngine("")
 	templateEngine.ParseTemplates()
@@ -37,11 +48,12 @@ func main() {
 	holder := handlers.NewHolder(db, templateEngine)
 
 	mux := http.NewServeMux()
+	sub, _ := fs.Sub(template.Statics, "static")
+	mux.Handle("GET /static/", http.StripPrefix("/static/", http.FileServer(http.FS(sub))))
 	mux.HandleFunc("/{$}", holder.LoadFrontPage)
 	mux.HandleFunc("/post", holder.LoadPostPage)
 	mux.HandleFunc("/login", holder.LoadRegistryPage)
 	mux.HandleFunc("/profile", holder.LoadProfilePage)
-	
 
 	//handlefunc yada yada
 

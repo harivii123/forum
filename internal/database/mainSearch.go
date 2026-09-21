@@ -3,58 +3,81 @@ package database
 import (
 	"database/sql"
 	"log"
+	"time"
 )
 
-type SearchResult struct {
-	ID          int
-	Type        string //tells us what came up(user, comment, post, etc...)
-	Match       string //what matched the actual searchValue
-	Description string //for post it has some actual data but for user and comment not used
+type PostSearch struct {
+	ID               int
+	Title            string
+	PosterID         int
+	Body             string
+	Image            string
+	Created          time.Time
+	Poster           string
+	PosterAvatar     string
+	Comments         string
+	CommentLikers    string
+	CommentDislikers string
+	PostLikers       string
+	PostDislikers    string
+	PostCategories   string
 }
 
-func FindAMatch(tx *sql.Tx, searchValue string) ([]SearchResult, error) {
+func FindAMatch(tx *sql.Tx, searchValue string) ([]PostSearch, error) {
 	// log.Println(searchValue, "rep")
-	var sr []SearchResult
+	query := `SELECT p.id, p.title, p.user_id, p.body, COALESCE(p.image, ''), p.created_at, u.username, COALESCE(u.profile_picture, '/static/avatars/default-avatar.png'),
+		COALESCE((SELECT group_concat(c.id || char(31) || cu.id || char(31) || cu.username || char(31) || COALESCE(cu.profile_picture, '/static/avatars/default-avatar.png') || char(31) || c.body, char(30))
+				FROM comment c JOIN user cu ON cu.id = c.user_id
+				WHERE c.post_id = p.id), '') AS comments,
+		COALESCE((SELECT group_concat(cv.comment_id || char(31) || cvu.id || char(31) || cvu.username || char(31) || COALESCE(cvu.profile_picture, '/static/avatars/default-avatar.png'), char(30))
+				FROM comment_vote cv JOIN user cvu ON cv.user_id = cvu.id JOIN comment c ON c.id = cv.comment_id
+				WHERE c.post_id = p.id AND cv.vote = 1), '') AS comment_likers,
+		COALESCE((SELECT group_concat(cv.comment_id || char(31) || cvu.id || char(31) || cvu.username || char(31) || COALESCE(cvu.profile_picture, '/static/avatars/default-avatar.png'), char(30))
+				FROM comment_vote cv JOIN user cvu ON cv.user_id = cvu.id JOIN comment c ON c.id = cv.comment_id
+				WHERE c.post_id = p.id AND cv.vote = -1), '') AS comment_dislikers,
+		COALESCE((SELECT group_concat(vu.id || char(31) || vu.username || char(31) || COALESCE(vu.profile_picture, '/static/avatars/default-avatar.png'), char(30))
+			FROM post_vote pv JOIN user vu ON vu.id = pv.user_id
+			WHERE pv.post_id = p.id AND pv.vote = 1), '') AS likers,
+		COALESCE((SELECT group_concat(vu.id || char(31) || vu.username || char(31) || COALESCE(vu.profile_picture, '/static/avatars/default-avatar.png'), char(30))
+			FROM post_vote pv JOIN user vu ON vu.id = pv.user_id
+			WHERE pv.post_id = p.id AND pv.vote = -1), '') AS dislikers,
+		COALESCE((SELECT group_concat(cat.name, char(31))
+			FROM category_post cp JOIN category cat ON cat.id = cp.category_id
+			WHERE cp.post_id = p.id), '') AS categories
+		FROM post p
+		JOIN user u ON u.id = p.user_id
+		JOIN post_fts fts ON fts.rowid = p.id
+		WHERE post_fts MATCH ?;`
 
 	rows, err := tx.Query(
-		`SELECT u.id, 'user', u.username, 'User Account'
-		 FROM user u
-		 JOIN user_fts fts ON u.id = fts.rowid
-		 WHERE user_fts MATCH ?
+		// `SELECT u.id, 'user', u.username, 'User Account'
+		//  FROM user u
+		//  JOIN user_fts fts ON u.id = fts.rowid
+		//  WHERE user_fts MATCH ?
 
-		UNION ALL
-
-		SELECT p.id, 'post', p.title, p.body
-		FROM post p
-		JOIN post_fts fts ON p.id = fts.rowid
-		WHERE post_fts MATCH ?
-
-		UNION ALL
-
-		SELECT c.id, 'comment', c.body, 'A Comment'
-		FROM comment c
-		JOIN comment_fts fts ON c.id = fts.rowid
-		WHERE comment_fts MATCH ?`, searchValue, searchValue, searchValue) // searchValue 3 times for all 3 tables.
+		// UNION ALL
+		query, searchValue)
 	if err != nil {
 		log.Println(1, err)
 		return nil, err
 	}
 	defer rows.Close()
 
-	for rows.Next() {
-		var oneSR SearchResult
+	result := []PostSearch{}
 
-		err := rows.Scan(&oneSR.ID, &oneSR.Type, &oneSR.Match, &oneSR.Description)
+	for rows.Next() {
+		var postSearch PostSearch
+		err := rows.Scan(&postSearch.ID, &postSearch.Title, &postSearch.PosterID, &postSearch.Body, &postSearch.Image, &postSearch.Created, &postSearch.Poster, &postSearch.PosterAvatar, &postSearch.Comments, &postSearch.CommentLikers, &postSearch.CommentDislikers, &postSearch.PostLikers, &postSearch.PostDislikers, &postSearch.PostCategories)
 		if err != nil {
 			// log.Println(2)
 			return nil, err
 		}
-		sr = append(sr, oneSR)
+		result = append(result, postSearch)
 	}
 	if rows.Err() != nil {
 		// log.Println(3)
 		return nil, err
 	}
 
-	return sr, nil
+	return result, nil
 }

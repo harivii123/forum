@@ -12,6 +12,9 @@ var templateComponents embed.FS
 //go:embed templates/pages/*.html
 var templatePages embed.FS
 
+//go:embed static
+var Statics embed.FS
+
 type Engine struct {
 	templates map[string]*template.Template
 	funcMap   *funcMap
