@@ -1,15 +1,23 @@
 {{define "base"}}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-	<meta charset="UTF-8"/>
+	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<title>Lioooooon rawr</title>
 </head>
+
 <body>
-    {{ template "search-bar" . }}
-    <p>bob</p>
+	{{ template "search-bar" . }}
+	{{ if .LoggedIn }}
+		<p> Welcome, {{ .User.Username }} </p>
+	{{ else }}
+		{{ template "login" . }}
+	{{ end }}
+	<p>bob</p>
 	{{ template "post" . }}
 </body>
+
 </html>
 {{end}}

@@ -28,7 +28,7 @@ func Seed(db *sql.DB) error {
 
 func insertDataUsers(db *sql.DB) error {
 	sql := `INSERT OR IGNORE INTO user (username, email, password_hash) VALUES
-            ('bookworm_bella', 'bella@lions.test', '$2a$10$fLFb.iqCyA31Gk0zbKeP8.rNcTHY1lXYSfesw38kL3TXLOzGI19w.'),
+            ('bookworm_bella', 'bella@lions.test', '$2a$10$zl6YSqrgkrZz72gptPF4t.L0/IVlGEzBxG1uIq8bveRVwNdIEMBou'),
             ('inkwell_ivan',   'ivan@lions.test',  '$2a$10$fLFb.iqCyA31Gk0zbKeP8.rNcTHY1lXYSfesw38kL3TXLOzGI19w.'),
             ('proust_fan',     'proust@lions.test','$2a$10$fLFb.iqCyA31Gk0zbKeP8.rNcTHY1lXYSfesw38kL3TXLOzGI19w.'),
             ('marginalia_mo',  'mo@lions.test',    '$2a$10$fLFb.iqCyA31Gk0zbKeP8.rNcTHY1lXYSfesw38kL3TXLOzGI19w.'),

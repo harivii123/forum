@@ -97,11 +97,9 @@ func createTables(db *sql.DB) error {
 		{"category", `
 			CREATE TABLE IF NOT EXISTS category (
 				id INTEGER PRIMARY KEY AUTOINCREMENT,
-				name TEXT NOT NULL,
-				type TEXT NOT NULL,
-				UNIQUE (name, type) 
+				name TEXT NOT NULL UNIQUE 
 			)
-		`},
+		`}, // deleted type TEXT NOT NULL,UNIQUE (name, type) due to seed data doesn't have type
 
 		{"category_post", `
 			CREATE TABLE IF NOT EXISTS category_post (
