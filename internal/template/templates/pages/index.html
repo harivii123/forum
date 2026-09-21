@@ -5,25 +5,35 @@
 <head>
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link rel="stylesheet" href="/static/styles/styles.css">
 	<title>Lioooooon rawr</title>
 </head>
 
-<body>
-	{{ template "search-bar" . }}
-	{{ if .LoggedIn }}
-		<p> Welcome, {{ .User.Username }} </p>
-		{{ template "logout" . }}
-	{{ else }}
-		{{ if .ShowRegister }}
-			{{ template "register" . }}
-		{{ else if .ShowLogin }}
-			{{ template "login" . }}
-		{{ else }}
-			{{ template "login" . }}
-		{{ end }}
-	{{ end }}
-	
-	{{ template "post" . }}
+<body class="flex flex-row">
+    {{ template "video-background" . }}
+    {{ template "header" . }}
+
+    {{ if .LoggedIn }}
+        <p>Welcome, {{ .User.Username }}</p>
+        {{ template "logout" . }}
+    {{ else }}
+        {{ if .ShowRegister }}
+            {{ template "register" . }}
+        {{ else if .ShowLogin }}
+            {{ template "login" . }}
+        {{ else }}
+            {{ template "login" . }}
+        {{ end }}
+    {{ end }}
+
+    {{ template "side-filters" . }}
+
+    <section>
+        {{ template "create-post" . }}
+		{{ template "post" . }}
+    </section>
+
+	<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </body>
 
 </html>
