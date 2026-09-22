@@ -97,7 +97,7 @@ func createTables(db *sql.DB) error {
 		{"category", `
 			CREATE TABLE IF NOT EXISTS category (
 				id INTEGER PRIMARY KEY AUTOINCREMENT,
-				name TEXT NOT NULL, 
+				name TEXT NOT NULL , 
 				type TEXT NOT NULL,
 				UNIQUE (name, type)
 			)
