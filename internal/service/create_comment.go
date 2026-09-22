@@ -2,19 +2,13 @@ package service
 
 import (
 	"database/sql"
-	"errors"
-	"fmt"
 	"forum/internal/database"
 	"forum/internal/models"
 	"net/http"
 	"time"
 )
 
-func CreatePost(cookie *http.Cookie, newPost models.Post, db *sql.DB) (error, int) {
-
-	if newPost.Body == "" || newPost.Title == "" {
-		return errors.New("Empty post"), http.StatusBadRequest // do nothing
-	}
+func CreateComment(newComment models.Comment, cookie *http.Cookie, db *sql.DB) (error, int) {
 
 	tx, err := db.Begin()
 	if err != nil {
@@ -26,16 +20,12 @@ func CreatePost(cookie *http.Cookie, newPost models.Post, db *sql.DB) (error, in
 	if err != nil {
 		return err, http.StatusInternalServerError
 	}
-	newPost.UserID, newPost.Created = userID, time.Now()
+	newComment.User_id, newComment.Created = userID, time.Now()
 
-	err = database.CreatePost(tx, newPost)
+	err = database.CreateComment(tx, newComment)
 	if err != nil {
 		return err, http.StatusInternalServerError
 	}
-	err = tx.Commit()
-	if err != nil {
-		return err, http.StatusInternalServerError
-	}
-	fmt.Println(newPost)
+
 	return nil, http.StatusSeeOther
 }
