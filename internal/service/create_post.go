@@ -8,9 +8,10 @@ import (
 	"forum/internal/database"
 	"forum/internal/models"
 	"net/http"
+	"time"
 )
 
-func CreatePost(newPost models.Post, db *sql.DB) (error, int) {
+func CreatePost(cookie *http.Cookie, newPost models.Post, db *sql.DB) (error, int) {
 
 	if newPost.Body == "" || newPost.Title == "" {
 		return errors.New("Empty post"), http.StatusBadRequest // do nothing
@@ -22,6 +23,12 @@ func CreatePost(newPost models.Post, db *sql.DB) (error, int) {
 	}
 	defer tx.Rollback()
 
+	userID, err := database.GetUserIDWithToken(tx, cookie.Value)
+	if err != nil {
+		return err, http.StatusInternalServerError
+	}
+	newPost.UserID, newPost.Created = userID, time.Now()
+
 	err = database.CreatePost(tx, newPost)
 	if err != nil {
 		return err, http.StatusInternalServerError
@@ -31,5 +38,5 @@ func CreatePost(newPost models.Post, db *sql.DB) (error, int) {
 		return err, http.StatusInternalServerError
 	}
 	fmt.Println(newPost)
-	return nil, http.StatusOK
+	return nil, http.StatusSeeOther
 }
