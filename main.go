@@ -75,6 +75,7 @@ func main() {
 	})
 	mux.HandleFunc("/profile", holder.LoadProfilePage)
 	mux.HandleFunc("/logout", holder.Logout)
+	mux.HandleFunc("POST /posts/{id}/vote", holder.VoteOnPost)
 
 	//handlefunc yada yada
 
