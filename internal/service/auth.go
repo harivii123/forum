@@ -31,3 +31,8 @@ func RefreshSessionTime() (time.Time, time.Time) {
 	newExpiry := now.Add(15 * time.Minute)
 	return now, newExpiry
 }
+
+func HashPassword(password string) (string, error) {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	return string(hashedPassword), err
+}

@@ -53,6 +53,7 @@ func main() {
 	mux.HandleFunc("/{$}", holder.LoadFrontPage)
 	mux.HandleFunc("POST /post", holder.CreatePost)
 	mux.HandleFunc("/login", holder.LoadRegistryPage)
+	mux.HandleFunc("/register", holder.Register)
 	mux.HandleFunc("/profile", holder.LoadProfilePage)
 
 	//handlefunc yada yada

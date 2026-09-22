@@ -51,6 +51,12 @@ func GetUserByID(db *sql.DB, userID int) (*models.User, error) {
 	}
 	return &user, err
 }
+func GetUserByUsername(
+	db *sql.DB,
+	username string,
+) (*models.User, error) {
+	// TODO
+}
 
 func UpdateSessionActivity(db *sql.DB, token string, lastActive time.Time, expiresAt time.Time) error {
 	_, err := db.Exec(`UPDATE session SET last_active = ?, expires_at = ? WHERE token = ?`,
