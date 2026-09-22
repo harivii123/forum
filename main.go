@@ -54,6 +54,7 @@ func main() {
 	mux.HandleFunc("POST /post", holder.CreatePost)
 	mux.HandleFunc("/login", holder.LoadRegistryPage)
 	mux.HandleFunc("/profile", holder.LoadProfilePage)
+	mux.HandleFunc("POST /posts/{id}/vote", holder.VoteOnPost)
 
 	//handlefunc yada yada
 
