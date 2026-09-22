@@ -3,54 +3,47 @@ package handlers
 import (
 	"database/sql"
 	"errors"
+	"forum/internal/database"
 	"forum/internal/models"
+	"forum/internal/service"
 	"net/http"
-	"time"
 )
 
-func (h *Holder) GetCurrentUser(w http.ResponseWriter, r *http.Request) (models.User, bool, error) {
-	var user models.User
+func (h *Holder) GetCurrentUser(w http.ResponseWriter, r *http.Request) (*models.User, bool, error) {
 	cookie, err := r.Cookie("session_token")
 	// guest
 	if errors.Is(err, http.ErrNoCookie) {
-		return user, false, nil
+		return nil, false, nil
 	}
 	// Database/server error:
 	if err != nil {
-		return user, false, err
+		return nil, false, err
 	}
 
-	var userID int
-	err = h.db.QueryRow(`SELECT user_id FROM session WHERE token = ? AND expires_at > ?`,
-		cookie.Value, time.Now()).Scan(&userID)
-
+	userID, err := database.GetSessionUserID(h.db, cookie.Value)
 	if errors.Is(err, sql.ErrNoRows) {
-		return user, false, nil
+		return nil, false, nil
 	}
 
 	if err != nil {
-		return user, false, err
+		return nil, false, err
 	}
+
 	// update new Expired time in DB and Browser cookie
-	err = h.db.QueryRow(`SELECT id, username, email FROM user WHERE id = ?`, userID).Scan(&user.ID, &user.Username, &user.Email)
+	user, err := database.GetUserByID(h.db, userID)
 	if errors.Is(err, sql.ErrNoRows) {
-		return user, false, nil
+		return nil, false, nil
 	}
 
 	if err != nil {
-		return user, false, err
+		return nil, false, err
 	}
 
-	now := time.Now()
-	newExpiry := now.Add(15 * time.Minute)
-	_, err = h.db.Exec(`UPDATE session SET last_active = ?, expires_at = ? WHERE token = ?`,
-		now,
-		newExpiry,
-		cookie.Value,
-	)
+	now, newExpiry := service.RefreshSessionTime()
+	err = database.UpdateSessionActivity(h.db, cookie.Value, now, newExpiry)
 
 	if err != nil {
-		return user, false, err
+		return nil, false, err
 	}
 
 	http.SetCookie(w, &http.Cookie{

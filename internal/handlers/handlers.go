@@ -4,14 +4,12 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"forum/internal/database"
 	"forum/internal/models"
 	"forum/internal/service"
 	"log"
 	"net/http"
 	"time"
-
-	"github.com/google/uuid"
-	"golang.org/x/crypto/bcrypt"
 )
 
 func (h *Holder) LoadRegistryPage(w http.ResponseWriter, r *http.Request) {
@@ -29,11 +27,7 @@ func (h *Holder) LoadRegistryPage(w http.ResponseWriter, r *http.Request) {
 		email := r.FormValue("email")
 		password := r.FormValue("password")
 		// 1. Find user
-		var user models.User
-
-		row := h.db.QueryRow(`SELECT id, username, email, password_hash FROM user WHERE email = ?`, email)
-
-		err := row.Scan(&user.ID, &user.Username, &user.Email, &user.PasswordHash)
+		user, err := database.GetUserByEmail(h.db, email)
 		if errors.Is(err, sql.ErrNoRows) {
 			http.Error(w, "Invalid email or password", http.StatusUnauthorized)
 			return
@@ -43,26 +37,21 @@ func (h *Holder) LoadRegistryPage(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
+
 		// 2. Check password
-		err = bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(password))
+		err = service.CheckPassword(user.PasswordHash, password)
 		if err != nil {
 			http.Error(w, "Invalid email or password", http.StatusUnauthorized)
 			return
 		}
 
 		// 3. Create UUID session
-		var session models.Session
-		session.Token = uuid.New().String()
-		session.UserID = user.ID
-
-		now := time.Now()
-		session.CreatedAt = now
-		session.LastActive = now
-		session.ExpiresAt = now.Add(15 * time.Minute)
+		session := service.NewSession(user.ID)
 
 		// 4. Save session to DB
-		_, err = h.db.Exec(`INSERT INTO session (token, user_id, created_at, expires_at, last_active) VALUES (?, ?, ?, ?, ?)`, session.Token, session.UserID, session.CreatedAt, session.ExpiresAt, session.LastActive)
+		err = database.CreateSession(h.db, session)
 		if err != nil {
+			log.Printf("Error creating session: %v", err)
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
