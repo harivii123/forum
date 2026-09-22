@@ -11,7 +11,9 @@
 	{{ template "video-background" . }}
 	{{ template "header" . }}
     <p>bob</p>
-	{{ template "post" . }}
+	<section class="p-(--px24) sm:p-(--px32) md:p-(--px64)">
+		{{ template "post" . }}
+	</section>
 	<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </body>
 </html>

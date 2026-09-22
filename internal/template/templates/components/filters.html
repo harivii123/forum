@@ -1,6 +1,6 @@
 {{ define "search-bar" }}
-    <form method="GET" action="/">
-            <input type="text" name="search" placeholder="Search.." />
+    <form class="w-full" method="GET" action="/">
+            <input class="max-w-[300px] w-full sharp-borders px-(--px24) py-(--px8)" type="text" name="search" placeholder="Search.." />
             <input class="hidden" type="submit" placeholder="🔍" />
     </form>
 {{ end }}

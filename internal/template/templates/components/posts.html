@@ -1,6 +1,8 @@
 {{ define "post" }}
     {{ range .FrontPage.Posts }}
-    <div>
+    <div class="post-frame">
+        {{ template "post-borders" . }}
+        <div class="pf-content">
         <div>
             {{ template "profile-pic" .Poster }}
             <div>
@@ -41,6 +43,7 @@
             <p>{{ .Commenter.Username }}: {{ .Body }}</p>
             <p>{{ len .CommentLikers }} / {{ len .CommentDislikers }}</p>
         {{ end }}
+        </div>
     </div>
     {{ end }}
 {{ end }}
