@@ -41,16 +41,29 @@ func insertDataUsers(db *sql.DB) error {
 }
 
 func insertDataCategories(db *sql.DB) error {
-	sql := `INSERT OR IGNORE INTO category (name) VALUES
-            ('General Discussion'),
-            ('Book Reviews'),
-            ('Classics'),
-            ('Science Fiction'),
-            ('Fantasy'),
-            ('Mystery & Thriller'),
-            ('Character Studies'),
-            ('Author Interviews'),
-            ('Recommendations');`
+	sql := `INSERT OR IGNORE INTO category (name, type) VALUES
+            ('General Discussion', 'genres'),
+            ('Book Reviews',       'genres'),
+            ('Classics',           'genres'),
+            ('Science Fiction',    'genres'),
+            ('Fantasy',            'genres'),
+            ('Mystery & Thriller', 'genres'),
+            ('Character Studies',  'genres'),
+            ('Author Interviews',  'genres'),
+            ('Recommendations',    'genres'),
+            ('Marcel Proust',      'authors'),
+            ('Ursula K. Le Guin',  'authors'),
+            ('Emily Bronte',       'authors'),
+            ('Agatha Christie',    'authors'),
+            ('J.R.R. Tolkien',     'authors'),
+            ('Kazuo Ishiguro',     'authors'),
+            ('Gillian Flynn',      'authors'),
+            ('Andy Weir',          'authors'),
+            ('Neal Stephenson',    'authors'),
+            ('George Eliot',       'authors'),
+            ('Brandon Sanderson',  'authors'),
+            ('N.K. Jemisin',       'authors'),
+            ('Susanna Clarke',     'authors');`
 	_, err := db.Exec(sql)
 	return err
 }
@@ -108,18 +121,19 @@ func insertDataPosts(db *sql.DB) error {
 }
 
 func insertCategoryPostConnections(db *sql.DB) error {
+	// genres: 1-9, authors: 10-22
 	sql := `INSERT OR IGNORE INTO category_post (post_id, category_id) VALUES
-            (1, 1),
-            (2, 3), (2, 1),
-            (3, 2), (3, 4),
-            (4, 7), (4, 3),
-            (5, 6), (5, 9),
+            (1, 1), (1, 22),
+            (2, 3), (2, 1), (2, 10),
+            (3, 2), (3, 4), (3, 11),
+            (4, 7), (4, 3), (4, 12),
+            (5, 6), (5, 9), (5, 13),
             (6, 8),
-            (7, 5), (7, 3),
-            (8, 7), (8, 6),
-            (9, 4), (9, 9),
-            (10, 2), (10, 3),
-            (11, 5), (11, 9),
+            (7, 5), (7, 3), (7, 14),
+            (8, 7), (8, 6), (8, 15), (8, 16), (8, 13),
+            (9, 4), (9, 9), (9, 17), (9, 18),
+            (10, 2), (10, 3), (10, 19),
+            (11, 5), (11, 9), (11, 20), (11, 21), (11, 11),
             (12, 1);`
 	_, err := db.Exec(sql)
 	return err
