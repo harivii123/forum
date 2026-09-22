@@ -3,11 +3,11 @@ package handlers
 import (
 	"database/sql"
 	"errors"
-	"fmt"
 	"forum/internal/models"
 	"forum/internal/service"
 	"log"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/google/uuid"
@@ -113,25 +113,49 @@ func (h *Holder) LoadFrontPage(w http.ResponseWriter, r *http.Request) {
 //}
 
 func (h *Holder) CreatePost(w http.ResponseWriter, r *http.Request) {
-	var newPost models.Post
-
-	// err := json.NewDecoder(r.Body).Decode(&newPost)
-	// if err != nil {
-	// 	fmt.Println(1)
-	// 	http.Error(w, err.Error(), http.StatusInternalServerError)
-	// 	return
-	// }
-	newPost.UserID, newPost.Title, newPost.Body, newPost.Created = 1, "hashBrowniies", "i Like Frogs", time.Now()
-	err, httpStatus := service.CreatePost(newPost, h.db)
+	//get post title and body from request
+	newPost := models.Post{
+		Title: r.FormValue("title"),
+		Body:  r.FormValue("body"),
+	}
+	//user data from request cookies
+	cookie, err := r.Cookie("session_token")
+	//createpost returns err and appropriate http code
+	err, httpStatus := service.CreatePost(cookie, newPost, h.db)
 	if err != nil {
 		http.Error(w, err.Error(), httpStatus)
 		return
 	}
-	fmt.Println("ok")
-	http.Redirect(w, r, "/", http.StatusSeeOther)
+	//redirect back to homepage if everything went well
+	http.Redirect(w, r, "/", httpStatus)
+	return
 }
 
 func (h *Holder) LoadProfilePage(w http.ResponseWriter, r *http.Request) {
 	// get stuff from db insert into page bang
 	// can be maybe also used to checkout other profiles not just ur own?
+}
+
+func (h *Holder) AddComment(w http.ResponseWriter, r *http.Request) {
+	//get the post_id from request
+	postID, err := strconv.Atoi(r.FormValue("ID"))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+	//get comment value from request
+	newComment := models.Comment{
+		Post_id: postID,
+		Body:    r.FormValue("comment"),
+	}
+	//get user data from request cookies
+	cookie, err := r.Cookie("session_token")
+	//service.CreateComment returns error and appropriate httpstatus
+	err, httpStatus := service.CreateComment(newComment, cookie, h.db)
+	if err != nil {
+		http.Error(w, err.Error(), httpStatus)
+		return
+	}
+	//redirect back to homepage if everything went well
+	http.Redirect(w, r, "/", httpStatus)
+	return
 }

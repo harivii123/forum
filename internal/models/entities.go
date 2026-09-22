@@ -6,11 +6,11 @@ import (
 
 type Post struct {
 	ID         int
-	UserID     int       `json:"userid"`
-	Title      string    `json:"title"`
-	Body       string    `json:"body"`
-	Created    time.Time `json:"created"`
-	Categories []string  `json:"categories"`
+	UserID     int
+	Title      string
+	Body       string
+	Created    time.Time
+	Categories []string
 }
 
 type User struct {
@@ -21,10 +21,18 @@ type User struct {
 }
 
 type Session struct {
-	ID         int
-	Token      string
-	UserID     int
-	CreatedAt  time.Time
-	ExpiresAt  time.Time
-	LastActive time.Time
+	ID         	int
+	Token      	string
+	UserID     	int
+	CreatedAt  	time.Time
+	ExpiresAt  	time.Time
+	LastActive 	time.Time
+}
+
+type Comment struct {
+	ID      	int
+	User_id 	int
+	Post_id 	int
+	Body    	string
+	Created 	time.Time
 }
