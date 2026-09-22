@@ -26,6 +26,10 @@ func CreateComment(newComment models.Comment, cookie *http.Cookie, db *sql.DB) (
 	if err != nil {
 		return err, http.StatusInternalServerError
 	}
+	err = tx.Commit()
+	if err != nil {
+		return err, http.StatusInternalServerError
+	}
 
 	return nil, http.StatusSeeOther
 }
