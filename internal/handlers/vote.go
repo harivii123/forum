@@ -27,6 +27,6 @@ func (h *Holder) VoteOnPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Printf("user %d voted %d on post %d", user, vote, postID)
+	log.Printf("user %d voted %d on post %d", user.ID, vote, postID)
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
