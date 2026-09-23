@@ -1,0 +1,16 @@
+{{ define "header" }}
+    <header class="gap-(--px16) items-center flex flex-row justify-between py-(--px8) px-(--px24) sm:px-(--px32) md:px-(--px64)">
+         <div class="w-full items-center flex flex-row gap-(--px8)">
+             {{ template "logo" . }}
+             {{ template "search-bar" . }}
+         </div>
+
+        {{ template "profile-pic" . }}
+    </header>
+{{ end }}
+
+{{ define "video-background" }}
+<video autoplay muted loop id="background-video">
+    <source src="/static/videos/Smoke_Background.mp4" type="video/mp4">
+</video>
+{{ end }}

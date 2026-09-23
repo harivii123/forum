@@ -5,18 +5,18 @@
 <head>
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link rel="stylesheet" href="/static/styles/styles.css">
 	<title>Lioooooon rawr</title>
 </head>
 
 <body>
-	{{ template "search-bar" . }}
-	{{ if .LoggedIn }}
-		<p> Welcome, {{ .User.Username }} </p>
-	{{ else }}
-		{{ template "login" . }}
-	{{ end }}
-	<p>bob</p>
-	{{ template "post" . }}
+	{{ template "video-background" . }}
+	{{ template "header" . }}
+    <p>bob</p>
+	<section class="p-(--px24) sm:p-(--px32) md:p-(--px64)">
+		{{ template "post" . }}
+	</section>
+	<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </body>
 
 </html>

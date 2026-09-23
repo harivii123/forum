@@ -1,15 +1,49 @@
 {{ define "post" }}
     {{ range .FrontPage.Posts }}
-        <h3>{{ .Title }}</h3>
-        <img src="{{ .Poster.ProfilePicture }}" alt="{{ .Poster.Username }}" style="width: 25px;">
-        <h4>{{ .Poster.Username }}</h4>
-        <p>{{ elapsed .Created }}</p>
-        <p>{{ truncate .Body 20 }}</p>
-        <p>{{ len .PostLikers }}</p>
-        <p>{{ len .PostDislikers }}</p>
+    <div class="post-frame">
+        {{ template "post-borders" . }}
+        <div class="pf-content">
+        <div>
+            {{ template "profile-pic" .Poster }}
+            <div>
+                <h4>{{ .Poster.Username }}</h4>
+                <p>{{ elapsed .Created }}</p>
+            </div>
+            <div>
+                {{ range .Categories }}
+                    <span>
+                        {{ . }}
+                    </span>
+                {{ end }}
+            </div>
+        </div>
+        <div>
+            {{ .Image }}
+        </div>
+        <div>
+            <h3>{{ .Title }}</h3>
+            <p>{{ truncate .Body 40 }}</p>
+            <div>
+                <div>
+                    {{ template "thumb-up" }}
+                    <p>{{ len .PostLikers }}</p>
+                </div>
+                <div>
+                    {{ template "thumb-down" }}
+                    <p>{{ len .PostDislikers }}</p>
+                </div>
+                <div>
+                    {{ template "comment" }}
+                    <p>{{ len .Comments }}</p>
+                </div>
+            </div>
+        </div>
+    
         {{ range .Comments }}
             <p>{{ .Commenter.Username }}: {{ .Body }}</p>
             <p>{{ len .CommentLikers }} / {{ len .CommentDislikers }}</p>
         {{ end }}
+        </div>
+    </div>
     {{ end }}
 {{ end }}
