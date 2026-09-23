@@ -85,6 +85,7 @@ func (h *Holder) LoadFrontPage(w http.ResponseWriter, r *http.Request) {
 	mainSearchValue := r.URL.Query().Get("search")
 	log.Println(mainSearchValue)
 	posts, err := service.MainSearch(mainSearchValue, h.db)
+	fmt.Println(len(posts))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

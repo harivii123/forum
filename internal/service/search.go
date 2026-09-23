@@ -11,10 +11,10 @@ import (
 // takes value from main search bar and finds all matches using fts(fast text search)
 func MainSearch(mainSearchValue string, db *sql.DB) ([]models.PostView, error) {
 	//if "" nothing happens
-	if mainSearchValue == "" {
-		// log.Println(4)
-		return nil, nil
-	}
+	// if mainSearchValue == "" {
+	// 	// log.Println(4)
+	// 	return nil, nil
+	// }
 
 	tx, err := db.Begin()
 	if err != nil {
@@ -26,7 +26,7 @@ func MainSearch(mainSearchValue string, db *sql.DB) ([]models.PostView, error) {
 	var matches []database.PostSearch
 	var result []models.PostView
 
-	matches, err = database.FindAMatch(tx, mainSearchValue)
+	matches, err = database.FindAMatch(tx)
 	if err != nil {
 		// log.Println(6)
 		return nil, err

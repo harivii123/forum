@@ -23,7 +23,7 @@ type PostSearch struct {
 	PostCategories   string
 }
 
-func FindAMatch(tx *sql.Tx, searchValue string) ([]PostSearch, error) {
+func FindAMatch(tx *sql.Tx) ([]PostSearch, error) {
 	// log.Println(searchValue, "rep")
 	query := `SELECT p.id, p.title, p.user_id, p.body, COALESCE(p.image, ''), p.created_at, u.username, COALESCE(u.profile_picture, '/static/avatars/default-avatar.png'),
 		COALESCE((SELECT group_concat(c.id || char(31) || cu.id || char(31) || cu.username || char(31) || COALESCE(cu.profile_picture, '/static/avatars/default-avatar.png') || char(31) || c.body, char(30))
@@ -47,8 +47,8 @@ func FindAMatch(tx *sql.Tx, searchValue string) ([]PostSearch, error) {
 		FROM post p
 		JOIN user u ON u.id = p.user_id
 		JOIN post_fts fts ON fts.rowid = p.id
-		WHERE post_fts MATCH ?;`
-
+		GROUP BY p.id;`
+	//WHERE post_fts MATCH ?;
 	rows, err := tx.Query(
 		// `SELECT u.id, 'user', u.username, 'User Account'
 		//  FROM user u
@@ -56,7 +56,7 @@ func FindAMatch(tx *sql.Tx, searchValue string) ([]PostSearch, error) {
 		//  WHERE user_fts MATCH ?
 
 		// UNION ALL
-		query, searchValue)
+		query)
 	if err != nil {
 		log.Println(1, err)
 		return nil, err
