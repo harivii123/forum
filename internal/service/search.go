@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"database/sql"
 	"forum/internal/database"
 	"forum/internal/models"
@@ -9,16 +10,9 @@ import (
 )
 
 // takes value from main search bar and finds all matches using fts(fast text search)
-func MainSearch(mainSearchValue string, db *sql.DB) ([]models.PostView, error) {
-	//if "" nothing happens
-	// if mainSearchValue == "" {
-	// 	// log.Println(4)
-	// 	return nil, nil
-	// }
-
+func FilterPosts(filters string, args []any, ctx context.Context, db *sql.DB) ([]models.PostView, error) {
 	tx, err := db.Begin()
 	if err != nil {
-		// log.Println(5)
 		return nil, err
 	}
 	defer tx.Rollback()
@@ -26,14 +20,12 @@ func MainSearch(mainSearchValue string, db *sql.DB) ([]models.PostView, error) {
 	var matches []database.PostSearch
 	var result []models.PostView
 
-	matches, err = database.FindAMatch(tx)
+	matches, err = database.FilterPosts(filters+" GROUP BY p.id;", ctx, tx, args...)
 	if err != nil {
-		// log.Println(6)
 		return nil, err
 	}
 	err = tx.Commit()
 	if err != nil {
-		// log.Println(7)
 		return nil, err
 	}
 
@@ -52,7 +44,6 @@ func MainSearch(mainSearchValue string, db *sql.DB) ([]models.PostView, error) {
 		result = append(result, post)
 	}
 
-	// log.Println(match, "here")
 	return result, err
 }
 
