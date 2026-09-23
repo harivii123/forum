@@ -42,7 +42,7 @@ func FilterPosts(filters string, ctx context.Context, tx *sql.Tx, args ...any) (
 		COALESCE((SELECT group_concat(vu.id || char(31) || vu.username || char(31) || COALESCE(vu.profile_picture, '/static/avatars/default-avatar.png'), char(30))
 			FROM post_vote pv JOIN user vu ON vu.id = pv.user_id
 			WHERE pv.post_id = p.id AND pv.vote = -1), '') AS dislikers,
-		COALESCE((SELECT group_concat(cat.name, char(31))
+		COALESCE((SELECT group_concat(cat.id || char(31) || cat.name || char(31) || cat.type, char(30))
 			FROM category_post cp JOIN category cat ON cat.id = cp.category_id
 			WHERE cp.post_id = p.id), '') AS categories
 		FROM post p

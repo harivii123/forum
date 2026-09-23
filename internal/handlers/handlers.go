@@ -89,6 +89,10 @@ func (h *Holder) LoadFrontPage(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
+	var profile models.UserView
+	profile.ID = user.ID
+	profile.Username = user.Username
+	profile.ProfilePicture = ""
 
 	filters, args := filtersFromQuery(r.URL.Query())
 	ctx := r.Context()
@@ -100,10 +104,16 @@ func (h *Holder) LoadFrontPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	var categories []models.CategoryView
+
+	categories, err = service.GetCategories(ctx, h.db)
+
 	frontPage := h.engine.Render("index.html", map[string]any{
-		"Posts":    posts,
-		"User":     user,
-		"LoggedIn": loggedIn,
+		"Posts":      posts,
+		"Profile":    profile,
+		"Categories": categories,
+		"User":       user,
+		"LoggedIn":   loggedIn,
 	})
 	w.WriteHeader(http.StatusOK)
 	w.Write(frontPage)

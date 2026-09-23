@@ -12,7 +12,7 @@ type PostView struct {
 	PostLikers    []UserView
 	PostDislikers []UserView
 	Comments      []CommentView
-	Categories    []PostCategory
+	Categories    []CategoryView
 }
 
 type UserView struct {
@@ -30,4 +30,8 @@ type CommentView struct {
 	CommentDislikers []UserView
 }
 
-type PostCategory string
+type CategoryView struct {
+	ID       int
+	Category string
+	Type     string
+}
