@@ -143,6 +143,23 @@ button {
     transition: all .1s ease-in-out;
 }
 
+#author-list {
+    height: 150px;
+    overflow: scroll;
+    width: fit-content;
+}
+
+/* #author-list::-webkit-scrollbar {
+    width: 10px;
+    overflow-y: auto;
+}
+
+ul#author-list::-webkit-scrollbar-thumb {
+    color: red;
+    background: red;
+    overflow-y: auto;
+} */
+
 .sharp-borders {
     background: var(--blue-light-20);
     corner-shape: bevel;

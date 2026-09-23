@@ -1,5 +1,5 @@
 {{ define "search-bar" }}
-    <form class="relative w-full max-w-[300px] flex flex-row justify-center"  method="GET" action="/">
+    <form id="filters" class="relative w-full max-w-[300px] flex flex-row justify-center"  method="GET" action="/">
             <button class="absolute top-0 left-0 translate-x-[110%] translate-y-[50%]" type="submit">
                 {{ template "search-icon" }}
             </button>
@@ -12,4 +12,37 @@
             <input type="submit" placeholder="bob" />
             
     </form>
+{{ end }}
+
+{{ define "side-filters" }}
+<aside>
+    {{ template "you"  . }}
+    {{ template "authors" . }}
+</aside>
+{{ end }}
+
+{{ define "you" }}
+<!-- class="{{ if .Profile.ID }}visible{{ else }}hidden{{ end }}" -->
+<div>
+    <input type="checkbox"  id="posts" name="posts" form="filters" value="Posts"/>
+    <label for="posts">Posts</label>
+    <input type="checkbox"  id="likes" name="likes" form="filters" value="Likes"/>
+    <label for="likes">Likes</label>
+</div>
+{{ end }}
+
+{{ define "authors" }}
+<input id="author-search" type="text" onkeyup="simpleSearch()" placeholder="Search" />
+
+<ul id="author-list">
+{{ range .Categories }}
+{{ if eq .Type "authors" }} 
+<li data-name="{{ .Category }}">
+    <input type="checkbox" id="category-{{ .ID }}" name="category" form="filters" value="{{ .ID }}"/>
+    <label for="category-{{ .ID }}">{{ .Category }}</label> 
+</li>
+{{ end }}
+{{ end }}
+</ul>
+
 {{ end }}
