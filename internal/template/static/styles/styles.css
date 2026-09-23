@@ -44,6 +44,7 @@
     --peach: rgba(255, 198, 144, 1);
     --peach-80: rgba(255, 198, 144, 0.8);
     --peach-30: rgba(253, 207, 164, 0.3);
+    --peach-tr: rgba(255, 198, 144, 0);
 
     --px4: 0.25rem;
     --px8: 0.5rem;
@@ -130,12 +131,21 @@ button {
     font-weight: 400;
     font-size: var(--px16);
     line-height: 19px;
-    clip-path: polygon(10% 0, 90% 0, 100% 50%, 90% 100%, 10% 100%, 0 50%);
+}
+
+.scale-h:hover {
+    scale: 0.99;
 }
 
 .sharp-borders {
-    clip-path: polygon(20px 0, calc(100% - 20px) 0, 100% 50%, calc(100% - 20px) 100%, 20px 100%, 0 50%);
     background: var(--blue-light-20);
+    corner-shape: bevel;
+    border-radius: 50px;
+    outline: 2px solid var(--peach-tr);
+}
+
+.sharp-borders:focus-visible {
+    outline: 2px solid var(--peach);
 }
 
 

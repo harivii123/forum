@@ -1,6 +1,9 @@
 {{ define "search-bar" }}
-    <form class="w-full" method="GET" action="/">
-            <input class="max-w-[300px] w-full sharp-borders px-(--px24) py-(--px8)" type="text" name="search" placeholder="Search.." />
-            <input class="hidden" type="submit" placeholder="🔍" />
+    <form class="scale-h relative w-full max-w-[300px] flex flex-row justify-center"  method="GET" action="/">
+            <button class="absolute top-0 left-0 translate-x-[110%] translate-y-[50%]" type="submit">
+                {{ template "search-icon" }}
+            </button>
+            
+            <input class="w-full pr-(--px24) pl-[50px] py-(--px8) sharp-borders flex flex-row" type="text" name="search" placeholder="Search.." />
     </form>
 {{ end }}
