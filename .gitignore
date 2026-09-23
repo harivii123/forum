@@ -1,2 +1,5 @@
 database.db
-tmp/
+internal/database/hash.go
+.air.toml
+tmp
+forum

@@ -1,6 +1,8 @@
 package models
 
-import "time"
+import (
+	"time"
+)
 
 type Post struct {
 	ID         int
@@ -9,4 +11,28 @@ type Post struct {
 	Body       string
 	Created    time.Time
 	Categories []string
+}
+
+type User struct {
+	ID           int
+	Username     string
+	Email        string
+	PasswordHash string
+}
+
+type Session struct {
+	ID         	int
+	Token      	string
+	UserID     	int
+	CreatedAt  	time.Time
+	ExpiresAt  	time.Time
+	LastActive 	time.Time
+}
+
+type Comment struct {
+	ID      	int
+	User_id 	int
+	Post_id 	int
+	Body    	string
+	Created 	time.Time
 }

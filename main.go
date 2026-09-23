@@ -51,7 +51,7 @@ func main() {
 	sub, _ := fs.Sub(template.Statics, "static")
 	mux.Handle("GET /static/", http.StripPrefix("/static/", http.FileServer(http.FS(sub))))
 	mux.HandleFunc("/{$}", holder.LoadFrontPage)
-	mux.HandleFunc("/post", holder.LoadPostPage)
+	mux.HandleFunc("POST /post", holder.CreatePost)
 	mux.HandleFunc("/login", holder.LoadRegistryPage)
 	mux.HandleFunc("/profile", holder.LoadProfilePage)
 
