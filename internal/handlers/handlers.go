@@ -3,12 +3,12 @@ package handlers
 import (
 	"database/sql"
 	"errors"
-	"fmt"
 	"forum/internal/models"
 	"forum/internal/service"
-	"log"
 	"net/http"
+	"net/url"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -90,20 +90,20 @@ func (h *Holder) LoadFrontPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	page := &models.FrontPage{}
-	mainSearchValue := r.URL.Query().Get("search")
-	log.Println(mainSearchValue)
-	posts, err := service.MainSearch(mainSearchValue, h.db)
-	fmt.Println(len(posts))
+	filters, args := filtersFromQuery(r.URL.Query())
+	ctx := r.Context()
+
+	//posts, err := service.MainSearch(mainSearchValue, h.db)
+	posts, err := service.FilterPosts(filters, args, ctx, h.db)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	page.Posts = posts
+
 	frontPage := h.engine.Render("index.html", map[string]any{
-		"FrontPage": page,
-		"User":      user,
-		"LoggedIn":  loggedIn,
+		"Posts":    posts,
+		"User":     user,
+		"LoggedIn": loggedIn,
 	})
 	w.WriteHeader(http.StatusOK)
 	w.Write(frontPage)
@@ -160,4 +160,20 @@ func (h *Holder) AddComment(w http.ResponseWriter, r *http.Request) {
 	//redirect back to homepage if everything went well
 	http.Redirect(w, r, "/", httpStatus)
 	return
+}
+
+func filtersFromQuery(q url.Values) (string, []any) {
+	if len(q) == 0 {
+		return "", nil
+	}
+	filters := strings.Builder{}
+	args := []any{}
+
+	if search := q.Get("search"); search != "" {
+		param, arg := service.Search(search)
+		filters.WriteString(param)
+		args = append(args, arg)
+	}
+
+	return filters.String(), args
 }
