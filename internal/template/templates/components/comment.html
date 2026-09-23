@@ -1,0 +1,6 @@
+{{ define "comment"}}
+<form method="POST" action="/{{ . }}/comment">
+    <input type="text" name="comment" placeholder="leave a comment..." />
+    <input type="submit" placeholder="submit" />
+</form> 
+{{ end }}

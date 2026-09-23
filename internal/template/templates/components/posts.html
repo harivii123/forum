@@ -33,12 +33,12 @@
                     <p>{{ len .PostDislikers }}</p>
                 </div>
                 <div>
-                    {{ template "comment" }}
+                    {{ template "comment" .ID }}
                     <p>{{ len .Comments }}</p>
                 </div>
             </div>
         </div>
-    
+        
         {{ range .Comments }}
             <p>{{ .Commenter.Username }}: {{ .Body }}</p>
             <p>{{ len .CommentLikers }} / {{ len .CommentDislikers }}</p>

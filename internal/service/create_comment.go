@@ -21,7 +21,6 @@ func CreateComment(newComment models.Comment, cookie *http.Cookie, db *sql.DB) (
 		return err, http.StatusInternalServerError
 	}
 	newComment.User_id, newComment.Created = userID, time.Now()
-
 	err = database.CreateComment(tx, newComment)
 	if err != nil {
 		return err, http.StatusInternalServerError
