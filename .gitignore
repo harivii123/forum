@@ -1,2 +1,2 @@
 database.db
-tmp/
+internal/database/hash.go
