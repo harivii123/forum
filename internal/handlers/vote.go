@@ -1,32 +1,45 @@
 package handlers
 
 import (
-	"log"
+	"errors"
+	"forum/internal/service"
 	"net/http"
 	"strconv"
 )
 
 func (h *Holder) VoteOnPost(w http.ResponseWriter, r *http.Request) {
-	postID, err := strconv.Atoi(r.PathValue("id"))
-	if err != nil {
-		http.Error(w, "bad post id", http.StatusBadRequest)
-		return
-	}
-	vote, err := strconv.Atoi(r.FormValue("vote"))
-	if err != nil {
-		http.Error(w, "bad vote", http.StatusBadRequest)
-		return
-	}
+
 	user, loggedIn, err := h.GetCurrentUser(w, r)
 	if err != nil {
 		http.Error(w, "server error", http.StatusInternalServerError)
 		return
 	}
-	if !loggedIn { //I think no voting without being logged in?
-		http.Error(w, "cannot vote without logging in", http.StatusForbidden)
+	if !loggedIn { //No voting without being logged in
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
 		return
 	}
 
-	log.Printf("user %d voted %d on post %d", user.ID, vote, postID)
+	postID, err := strconv.Atoi(r.PathValue("id"))
+	if err != nil {
+		http.Error(w, "bad post id", http.StatusBadRequest)
+		return
+	}
+
+	vote, err := strconv.Atoi(r.FormValue("vote"))
+	if err != nil {
+		http.Error(w, "bad vote", http.StatusBadRequest)
+		return
+	}
+
+	err = service.SetPostVote(h.db, user.ID, postID, vote)
+	switch {
+	case errors.Is(err, service.ErrPostNotFound):
+		http.Error(w, "post not found", http.StatusNotFound)
+		return
+	case err != nil:
+		http.Error(w, "server error", http.StatusInternalServerError)
+		return
+	}
+
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
