@@ -3,6 +3,7 @@ package database
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"fmt"
 	"forum/internal/models"
 	"time"
@@ -110,4 +111,20 @@ func CreatePost(tx *sql.Tx, newPost models.Post) (err error) {
 	//if post does not appear in front page automatically. We need to return it from here
 
 	return nil
+}
+
+func PostExists(tx *sql.Tx, postID int) (bool, error) {
+	var n int
+
+	err := tx.QueryRow(`SELECT 1 FROM post WHERE id = ?`, postID).Scan(&n)
+
+	if errors.Is(err, sql.ErrNoRows) {
+		return false, nil
+	}
+
+	if err != nil {
+		return false, err
+	}
+
+	return true, nil
 }
