@@ -49,6 +49,8 @@
 
     --px4: 0.25rem;
     --px8: 0.5rem;
+    --px12: 0.75rem;
+    --px14: 0.875rem;
     --px16: 1rem;
     --px24: 1.5rem;
     --px32: 2rem;
@@ -102,6 +104,133 @@ body {
 
 }
 
+@layer base {
+    header {
+        backdrop-filter: blur(12px);
+        position: fixed;
+        width: 100%;
+    }
+
+    section {
+        padding: var(--px24);
+        padding-top: 144px;
+        gap: 84px;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        justify-items: center;
+        /* sm:p-(--px32) md:p-(--px64) */
+    }
+    /* li {
+        display: flex;
+        flex-direction: row;
+        padding: 0.2rem 1rem;
+        gap: var(--px8);
+        justify-content: space-between;
+        background: var(--blue-light-20);
+        corner-shape: bevel;
+        border-radius: 50px;
+        outline: 2px solid var(--peach-tr);
+    } */
+    legend {
+        padding-left: 14px;
+        padding-right: 14px;
+        padding-top: 0;
+        padding-bottom: 16px;
+        line-height: 16px;
+    }
+
+    input[type="checkbox"] { appearance: none; }
+    input[type="radio"] { appearance: none; }
+
+    input[type="text"] {
+        width: 100%;
+        padding-right: var(--px24);
+        padding-left: var(--px24);
+        padding-top: var(--px8);
+        padding-bottom: var(--px8);
+        background: var(--blue-light-20);
+        corner-shape: bevel;
+        border-radius: 50px;
+        outline: 2px solid var(--peach-tr);
+        display: flex;
+        flex-direction: row;
+    }
+
+    input[type="text"]:hover {
+        background: var(--blue--light-15);
+        transition: all .1s ease-in-out;
+    }
+    input[type="text"]:focus-visible {
+        outline: 2px solid var(--peach);
+    }
+
+    aside {
+        width: fit-content;
+        display: flex;
+        flex-direction: column;
+        gap: var(--px16); 
+        padding: var(--px16);
+        position: sticky;
+        top: 120px;
+        align-self: flex-start;
+        z-index: 10;
+        max-height: calc(100vh - 120px);
+        overflow-y: auto;
+        backdrop-filter: blur(12px);
+    }
+
+    label {
+        font-size: var(--px14);
+        display: flex;
+        flex-direction: row;
+        padding: 0.2rem 1rem;
+        gap: var(--px8);
+        justify-content: space-between;
+        background: var(--blue-light-20);
+        corner-shape: bevel;
+        border-radius: 50px;
+        outline: 2px solid var(--peach-tr);
+        cursor: pointer;
+    }
+
+    label:has(input:checked) {
+        outline: 2px solid var(--peach);
+    }
+}
+
+.icon-checked { display: none; }
+li:has(input:checked) .icon-checked { display: inline; }
+li:has(input:checked) .icon-unchecked { display: none; }
+
+.search-icon {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    translate: 110% -50%;
+}
+
+.search-icon-small {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    translate: 120% -50%;
+    svg {
+        width: 15px;
+    }
+}
+
+.divider {
+    height: 2px;
+    background: var(--peach-30);
+    margin-left: 14px;
+    margin-right: 14px;
+}
+
+.test {
+    padding-left: 50px;
+}
+
 .avatar-borders{
     display: block;
     z-index: 1;
@@ -138,40 +267,31 @@ button {
     scale: 0.99;
 }
 
-.input-h:hover {
-    background: var(--blue--light-15);
-    transition: all .1s ease-in-out;
-}
 
-#author-list {
+.filter-list {
     height: 150px;
-    overflow: scroll;
-    width: fit-content;
+    overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+    gap: var(--px8);
+    min-width: max-content;
+    justify-content: space-between;
+    padding: var(--px4);
+    mask-image: linear-gradient(to bottom, transparent, black 5%, black 95%, transparent);
 }
 
-/* #author-list::-webkit-scrollbar {
-    width: 10px;
-    overflow-y: auto;
-}
-
-ul#author-list::-webkit-scrollbar-thumb {
-    color: red;
-    background: red;
-    overflow-y: auto;
-} */
-
-.sharp-borders {
-    background: var(--blue-light-20);
-    corner-shape: bevel;
+.filter-list::-webkit-scrollbar {
+    width: 4px;
     border-radius: 50px;
-    outline: 2px solid var(--peach-tr);
+    overflow-y: auto;
+    background: var(--peach-30);
 }
 
-.sharp-borders:focus-visible {
-    outline: 2px solid var(--peach);
-}
-
-
+.filter-list::-webkit-scrollbar-thumb {
+    border-radius: 50px;
+    background: var(--peach);
+    overflow-y: auto;
+} 
 
 .post-frame {
     --pf-line: var(--peach);

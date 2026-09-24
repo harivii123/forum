@@ -1,6 +1,6 @@
 {{ define "search-bar" }}
     <form id="filters" class="relative w-full max-w-[300px] flex flex-row justify-center"  method="GET" action="/">
-            <button class="absolute top-0 left-0 translate-x-[110%] translate-y-[50%]" type="submit">
+            <button class="search-icon" type="submit">
                 {{ template "search-icon" }}
             </button>
             
@@ -15,34 +15,122 @@
 {{ end }}
 
 {{ define "side-filters" }}
-<aside>
-    {{ template "you"  . }}
-    {{ template "authors" . }}
+<aside class="pl-(--px24) md:pl-(--px64) sm:pl-(--px32)">
+    <fieldset class="gap-(--px8) flex flex-col">
+        <legend>You</legend>
+        {{ template "you"  . }}
+    </fieldset>
+    <div class="divider"></div>
+    <fieldset class="gap-(--px8) flex flex-col">
+        <legend>Authors</legend>
+        {{ template "authors" . }}
+    </fieldset>
+    <div class="divider"></div>
+    <fieldset class="gap-(--px8) flex flex-col">
+        <legend>Genres</legend>
+        {{ template "genres" . }}
+    </fieldset>
+    <div class="divider"></div>
+    <fieldset class="gap-(--px8) flex flex-col">
+        <legend>Sort by</legend>
+        {{ template "order-by"  . }}
+    </fieldset>
+
 </aside>
 {{ end }}
 
 {{ define "you" }}
 <!-- class="{{ if .Profile.ID }}visible{{ else }}hidden{{ end }}" -->
-<div>
-    <input type="checkbox"  id="posts" name="posts" form="filters" value="Posts"/>
-    <label for="posts">Posts</label>
-    <input type="checkbox"  id="likes" name="likes" form="filters" value="Likes"/>
-    <label for="likes">Likes</label>
-</div>
+<ul class="gap-(--px8) flex flex-col">
+    <li>
+        <label>
+            <span>Posts</span>
+            <input type="checkbox"  id="posts" name="posts" form="filters" value="Posts"/>
+            {{ template "checkbox" }}
+        </label>
+    </li>
+    <li>
+        <label>
+            <span>Likes</span>
+            <input type="checkbox"  id="likes" name="likes" form="filters" value="Likes"/>
+            {{ template "checkbox" }}
+        </label>
+    </li>
+</ul>
+{{ end }}
+
+{{ define "order-by" }}
+<ul class="gap-(--px8) flex flex-col">
+    <li>
+        <label>
+            <span>Newest first</span>
+            <input type="radio"  name="order" form="filters" value="Newest" checked/>
+            {{ template "checkbox" }}
+        </label>
+    </li>
+    <li>
+        <label>
+            <span>Oldest first</span>
+            <input type="radio" name="order" form="filters" value="Oldest"/>
+            {{ template "checkbox" }}
+        </label>
+    </li>
+    <li>
+        <label>
+            <span>Most liked</span>
+            <input type="radio" name="order" form="filters" value="Liked"/>
+            {{ template "checkbox" }}
+        </label>
+    </li>
+</ul>
 {{ end }}
 
 {{ define "authors" }}
-<input id="author-search" type="text" onkeyup="simpleSearch()" placeholder="Search" />
+{{ template "simple-search" "author-list" }}
 
-<ul id="author-list">
+<ul id="author-list" class="filter-list">
 {{ range .Categories }}
 {{ if eq .Type "authors" }} 
-<li data-name="{{ .Category }}">
-    <input type="checkbox" id="category-{{ .ID }}" name="category" form="filters" value="{{ .ID }}"/>
-    <label for="category-{{ .ID }}">{{ .Category }}</label> 
+<li class="sharp-borders" data-name="{{ .Category }}">
+    <label>
+        <span>{{ .Category }}</span> 
+        <input type="checkbox" id="category-{{ .ID }}" name="category" form="filters" value="{{ .ID }}"/>
+        {{ template "checkbox" }}
+    </label>
 </li>
 {{ end }}
 {{ end }}
 </ul>
 
 {{ end }}
+
+
+{{ define "genres" }}
+{{ template "simple-search" "genre-list" }}
+
+<ul id="genre-list" class="filter-list">
+    {{ range .Categories }}
+    {{ if eq .Type "genres" }}
+    <li class="sharp-borders" data-name="{{ .Category }}">
+        <label>
+            <span>{{ .Category }}</span>
+            <input type="checkbox" id="category-{{ .ID }}" name="category" form="filters" value="{{ .ID }}" />
+            {{ template "checkbox" }}
+        </label>
+    </li>
+    {{ end }}
+    {{ end }}
+</ul>
+{{ end }}
+
+{{ define "simple-search" }}
+<div class="relative">
+    <div class="search-icon-small">{{ template "search-icon" }}</div>
+    <input class="py-(--px4) pl-[40px] text-sm" id="{{ . }}-search" type="text" onkeyup="simpleSearch(this, '{{ . }}')" placeholder="Search" />
+</div>
+{{ end }}
+
+{{ define "checkbox" }}
+    <span class="icon-unchecked">{{ template "check-icon" }}</span>
+    <span class="icon-checked">{{ template "checked-icon" }}</span>
+{{ end }} 
