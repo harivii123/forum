@@ -1,15 +1,21 @@
 {{ define "post" }}
-    {{ range .FrontPage.Posts }}
+    {{ range $post := .FrontPage.Posts }}
         <h3>{{ .Title }}</h3>
         <img src="{{ .Poster.ProfilePicture }}" alt="{{ .Poster.Username }}" style="width: 25px;">
         <h4>{{ .Poster.Username }}</h4>
         <p>{{ elapsed .Created }}</p>
         <p>{{ truncate .Body 20 }}</p>
-        <p>{{ len .PostLikers }}</p>
-        <p>{{ len .PostDislikers }}</p>
-        {{ range .Comments }}
-            <p>{{ .Commenter.Username }}: {{ .Body }}</p>
-            <p>{{ len .CommentLikers }} / {{ len .CommentDislikers }}</p>
+        <form method="POST" action="/posts/{{ $post.ID }}/vote">
+            <button name="vote" value="1">Like {{ len .PostLikers }}</button>
+            <button name="vote" value="-1">Dislike {{ len .PostDislikers }}</button>
+        </form>
+        {{ range $comment := $post.Comments }}
+           <p>{{ $comment.Commenter.Username }}: {{ $comment.Body }}</p>
+
+           <form method="POST" action="/comments/{{ $comment.ID }}/vote">
+                <button name="vote" value="1">Like {{ len $comment.CommentLikers }}</button>
+                <button name="vote" value="-1">Dislike {{ len $comment.CommentDislikers }}</button>
+           </form>
         {{ end }}
     {{ end }}
 {{ end }}
