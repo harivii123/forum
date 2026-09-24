@@ -97,7 +97,6 @@ func (h *Holder) LoadFrontPage(w http.ResponseWriter, r *http.Request) {
 	filters, args := filtersFromQuery(r.URL.Query())
 	ctx := r.Context()
 
-	//posts, err := service.MainSearch(mainSearchValue, h.db)
 	posts, err := service.FilterPosts(filters, args, ctx, h.db)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

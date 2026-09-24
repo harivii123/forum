@@ -1,7 +1,6 @@
-function simpleSearch() {
-    var input = document.getElementById('author-search');
-    var filter = input.value.toUpperCase();
-    var ul = document.getElementById("author-list");
+function simpleSearch(value1, value2) {
+    var filter = value1.value.toUpperCase();
+    var ul = document.getElementById(value2);
     var li = ul.getElementsByTagName("li")
 
     for (i = 0; i < li.length; i++) {
