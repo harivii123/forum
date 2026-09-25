@@ -1,5 +1,5 @@
 {{ define "post" }}
-    {{ range .Posts }}
+    {{ range $post := .Posts }}
     <div class="post-frame">
         {{ template "post-borders" . }}
         <div class="pf-content">
@@ -24,24 +24,24 @@
             <h3>{{ .Title }}</h3>
             <p>{{ truncate .Body 40 }}</p>
             <div>
-                <div>
-                    {{ template "thumb-up" }}
-                    <p>{{ len .PostLikers }}</p>
-                </div>
-                <div>
-                    {{ template "thumb-down" }}
-                    <p>{{ len .PostDislikers }}</p>
-                </div>
+                <form method="POST" action="/posts/{{ $post.ID }}/vote">
+                    <button name="vote" value="1">{{ template "thumb-up" }} {{ len .PostLikers }}</button>
+                    <button name="vote" value="-1">{{ template "thumb-down" }}{{ len .PostDislikers }}</button>
+                </form>
                 <div>
                     {{ template "comment" }}
                     <p>{{ len .Comments }}</p>
                 </div>
             </div>
         </div>
-    
-        {{ range .Comments }}
-            <p>{{ .Commenter.Username }}: {{ .Body }}</p>
-            <p>{{ len .CommentLikers }} / {{ len .CommentDislikers }}</p>
+
+        {{ range $comment := $post.Comments }}
+           <p>{{ $comment.Commenter.Username }}: {{ $comment.Body }}</p>
+
+           <form method="POST" action="/comments/{{ $comment.ID }}/vote">
+                <button name="vote" value="1">Like {{ len $comment.CommentLikers }}</button>
+                <button name="vote" value="-1">Dislike {{ len $comment.CommentDislikers }}</button>
+           </form>
         {{ end }}
         </div>
     </div>

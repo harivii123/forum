@@ -5,6 +5,7 @@ import (
 	"errors"
 	"forum/internal/models"
 	"forum/internal/service"
+	"log"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -152,10 +153,15 @@ func (h *Holder) LoadProfilePage(w http.ResponseWriter, r *http.Request) {
 
 func (h *Holder) AddComment(w http.ResponseWriter, r *http.Request) {
 	//get the post_id from request
-	postID, err := strconv.Atoi(r.FormValue("ID"))
+	pa := r.PathValue("ID")
+	log.Println(pa)
+	postID, err := strconv.Atoi(pa)
+	log.Println(postID)
 	if err != nil {
+		log.Println("here")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
+	log.Println("here1")
 	//get comment value from request
 	newComment := models.Comment{
 		Post_id: postID,
@@ -163,6 +169,10 @@ func (h *Holder) AddComment(w http.ResponseWriter, r *http.Request) {
 	}
 	//get user data from request cookies
 	cookie, err := r.Cookie("session_token")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+	log.Println(cookie.Value, "cookie")
 	//service.CreateComment returns error and appropriate httpstatus
 	err, httpStatus := service.CreateComment(newComment, cookie, h.db)
 	if err != nil {

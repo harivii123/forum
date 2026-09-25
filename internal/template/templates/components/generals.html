@@ -4,6 +4,7 @@
              {{ template "logo" . }}
              {{ template "search-bar" . }}
          </div>
+         {{ template "login"}}
          <div class="{{ if .LoggedIn }}visible{{ else }}hidden{{ end }}">
              {{ template "profile-pic" .Profile }}
          </div>
