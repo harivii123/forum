@@ -1,5 +1,5 @@
 {{ define "post" }}
-    {{ range $post := .FrontPage.Posts }}
+    {{ range $post := .Posts }}
         <h3>{{ .Title }}</h3>
         <img src="{{ .Poster.ProfilePicture }}" alt="{{ .Poster.Username }}" style="width: 25px;">
         <h4>{{ .Poster.Username }}</h4>
@@ -17,5 +17,7 @@
                 <button name="vote" value="-1">Dislike {{ len $comment.CommentDislikers }}</button>
            </form>
         {{ end }}
+        </div>
+    </div>
     {{ end }}
 {{ end }}
