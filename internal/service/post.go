@@ -1,24 +1,21 @@
 package service
 
 import (
+	"context"
 	"database/sql"
+	"errors"
 	"forum/internal/database"
 	"forum/internal/models"
+	"net/http"
 	"strconv"
 	"strings"
+	"time"
 )
 
 // takes value from main search bar and finds all matches using fts(fast text search)
-func MainSearch(mainSearchValue string, db *sql.DB) ([]models.PostView, error) {
-	//if "" nothing happens
-	if mainSearchValue == "" {
-		// log.Println(4)
-		return nil, nil
-	}
-
+func FilterPosts(filters string, args []any, ctx context.Context, db *sql.DB) ([]models.PostView, error) {
 	tx, err := db.Begin()
 	if err != nil {
-		// log.Println(5)
 		return nil, err
 	}
 	defer tx.Rollback()
@@ -26,14 +23,12 @@ func MainSearch(mainSearchValue string, db *sql.DB) ([]models.PostView, error) {
 	var matches []database.PostSearch
 	var result []models.PostView
 
-	matches, err = database.FindAMatch(tx, mainSearchValue)
+	matches, err = database.FilterPosts(filters, ctx, tx, args...)
 	if err != nil {
-		// log.Println(6)
 		return nil, err
 	}
 	err = tx.Commit()
 	if err != nil {
-		// log.Println(7)
 		return nil, err
 	}
 
@@ -52,7 +47,6 @@ func MainSearch(mainSearchValue string, db *sql.DB) ([]models.PostView, error) {
 		result = append(result, post)
 	}
 
-	// log.Println(match, "here")
 	return result, err
 }
 
@@ -117,15 +111,50 @@ func commentLikeSplitter(parts string, matchID int) []models.UserView {
 	return allLikes
 }
 
-func postCats(match string) []models.PostCategory {
+func postCats(match string) []models.CategoryView {
 	if match == "" {
 		return nil
 	}
-	var categories []models.PostCategory
-	splittedCat := strings.Split(match, "\x1f")
-	for _, category := range splittedCat {
-		cat := models.PostCategory(category)
-		categories = append(categories, cat)
+	var categories []models.CategoryView
+	splittedCat := strings.Split(match, "\x1e")
+	for _, catString := range splittedCat {
+		var category models.CategoryView
+		catAndType := strings.SplitN(catString, "\x1f", 3)
+		id, _ := strconv.Atoi(catAndType[0])
+		category.ID = id
+		category.Category = catAndType[1]
+		category.Type = catAndType[2]
+		categories = append(categories, category)
 	}
 	return categories
+}
+
+func CreatePost(cookie *http.Cookie, newPost models.Post, db *sql.DB) (error, int) {
+
+	if newPost.Body == "" || newPost.Title == "" {
+		return errors.New("Empty post"), http.StatusBadRequest // do nothing
+	}
+
+	tx, err := db.Begin()
+	if err != nil {
+		return err, http.StatusInternalServerError
+	}
+	defer tx.Rollback()
+
+	userID, err := database.GetUserIDWithToken(tx, cookie.Value)
+	if err != nil {
+		return err, http.StatusInternalServerError
+	}
+	newPost.UserID, newPost.Created = userID, time.Now()
+
+	err = database.CreatePost(tx, newPost)
+	if err != nil {
+		return err, http.StatusInternalServerError
+	}
+	err = tx.Commit()
+	if err != nil {
+		return err, http.StatusInternalServerError
+	}
+
+	return nil, http.StatusSeeOther
 }
