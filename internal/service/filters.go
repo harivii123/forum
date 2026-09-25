@@ -29,10 +29,10 @@ func Categories(ids []int) (param string, arg []any) {
 func Order(order string) string {
 	switch order {
 	case "Oldest":
-		return "ORDER BY p.created ASC"
+		return "ORDER BY p.created_at ASC"
 	case "Liked":
 		return "ORDER BY (SELECT COUNT(*) FROM post_vote WHERE post_id = p.id AND vote = 1) DESC"
 	default:
-		return "ORDER BY p.created DESC"
+		return "ORDER BY p.created_at DESC"
 	}
 }

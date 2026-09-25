@@ -4,23 +4,17 @@
                 {{ template "search-icon" }}
             </button>
             
-            <input class="input-h w-full pr-(--px24) pl-[50px] py-(--px8) sharp-borders flex flex-row" type="text" name="search" placeholder="Search.." />
-    </form>
-    <form method="POST" action="/post">
-            <input type="text" name="title" placeholder="your title here.." />
-            <input type="text" name="body" placeholder="your body here.." />
-            <input type="submit" placeholder="bob" />
-            
+            <input class="input-h w-full pr-(--px24) pl-[50px] py-(--px8) sharp-borders flex flex-row" type="text" name="search" placeholder="Search.." value="{{ .Filters.Search }}"/>
     </form>
 {{ end }}
 
 {{ define "side-filters" }}
 <aside class="pl-(--px24) md:pl-(--px64) sm:pl-(--px32)">
-    <fieldset class="gap-(--px8) flex flex-col">
+    <fieldset class="gap-(--px8) flex flex-col {{ if .LoggedIn }}visible{{ else }}hidden{{ end }}">
         <legend>You</legend>
         {{ template "you"  . }}
     </fieldset>
-    <div class="divider"></div>
+    <div class="divider {{ if .LoggedIn }}visible{{ else }}hidden{{ end }}"></div>
     <fieldset class="gap-(--px8) flex flex-col">
         <legend>Authors</legend>
         {{ template "authors" . }}
@@ -40,19 +34,18 @@
 {{ end }}
 
 {{ define "you" }}
-<!-- class="{{ if .Profile.ID }}visible{{ else }}hidden{{ end }}" -->
 <ul class="gap-(--px8) flex flex-col">
     <li>
         <label>
             <span>Posts</span>
-            <input type="checkbox"  id="posts" name="posts" form="filters" value="Posts"/>
+            <input type="checkbox"  id="posts" name="posts" form="filters" value="Posts" {{ if .Filters.Posts }}checked{{ end }} />
             {{ template "checkbox" }}
         </label>
     </li>
     <li>
         <label>
             <span>Likes</span>
-            <input type="checkbox"  id="likes" name="likes" form="filters" value="Likes"/>
+            <input type="checkbox"  id="likes" name="likes" form="filters" value="Likes" {{ if .Filters.Likes }}checked{{ end }}/>
             {{ template "checkbox" }}
         </label>
     </li>
@@ -64,21 +57,21 @@
     <li>
         <label>
             <span>Newest first</span>
-            <input type="radio"  name="order" form="filters" value="Newest" checked/>
+            <input type="radio"  name="order" form="filters" value="Newest" {{ if or (eq .Filters.Order "Newest") (eq .Filters.Order "") }}checked{{ end }}/>
             {{ template "checkbox" }}
         </label>
     </li>
     <li>
         <label>
             <span>Oldest first</span>
-            <input type="radio" name="order" form="filters" value="Oldest"/>
+            <input type="radio" name="order" form="filters" value="Oldest" {{ if eq .Filters.Order "Oldest" }}checked{{ end }} />
             {{ template "checkbox" }}
         </label>
     </li>
     <li>
         <label>
             <span>Most liked</span>
-            <input type="radio" name="order" form="filters" value="Liked"/>
+            <input type="radio" name="order" form="filters" value="Liked" {{ if eq .Filters.Order "Liked" }}checked{{ end }} />
             {{ template "checkbox" }}
         </label>
     </li>
@@ -94,7 +87,7 @@
 <li class="sharp-borders" data-name="{{ .Category }}">
     <label>
         <span>{{ .Category }}</span> 
-        <input type="checkbox" id="category-{{ .ID }}" name="category" form="filters" value="{{ .ID }}"/>
+        <input type="checkbox" id="category-{{ .ID }}" name="category" form="filters" value="{{ .ID }}"  {{if index $.Filters.Categories .ID }}checked{{ end }} />
         {{ template "checkbox" }}
     </label>
 </li>
@@ -114,7 +107,7 @@
     <li class="sharp-borders" data-name="{{ .Category }}">
         <label>
             <span>{{ .Category }}</span>
-            <input type="checkbox" id="category-{{ .ID }}" name="category" form="filters" value="{{ .ID }}" />
+            <input type="checkbox" id="category-{{ .ID }}" name="category" form="filters" value="{{ .ID }}" {{ if index $.Filters.Categories .ID }}checked{{ end }} />
             {{ template "checkbox" }}
         </label>
     </li>

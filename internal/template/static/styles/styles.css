@@ -119,6 +119,7 @@ body {
         flex-direction: column;
         flex: 1;
         justify-items: center;
+        min-height: 100vh;
         /* sm:p-(--px32) md:p-(--px64) */
     }
     /* li {
@@ -178,6 +179,7 @@ body {
         max-height: calc(100vh - 120px);
         overflow-y: auto;
         backdrop-filter: blur(12px);
+        min-width: max-content;
     }
 
     label {
@@ -196,6 +198,18 @@ body {
 
     label:has(input:checked) {
         outline: 2px solid var(--peach);
+    }
+
+    ul {
+        max-height: 150px;
+        overflow-y: scroll;
+        display: flex;
+        flex-direction: column;
+        gap: var(--px8);
+        min-width: max-content;
+        justify-content: space-between;
+        padding: var(--px4);
+        mask-image: linear-gradient(to bottom, transparent, black 5%, black 95%, transparent);
     }
 }
 
@@ -221,7 +235,7 @@ li:has(input:checked) .icon-unchecked { display: none; }
 }
 
 .divider {
-    height: 2px;
+    padding: 1px;
     background: var(--peach-30);
     margin-left: 14px;
     margin-right: 14px;
@@ -265,19 +279,6 @@ button {
 
 .scale-h:hover {
     scale: 0.99;
-}
-
-
-.filter-list {
-    height: 150px;
-    overflow-y: scroll;
-    display: flex;
-    flex-direction: column;
-    gap: var(--px8);
-    min-width: max-content;
-    justify-content: space-between;
-    padding: var(--px4);
-    mask-image: linear-gradient(to bottom, transparent, black 5%, black 95%, transparent);
 }
 
 .filter-list::-webkit-scrollbar {
