@@ -40,6 +40,7 @@ func (h *Holder) VoteOnPost(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "server error", http.StatusInternalServerError)
 		return
 	}
+	query := r.FormValue("redirect")
 
-	http.Redirect(w, r, "/", http.StatusSeeOther)
+	http.Redirect(w, r, "/?"+query, http.StatusSeeOther)
 }

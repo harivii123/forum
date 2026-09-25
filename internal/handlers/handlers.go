@@ -100,6 +100,7 @@ func (h *Holder) LoadFrontPage(w http.ResponseWriter, r *http.Request) {
 	var categories []models.CategoryView
 
 	categories, err = service.GetCategories(ctx, h.db)
+	query := r.URL.RawQuery
 
 	frontPage := h.engine.Render("index.html", map[string]any{
 		"Posts":      posts,
@@ -108,6 +109,7 @@ func (h *Holder) LoadFrontPage(w http.ResponseWriter, r *http.Request) {
 		"User":       user,
 		"LoggedIn":   loggedIn,
 		"Filters":    f,
+		"Query":      query,
 	})
 	w.WriteHeader(http.StatusOK)
 	w.Write(frontPage)

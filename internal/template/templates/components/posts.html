@@ -24,6 +24,11 @@
             <h3>{{ .Title }}</h3>
             <p>{{ truncate .Body 40 }}</p>
             <div>
+                <form method="POST" action="/posts/{{ $post.ID }}/vote">
+                    <button name="vote" value="1">{{ template "thumb-up" }}{{ len .PostLikers }}</button>
+                    <button name="vote" value="-1">{{ template "thumb-down" }}{{ len .PostDislikers }}</button>
+                    <input type="hidden" name="redirect" value="{{ $.Query }}" />
+                </form>
                 <div>
                     {{ template "thumb-up" }}
                     <p>{{ len .PostLikers }}</p>
@@ -38,10 +43,22 @@
                 </div>
             </div>
         </div>
+<<<<<<< HEAD
         
         {{ range .Comments }}
             <p>{{ .Commenter.Username }}: {{ .Body }}</p>
             <p>{{ len .CommentLikers }} / {{ len .CommentDislikers }}</p>
+=======
+
+        {{ range $comment := $post.Comments }}
+           <p>{{ $comment.Commenter.Username }}: {{ $comment.Body }}</p>
+
+           <form method="POST" action="/comments/{{ $comment.ID }}/vote">
+                <button name="vote" value="1">{{ template "thumb-up" }}{{ len $comment.CommentLikers }}</button>
+                <button name="vote" value="-1">{{ template "thumb-down" }}{{ len $comment.CommentDislikers }}</button>
+                <input type="hidden" name="redirect" value="{{ $.Query }}" />
+           </form>
+>>>>>>> d1de718 (Redirectwith filters when vote)
         {{ end }}
         </div>
     </div>
