@@ -1,47 +1,21 @@
 {{ define "post" }}
-    {{ range .FrontPage.Posts }}
-    <div class="post-frame">
-        {{ template "post-borders" . }}
-        <div class="pf-content">
-        <div>
-            {{ template "profile-pic" .Poster }}
-            <div>
-                <h4>{{ .Poster.Username }}</h4>
-                <p>{{ elapsed .Created }}</p>
-            </div>
-            <div>
-                {{ range .Categories }}
-                    <span>
-                        {{ . }}
-                    </span>
-                {{ end }}
-            </div>
-        </div>
-        <div>
-            {{ .Image }}
-        </div>
-        <div>
-            <h3>{{ .Title }}</h3>
-            <p>{{ truncate .Body 40 }}</p>
-            <div>
-                <div>
-                    {{ template "thumb-up" }}
-                    <p>{{ len .PostLikers }}</p>
-                </div>
-                <div>
-                    {{ template "thumb-down" }}
-                    <p>{{ len .PostDislikers }}</p>
-                </div>
-                <div>
-                    {{ template "comment" .ID }}
-                    <p>{{ len .Comments }}</p>
-                </div>
-            </div>
-        </div>
-        
-        {{ range .Comments }}
-            <p>{{ .Commenter.Username }}: {{ .Body }}</p>
-            <p>{{ len .CommentLikers }} / {{ len .CommentDislikers }}</p>
+    {{ range $post := .Posts }}
+        <h3>{{ .Title }}</h3>
+        <img src="{{ .Poster.ProfilePicture }}" alt="{{ .Poster.Username }}" style="width: 25px;">
+        <h4>{{ .Poster.Username }}</h4>
+        <p>{{ elapsed .Created }}</p>
+        <p>{{ truncate .Body 20 }}</p>
+        <form method="POST" action="/posts/{{ $post.ID }}/vote">
+            <button name="vote" value="1">Like {{ len .PostLikers }}</button>
+            <button name="vote" value="-1">Dislike {{ len .PostDislikers }}</button>
+        </form>
+        {{ range $comment := $post.Comments }}
+           <p>{{ $comment.Commenter.Username }}: {{ $comment.Body }}</p>
+
+           <form method="POST" action="/comments/{{ $comment.ID }}/vote">
+                <button name="vote" value="1">Like {{ len $comment.CommentLikers }}</button>
+                <button name="vote" value="-1">Dislike {{ len $comment.CommentDislikers }}</button>
+           </form>
         {{ end }}
         </div>
     </div>
