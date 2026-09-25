@@ -1,10 +1,14 @@
 {{ define "header" }}
-    <header class="top-0 z-10 gap-(--px16) items-center flex flex-row justify-between py-(--px8) px-(--px24) sm:px-(--px32) md:px-(--px64)">
+    <header class="top-0 z-10 gap-(--px16) items-center flex flex-row justify-between py-(--px8) px-(--px24)">
          <div class="w-full items-center flex flex-row gap-(--px8)">
              {{ template "logo" . }}
              {{ template "search-bar" . }}
          </div>
-         {{ template "login"}}
+         <div class="flex flex-row {{ if not .LoggedIn }}visible{{ else }}hidden{{ end }}">
+            <button>Register</button>
+            <button class="secondary-btn" popovertarget="login">Login</button>
+             {{ template "login" . }}
+         </div>
          <div class="{{ if .LoggedIn }}visible{{ else }}hidden{{ end }}">
              {{ template "profile-pic" .Profile }}
          </div>
