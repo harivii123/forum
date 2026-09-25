@@ -25,8 +25,9 @@
             <p>{{ truncate .Body 40 }}</p>
             <div>
                 <form method="POST" action="/posts/{{ $post.ID }}/vote">
-                    <button name="vote" value="1">{{ template "thumb-up" }} {{ len .PostLikers }}</button>
+                    <button name="vote" value="1">{{ template "thumb-up" }}{{ len .PostLikers }}</button>
                     <button name="vote" value="-1">{{ template "thumb-down" }}{{ len .PostDislikers }}</button>
+                    <input type="hidden" name="redirect" value="{{ $.Query }}" />
                 </form>
                 <div>
                     {{ template "comment" }}
@@ -39,8 +40,9 @@
            <p>{{ $comment.Commenter.Username }}: {{ $comment.Body }}</p>
 
            <form method="POST" action="/comments/{{ $comment.ID }}/vote">
-                <button name="vote" value="1">Like {{ len $comment.CommentLikers }}</button>
-                <button name="vote" value="-1">Dislike {{ len $comment.CommentDislikers }}</button>
+                <button name="vote" value="1">{{ template "thumb-up" }}{{ len $comment.CommentLikers }}</button>
+                <button name="vote" value="-1">{{ template "thumb-down" }}{{ len $comment.CommentDislikers }}</button>
+                <input type="hidden" name="redirect" value="{{ $.Query }}" />
            </form>
         {{ end }}
         </div>
