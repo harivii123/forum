@@ -1,15 +1,16 @@
 {{ define "search-bar" }}
     <form id="filters" class="relative w-full max-w-[300px] flex flex-row justify-center"  method="GET" action="/">
-            <button class="search-icon" type="submit">
-                {{ template "search-icon" }}
+            <button class="hidden" type="submit">
             </button>
+            <div class="search-icon">{{ template "search-icon" }}</div>
             
-            <input class="input-h w-full pr-(--px24) pl-[50px] py-(--px8) sharp-borders flex flex-row" type="text" name="search" placeholder="Search.." value="{{ .Filters.Search }}"/>
+            <input class="input-h w-full pr-(--px24) pl-[46px] py-(--px4) sharp-borders flex flex-row" type="text" name="search" placeholder="Search.." value="{{ .Filters.Search }}"/>
     </form>
 {{ end }}
 
 {{ define "side-filters" }}
-<aside class="pl-(--px24) md:pl-(--px64) sm:pl-(--px32)">
+<aside>
+    <div class="col">
     <fieldset class="gap-(--px8) flex flex-col {{ if .LoggedIn }}visible{{ else }}hidden{{ end }}">
         <legend>You</legend>
         {{ template "you"  . }}
@@ -29,7 +30,9 @@
         <legend>Sort by</legend>
         {{ template "order-by"  . }}
     </fieldset>
-
+    </div>
+    <div class="divider"></div>
+    <button class="main-btn" type="submit" form="filters">Search</button>
 </aside>
 {{ end }}
 
