@@ -94,7 +94,7 @@ func (h *Holder) LoadFrontPage(w http.ResponseWriter, r *http.Request) {
 	profile.Username = user.Username
 	profile.ProfilePicture = ""
 
-	filters, args := filtersFromQuery(r.URL.Query())
+	filters, args := filtersFromQuery(r.URL.Query(), user.ID, loggedIn)
 	ctx := r.Context()
 
 	posts, err := service.FilterPosts(filters, args, ctx, h.db)
@@ -171,18 +171,51 @@ func (h *Holder) AddComment(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func filtersFromQuery(q url.Values) (string, []any) {
-	if len(q) == 0 {
-		return "", nil
-	}
-	filters := strings.Builder{}
+func filtersFromQuery(q url.Values, userID int, loggedIn bool) (string, []any) {
+	filters := []string{}
 	args := []any{}
 
 	if search := q.Get("search"); search != "" {
 		param, arg := service.Search(search)
-		filters.WriteString(param)
+		filters = append(filters, param)
 		args = append(args, arg)
 	}
 
-	return filters.String(), args
+	if posts := q.Get("posts"); posts == "Posts" && loggedIn {
+		param, arg := service.Posts(userID)
+		filters = append(filters, param)
+		args = append(args, arg)
+	}
+
+	if likes := q.Get("likes"); likes == "Likes" && loggedIn {
+		param, arg := service.Likes(userID)
+		filters = append(filters, param)
+		args = append(args, arg)
+	}
+
+	var ids []int
+	for _, id := range q["category"] {
+		if id, err := strconv.Atoi(id); err == nil {
+			ids = append(ids, id)
+		}
+	}
+	if len(ids) > 0 {
+		param, arg := service.Categories(ids)
+		filters = append(filters, param)
+		args = append(args, arg...)
+	}
+	var result string
+	if len(filters) > 0 {
+		result = " WHERE " + strings.Join(filters, " AND ")
+	}
+
+	if order := q.Get("order"); order != "" {
+		param := service.Order(order)
+		result += " GROUP BY p.id "
+		result += param + ";"
+	} else {
+		result += " GROUP BY p.id;"
+	}
+
+	return result, args
 }

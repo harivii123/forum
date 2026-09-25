@@ -23,7 +23,7 @@ func FilterPosts(filters string, args []any, ctx context.Context, db *sql.DB) ([
 	var matches []database.PostSearch
 	var result []models.PostView
 
-	matches, err = database.FilterPosts(filters+" GROUP BY p.id;", ctx, tx, args...)
+	matches, err = database.FilterPosts(filters, ctx, tx, args...)
 	if err != nil {
 		return nil, err
 	}
