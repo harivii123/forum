@@ -4,8 +4,9 @@
              {{ template "logo" . }}
              {{ template "search-bar" . }}
          </div>
-
-        {{ template "profile-pic" .Profile }}
+         <div class="{{ if .LoggedIn }}visible{{ else }}hidden{{ end }}">
+             {{ template "profile-pic" .Profile }}
+         </div>
     </header>
 {{ end }}
 

@@ -84,6 +84,8 @@ func (h *Holder) LoadRegistryPage(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Holder) LoadFrontPage(w http.ResponseWriter, r *http.Request) {
+	var f models.Filters
+	f.PageFilters(r.URL.Query())
 	user, loggedIn, err := h.GetCurrentUser(w, r)
 	if err != nil {
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
@@ -113,6 +115,7 @@ func (h *Holder) LoadFrontPage(w http.ResponseWriter, r *http.Request) {
 		"Categories": categories,
 		"User":       user,
 		"LoggedIn":   loggedIn,
+		"Filters":    f,
 	})
 	w.WriteHeader(http.StatusOK)
 	w.Write(frontPage)
@@ -214,7 +217,7 @@ func filtersFromQuery(q url.Values, userID int, loggedIn bool) (string, []any) {
 		result += " GROUP BY p.id "
 		result += param + ";"
 	} else {
-		result += " GROUP BY p.id;"
+		result += " GROUP BY p.id ORDER BY p.created_at DESC;"
 	}
 
 	return result, args
