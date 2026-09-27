@@ -6,7 +6,6 @@ import (
 	"forum/internal/database"
 	"forum/internal/handlers"
 	"forum/internal/template"
-	"io/fs"
 	"log"
 	"net/http"
 
@@ -40,28 +39,17 @@ func main() {
 		}
 		log.Println("Example data seeded")
 	}
-	//log.Printf("Tables:%s", tables)
 
 	templateEngine := template.NewEngine("")
 	templateEngine.ParseTemplates()
 
 	holder := handlers.NewHolder(db, templateEngine)
 
-	mux := http.NewServeMux()
-	sub, _ := fs.Sub(template.Statics, "static")
-	mux.Handle("GET /static/", http.StripPrefix("/static/", http.FileServer(http.FS(sub))))
-	mux.HandleFunc("/{$}", holder.LoadFrontPage)
-	mux.HandleFunc("POST /post", holder.CreatePost)
-	mux.HandleFunc("/login", holder.LoadRegistryPage)
-	mux.HandleFunc("/profile", holder.LoadProfilePage)
-	mux.HandleFunc("POST /posts/{id}/vote", holder.VoteOnPost)
-	mux.HandleFunc("POST /{ID}/comment", holder.AddComment)
-
-	//handlefunc yada yada
+	router := handlers.Router(holder)
 
 	server := &http.Server{
 		Addr:    port,
-		Handler: mux,
+		Handler: router,
 		//Read timeout?
 		// Write timeout?
 	}

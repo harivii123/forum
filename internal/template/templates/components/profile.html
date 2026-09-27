@@ -1,6 +1,6 @@
 {{ define "profile-pic" }}
     <div class="avatar">
-        <img class="profile-pic" src="{{ .ProfilePicture }}" alt="{{ .Username }}">
+        <img class="profile-pic" src="{{ if .ProfilePicture }}{{ .ProfilePicture }}{{ else }}/static/avatars/default-avatar.png{{ end }}" alt="{{ .Username }}">
         {{ template "avatar-borders" . }}
     </div>
 {{ end }}

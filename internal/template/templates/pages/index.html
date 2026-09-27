@@ -6,15 +6,17 @@
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<link rel="stylesheet" href="/static/styles/styles.css">
+	<script src="/static/js/simple-search.js" defer></script>
 	<title>Lioooooon rawr</title>
 </head>
 
-<body>
+<body class="flex flex-row">
 	{{ template "video-background" . }}
 	{{ template "header" . }}
-    <p>bob</p>
-    {{ template "login"}}
-	<section class="p-(--px24) sm:p-(--px32) md:p-(--px64)">
+    <!-- <p>bob</p> -->
+	{{ template "side-filters" . }}
+	<section>
+		{{ template "create-post" . }}
 		{{ template "post" . }}
 	</section>
 	<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>

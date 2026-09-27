@@ -7,7 +7,9 @@ import (
 	"forum/internal/service"
 	"log"
 	"net/http"
+	"net/url"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -83,25 +85,40 @@ func (h *Holder) LoadRegistryPage(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Holder) LoadFrontPage(w http.ResponseWriter, r *http.Request) {
+	var f models.Filters
+	f.PageFilters(r.URL.Query())
 	user, loggedIn, err := h.GetCurrentUser(w, r)
 	if err != nil {
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
+	var profile models.UserView
+	profile.ID = user.ID
+	profile.Username = user.Username
+	profile.ProfilePicture = ""
 
-	page := &models.FrontPage{}
-	mainSearchValue := r.URL.Query().Get("search")
-	log.Println(mainSearchValue)
-	posts, err := service.MainSearch(mainSearchValue, h.db)
+	filters, args := filtersFromQuery(r.URL.Query(), user.ID, loggedIn)
+	ctx := r.Context()
+
+	posts, err := service.FilterPosts(filters, args, ctx, h.db)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	page.Posts = posts
+
+	var categories []models.CategoryView
+
+	categories, err = service.GetCategories(ctx, h.db)
+	query := r.URL.RawQuery
+
 	frontPage := h.engine.Render("index.html", map[string]any{
-		"FrontPage": page,
-		"User":      user,
-		"LoggedIn":  loggedIn,
+		"Posts":      posts,
+		"Profile":    profile,
+		"Categories": categories,
+		"User":       user,
+		"LoggedIn":   loggedIn,
+		"Filters":    f,
+		"Query":      query,
 	})
 	w.WriteHeader(http.StatusOK)
 	w.Write(frontPage)
@@ -138,7 +155,7 @@ func (h *Holder) LoadProfilePage(w http.ResponseWriter, r *http.Request) {
 
 func (h *Holder) AddComment(w http.ResponseWriter, r *http.Request) {
 	//get the post_id from request
-	pa :=r.PathValue("ID")
+	pa := r.PathValue("ID")
 	log.Println(pa)
 	postID, err := strconv.Atoi(pa)
 	log.Println(postID)
@@ -167,4 +184,53 @@ func (h *Holder) AddComment(w http.ResponseWriter, r *http.Request) {
 	//redirect back to homepage if everything went well
 	http.Redirect(w, r, "/", httpStatus)
 	return
+}
+
+func filtersFromQuery(q url.Values, userID int, loggedIn bool) (string, []any) {
+	filters := []string{}
+	args := []any{}
+
+	if search := q.Get("search"); search != "" {
+		param, arg := service.Search(search)
+		filters = append(filters, param)
+		args = append(args, arg)
+	}
+
+	if posts := q.Get("posts"); posts == "Posts" && loggedIn {
+		param, arg := service.Posts(userID)
+		filters = append(filters, param)
+		args = append(args, arg)
+	}
+
+	if likes := q.Get("likes"); likes == "Likes" && loggedIn {
+		param, arg := service.Likes(userID)
+		filters = append(filters, param)
+		args = append(args, arg)
+	}
+
+	var ids []int
+	for _, id := range q["category"] {
+		if id, err := strconv.Atoi(id); err == nil {
+			ids = append(ids, id)
+		}
+	}
+	if len(ids) > 0 {
+		param, arg := service.Categories(ids)
+		filters = append(filters, param)
+		args = append(args, arg...)
+	}
+	var result string
+	if len(filters) > 0 {
+		result = " WHERE " + strings.Join(filters, " AND ")
+	}
+
+	if order := q.Get("order"); order != "" {
+		param := service.Order(order)
+		result += " GROUP BY p.id "
+		result += param + ";"
+	} else {
+		result += " GROUP BY p.id ORDER BY p.created_at DESC;"
+	}
+
+	return result, args
 }

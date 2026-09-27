@@ -39,16 +39,20 @@
     --font-family: "Fragment Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", "Liberation Mono", "Courier New", monospace, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     --blue: #395782;
     --blue-60: rgba(57, 87, 130, 0.6);
+    --blue-dark-40: rgba(8, 19, 32, 0.4);
     --blue-light: rgba(154, 186, 232, 1);
     --blue-light-20: rgba(154, 186, 232, 0.2);
     --blue--light-15: rgba(154, 186, 232, 0.15);
     --peach: rgba(255, 198, 144, 1);
     --peach-80: rgba(255, 198, 144, 0.8);
+    --peach-50: rgba(255, 198, 144, 0.5);
     --peach-30: rgba(253, 207, 164, 0.3);
     --peach-tr: rgba(255, 198, 144, 0);
 
     --px4: 0.25rem;
     --px8: 0.5rem;
+    --px12: 0.75rem;
+    --px14: 0.875rem;
     --px16: 1rem;
     --px24: 1.5rem;
     --px32: 2rem;
@@ -102,6 +106,202 @@ body {
 
 }
 
+@layer base {
+    header {
+        backdrop-filter: blur(12px);
+        position: fixed;
+        width: 100%;
+    }
+
+    section {
+        padding: var(--px24);
+        padding-top: 114px;
+        gap: 84px;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        justify-items: center;
+        min-height: 100vh;
+        padding-bottom: 114px;
+        /* sm:p-(--px32) md:p-(--px64) */
+    }
+    /* li {
+        display: flex;
+        flex-direction: row;
+        padding: 0.2rem 1rem;
+        gap: var(--px8);
+        justify-content: space-between;
+        background: var(--blue-light-20);
+        corner-shape: bevel;
+        border-radius: 50px;
+        outline: 2px solid var(--peach-tr);
+    } */
+    legend {
+        padding-left: 14px;
+        padding-right: 14px;
+        padding-top: 0;
+        padding-bottom: 16px;
+        line-height: 16px;
+    }
+
+    input[type="checkbox"] { appearance: none; }
+    input[type="radio"] { appearance: none; }
+
+    input[type="text"] {
+        width: 100%;
+        padding-right: var(--px24);
+        padding-left: var(--px24);
+        padding-top: var(--px8);
+        padding-bottom: var(--px8);
+        background: var(--blue-light-20);
+        corner-shape: bevel;
+        border-radius: 50px;
+        outline: 2px solid var(--peach-tr);
+        display: flex;
+        flex-direction: row;
+    }
+
+    input[type="text"]:hover {
+        background: var(--blue--light-15);
+        transition: all .1s ease-in-out;
+    }
+    input[type="text"]:focus-visible {
+        outline: 2px solid var(--peach);
+    }
+
+    aside {
+        width: fit-content;
+        display: flex;
+        flex-direction: column;
+        gap: var(--px16);
+        padding: var(--px16);
+        position: sticky;
+        top: 66px;
+        align-self: flex-start;
+        z-index: 10;
+        max-height: calc(100vh - 66px);
+        backdrop-filter: blur(12px);
+        min-width: max-content;
+    }
+
+    label {
+        font-size: var(--px14);
+        display: flex;
+        flex-direction: row;
+        padding: 0.2rem 1rem;
+        gap: var(--px8);
+        justify-content: space-between;
+        background: var(--blue-light-20);
+        corner-shape: bevel;
+        border-radius: 50px;
+        outline: 2px solid var(--peach-tr);
+        cursor: pointer;
+    }
+    label:hover {
+        background: rgba(154, 186, 232, 0.3);
+    }
+
+    label:has(input:checked) {
+        outline: 2px solid var(--peach);
+    }
+
+    ul {
+        max-height: 150px;
+        overflow-y: scroll;
+        display: flex;
+        flex-direction: column;
+        gap: var(--px8);
+        min-width: max-content;
+        justify-content: space-between;
+        padding: var(--px4);
+        mask-image: linear-gradient(to bottom, transparent, black 5%, black 95%, transparent);
+    }
+
+}
+
+.col {
+    width: fit-content;
+    display: flex;
+    flex-direction: column;
+    gap: var(--px16);
+    align-self: flex-start;
+    overflow-y: auto;
+    min-width: max-content;
+    height: 100%;
+}
+
+button {
+    display: flex;
+    flex-direction: row;
+    padding: 0.2rem 1rem;
+    gap: var(--px8);
+    justify-content: space-between;
+    outline: 2px solid var(--peach-tr);
+    cursor: pointer;
+    color: var(--peach);
+}
+
+button:hover {
+    color: var(--blue-light);
+}
+
+.secondary-btn {
+    color: var(--peach-50);
+}
+
+.main-btn {
+    font-size: var(--px14);
+    display: flex;
+    flex-direction: row;
+    padding: 0.2rem 1rem;
+    gap: var(--px8);
+    justify-content: center;
+    background: var(--blue-dark-40);
+    corner-shape: bevel;
+    border-radius: 50px;
+    outline: 2px solid var(--peach-tr);
+    cursor: pointer;
+    color: var(--peach);
+}
+
+.main-btn:hover {
+    background: var(--blue-dark-40);
+    color: var(--peach);
+    outline: 2px solid var(--peach);
+}
+
+.icon-checked { display: none; }
+li:has(input:checked) .icon-checked { display: inline; }
+li:has(input:checked) .icon-unchecked { display: none; }
+
+.search-icon {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    translate: 100% -50%;
+}
+
+.search-icon-small {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    translate: 120% -50%;
+    svg {
+        width: 15px;
+    }
+}
+
+.divider {
+    padding: 1px;
+    background: var(--peach-30);
+    margin-left: 14px;
+    margin-right: 14px;
+}
+
+.test {
+    padding-left: 50px;
+}
+
 .avatar-borders{
     display: block;
     z-index: 1;
@@ -126,35 +326,24 @@ body {
     width: fit-content;
 }
 
-button {
-    font-family: var(--font-family);
-    font-style: normal;
-    font-weight: 400;
-    font-size: var(--px16);
-    line-height: 19px;
-}
+
 
 .scale-h:hover {
     scale: 0.99;
 }
 
-.input-h:hover {
-    background: var(--blue--light-15);
-    transition: all .1s ease-in-out;
-}
-
-.sharp-borders {
-    background: var(--blue-light-20);
-    corner-shape: bevel;
+.filter-list::-webkit-scrollbar {
+    width: 4px;
     border-radius: 50px;
-    outline: 2px solid var(--peach-tr);
+    overflow-y: auto;
+    background: var(--peach-30);
 }
 
-.sharp-borders:focus-visible {
-    outline: 2px solid var(--peach);
-}
-
-
+.filter-list::-webkit-scrollbar-thumb {
+    border-radius: 50px;
+    background: var(--peach);
+    overflow-y: auto;
+} 
 
 .post-frame {
     --pf-line: var(--peach);
@@ -196,3 +385,7 @@ button {
 .pf-edge--bottom-right { bottom: -1px; right: 1px; left: calc(50% + var(--pf-orn-w) / 2); border-bottom: var(--pf-w) solid var(--pf-line); }
 
 .pf-content { position: relative; padding: 4rem 2rem 2rem; }
+
+.hidden {
+    display: none;
+}
