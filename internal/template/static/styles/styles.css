@@ -389,3 +389,65 @@ li:has(input:checked) .icon-unchecked { display: none; }
 .hidden {
     display: none;
 }
+
+/* register page testing */
+
+.register-container {
+    width: min(100% - 32px, 480px);
+    margin: 100px auto 48px;
+    padding: 24px;
+    box-sizing: border-box;
+}
+
+.register-container h1 {
+    margin-bottom: 24px;
+}
+
+.register-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* Prevent global filter-label styling from affecting the form */
+.register-container label {
+    display: block;
+    padding: 0;
+    background: none;
+    outline: none;
+    border-radius: 0;
+    cursor: default;
+}
+
+.register-container label:hover {
+    background: none;
+}
+
+/* Match text, email and password fields */
+.register-container input[type="text"],
+.register-container input[type="email"],
+.register-container input[type="password"] {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    padding: var(--px8) var(--px24);
+    background: var(--blue-light-20);
+    color: var(--peach);
+    border: none;
+    corner-shape: bevel;
+    border-radius: 50px;
+    outline: 2px solid var(--peach-tr);
+}
+
+.register-container input:focus-visible {
+    outline: 2px solid var(--peach);
+}
+
+.register-container button {
+    align-self: flex-start;
+    margin-top: 8px;
+}
+
+.register-container p {
+    margin-top: 24px;
+}

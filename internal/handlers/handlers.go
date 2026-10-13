@@ -84,11 +84,18 @@ func (h *Holder) LoadFrontPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var profile models.UserView
-	profile.ID = user.ID
-	profile.Username = user.Username
-	profile.ProfilePicture = ""
+	if user != nil {
+		profile.ID = user.ID
+		profile.Username = user.Username
+		profile.ProfilePicture = ""
+	}
 
-	filters, args := filtersFromQuery(r.URL.Query(), user.ID, loggedIn)
+	var userID int
+	if user != nil {
+		userID = user.ID
+	}
+
+	filters, args := filtersFromQuery(r.URL.Query(), userID, loggedIn)
 	ctx := r.Context()
 
 	posts, err := service.FilterPosts(filters, args, ctx, h.db)
@@ -164,7 +171,7 @@ func (h *Holder) LoadProfilePage(w http.ResponseWriter, r *http.Request) {
 
 func (h *Holder) AddComment(w http.ResponseWriter, r *http.Request) {
 	//get the post_id from request
-	pa :=r.PathValue("ID")
+	pa := r.PathValue("ID")
 	log.Println(pa)
 	postID, err := strconv.Atoi(pa)
 	log.Println(postID)

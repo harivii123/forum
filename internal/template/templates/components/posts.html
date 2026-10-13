@@ -1,5 +1,5 @@
 {{ define "post" }}
-    {{ range .FrontPage.Posts }}
+    {{ range $post := .Posts }}
     <div class="post-frame">
         {{ template "post-borders" . }}
         <div class="pf-content">
@@ -30,25 +30,11 @@
                     <input type="hidden" name="redirect" value="{{ $.Query }}" />
                 </form>
                 <div>
-                    {{ template "thumb-up" }}
-                    <p>{{ len .PostLikers }}</p>
-                </div>
-                <div>
-                    {{ template "thumb-down" }}
-                    <p>{{ len .PostDislikers }}</p>
-                </div>
-                <div>
-                    {{ template "comment" .ID }}
+                    {{ template "comment" }}
                     <p>{{ len .Comments }}</p>
                 </div>
             </div>
         </div>
-<<<<<<< HEAD
-        
-        {{ range .Comments }}
-            <p>{{ .Commenter.Username }}: {{ .Body }}</p>
-            <p>{{ len .CommentLikers }} / {{ len .CommentDislikers }}</p>
-=======
 
         {{ range $comment := $post.Comments }}
            <p>{{ $comment.Commenter.Username }}: {{ $comment.Body }}</p>
@@ -58,7 +44,6 @@
                 <button name="vote" value="-1">{{ template "thumb-down" }}{{ len $comment.CommentDislikers }}</button>
                 <input type="hidden" name="redirect" value="{{ $.Query }}" />
            </form>
->>>>>>> d1de718 (Redirectwith filters when vote)
         {{ end }}
         </div>
     </div>

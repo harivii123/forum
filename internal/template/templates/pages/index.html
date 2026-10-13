@@ -17,15 +17,10 @@
     {{ if .LoggedIn }}
         <p>Welcome, {{ .User.Username }}</p>
         {{ template "logout" . }}
-    {{ else }}
-        {{ if .ShowRegister }}
-            {{ template "register" . }}
-        {{ else if .ShowLogin }}
-            {{ template "login" . }}
-        {{ else }}
-            {{ template "login" . }}
-        {{ end }}
+    {{ else if .ShowRegister }}
+        {{ template "register" . }}
     {{ end }}
+
 
     {{ template "side-filters" . }}
     
