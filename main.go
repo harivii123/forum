@@ -8,6 +8,7 @@ import (
 	"forum/internal/template"
 	"log"
 	"net/http"
+	"path/filepath"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -17,6 +18,12 @@ const port = ":8080"
 func main() {
 	seed := flag.Bool("seed", false, "fill an empty database with example data")
 	flag.Parse()
+
+	dbPath, err := filepath.Abs("./database.db")
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Println("Database path:", dbPath)
 
 	db, err := sql.Open("sqlite3", "./database.db?_foreign_keys=on")
 	if err != nil {

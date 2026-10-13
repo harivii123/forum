@@ -1,0 +1,23 @@
+{{ define "register" }}
+<div class="register-container">
+    <h1>Register</h1>
+
+<form method="POST" action="/register">
+    <label>Username</label>
+    <input type="text" name="username" required>
+
+    <label>Email</label>
+    <input type="email" name="email" required>
+
+    <label>Password</label>
+    <input type="password" name="password" required>
+
+    <button type="submit">Register</button>
+</form>
+
+<p> Already have an account?
+    <a href="/login"> Log in</a>
+</p>
+</div>
+
+{{ end }}

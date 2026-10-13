@@ -13,6 +13,20 @@ func Router(holder *Holder) *http.ServeMux {
 	mux.HandleFunc("/{$}", holder.LoadFrontPage)
 	mux.HandleFunc("POST /post", holder.CreatePost)
 	mux.HandleFunc("/login", holder.LoadRegistryPage)
+	mux.HandleFunc("/register", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodGet {
+			holder.LoadRegistrationPage(w, r)
+			return
+		}
+
+		if r.Method == http.MethodPost {
+			holder.Register(w, r)
+			return
+		}
+
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+	})
+	mux.HandleFunc("/logout", holder.Logout)
 	mux.HandleFunc("/profile", holder.LoadProfilePage)
 	mux.HandleFunc("POST /posts/{id}/vote", holder.VoteOnPost)
 	mux.HandleFunc("POST /{ID}/comment", holder.AddComment)

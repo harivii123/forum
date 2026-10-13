@@ -3,6 +3,7 @@ package handlers
 import (
 	"database/sql"
 	"errors"
+	"forum/internal/database"
 	"forum/internal/models"
 	"forum/internal/service"
 	"log"
@@ -10,13 +11,12 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
-	"time"
-
-	"github.com/google/uuid"
-	"golang.org/x/crypto/bcrypt"
 )
 
 func (h *Holder) LoadRegistryPage(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodGet && h.redirectIfLoggedIn(w, r) {
+		return
+	}
 	// GET /login → show login component
 	if r.Method == http.MethodGet {
 		loginPage := h.engine.Render("index.html", map[string]any{
@@ -31,11 +31,7 @@ func (h *Holder) LoadRegistryPage(w http.ResponseWriter, r *http.Request) {
 		email := r.FormValue("email")
 		password := r.FormValue("password")
 		// 1. Find user
-		var user models.User
-
-		row := h.db.QueryRow(`SELECT id, username, email, password_hash FROM user WHERE email = ?`, email)
-
-		err := row.Scan(&user.ID, &user.Username, &user.Email, &user.PasswordHash)
+		user, err := database.GetUserByEmail(h.db, email)
 		if errors.Is(err, sql.ErrNoRows) {
 			http.Error(w, "Invalid email or password", http.StatusUnauthorized)
 			return
@@ -45,26 +41,21 @@ func (h *Holder) LoadRegistryPage(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
+
 		// 2. Check password
-		err = bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(password))
+		err = service.CheckPassword(user.PasswordHash, password)
 		if err != nil {
 			http.Error(w, "Invalid email or password", http.StatusUnauthorized)
 			return
 		}
 
 		// 3. Create UUID session
-		var session models.Session
-		session.Token = uuid.New().String()
-		session.UserID = user.ID
-
-		now := time.Now()
-		session.CreatedAt = now
-		session.LastActive = now
-		session.ExpiresAt = now.Add(15 * time.Minute)
+		session := service.NewSession(user.ID)
 
 		// 4. Save session to DB
-		_, err = h.db.Exec(`INSERT INTO session (token, user_id, created_at, expires_at, last_active) VALUES (?, ?, ?, ?, ?)`, session.Token, session.UserID, session.CreatedAt, session.ExpiresAt, session.LastActive)
+		err = database.CreateSession(h.db, session)
 		if err != nil {
+			log.Printf("Error creating session: %v", err)
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
@@ -93,11 +84,18 @@ func (h *Holder) LoadFrontPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var profile models.UserView
-	profile.ID = user.ID
-	profile.Username = user.Username
-	profile.ProfilePicture = ""
+	if user != nil {
+		profile.ID = user.ID
+		profile.Username = user.Username
+		profile.ProfilePicture = ""
+	}
 
-	filters, args := filtersFromQuery(r.URL.Query(), user.ID, loggedIn)
+	var userID int
+	if user != nil {
+		userID = user.ID
+	}
+
+	filters, args := filtersFromQuery(r.URL.Query(), userID, loggedIn)
 	ctx := r.Context()
 
 	posts, err := service.FilterPosts(filters, args, ctx, h.db)
@@ -123,6 +121,24 @@ func (h *Holder) LoadFrontPage(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Write(frontPage)
 	//something_here.Execute(w, match) //<-- dont know how to use the fancy template parser yet
+}
+
+func (h *Holder) LoadRegistrationPage(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodGet && h.redirectIfLoggedIn(w, r) {
+		return
+	}
+
+	if r.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	page := h.engine.Render("index.html", map[string]any{
+		"ShowRegister": true,
+	})
+
+	w.WriteHeader(http.StatusOK)
+	w.Write(page)
 }
 
 //func (h *Holder) CreatePost(w http.ResponseWriter, r *http.Request) {
