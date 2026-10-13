@@ -13,6 +13,9 @@ import (
 )
 
 func (h *Holder) LoadRegistryPage(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodGet && h.redirectIfLoggedIn(w, r) {
+		return
+	}
 	// GET /login → show login component
 	if r.Method == http.MethodGet {
 		loginPage := h.engine.Render("index.html", map[string]any{
@@ -95,6 +98,24 @@ func (h *Holder) LoadFrontPage(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Write(frontPage)
 	//something_here.Execute(w, match) //<-- dont know how to use the fancy template parser yet
+}
+
+func (h *Holder) LoadRegistrationPage(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodGet && h.redirectIfLoggedIn(w, r) {
+		return
+	}
+
+	if r.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	page := h.engine.Render("index.html", map[string]any{
+		"ShowRegister": true,
+	})
+
+	w.WriteHeader(http.StatusOK)
+	w.Write(page)
 }
 
 //func (h *Holder) CreatePost(w http.ResponseWriter, r *http.Request) {

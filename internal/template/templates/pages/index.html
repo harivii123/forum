@@ -12,10 +12,17 @@
 	{{ template "search-bar" . }}
 	{{ if .LoggedIn }}
 		<p> Welcome, {{ .User.Username }} </p>
+		{{ template "logout" . }}
 	{{ else }}
-		{{ template "login" . }}
+		{{ if .ShowRegister }}
+			{{ template "register" . }}
+		{{ else if .ShowLogin }}
+			{{ template "login" . }}
+		{{ else }}
+			{{ template "login" . }}
+		{{ end }}
 	{{ end }}
-	<p>bob</p>
+	
 	{{ template "post" . }}
 </body>
 

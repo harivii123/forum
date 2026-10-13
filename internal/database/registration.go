@@ -10,6 +10,11 @@ func CreateUser(db *sql.DB, user models.User) (int, error) {
 	if err != nil {
 		return 0, err
 	}
+
 	id, err := result.LastInsertId()
+	if err != nil {
+		return 0, err
+	}
+
 	return int(id), nil
 }

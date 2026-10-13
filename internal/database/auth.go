@@ -46,22 +46,51 @@ func GetSessionUserID(db *sql.DB, token string) (int, error) {
 func GetUserByID(db *sql.DB, userID int) (*models.User, error) {
 	var user models.User
 	err := db.QueryRow(`SELECT id, username, email FROM user WHERE id = ?`, userID).Scan(&user.ID, &user.Username, &user.Email)
+
 	if err != nil {
 		return nil, err
 	}
+
 	return &user, err
 }
+
 func GetUserByUsername(
 	db *sql.DB,
 	username string,
 ) (*models.User, error) {
 	// TODO
+	var user models.User
+
+	err := db.QueryRow(`
+        SELECT id, username, email, password_hash
+        FROM user
+        WHERE username = ?
+    `, username).Scan(
+		&user.ID,
+		&user.Username,
+		&user.Email,
+		&user.PasswordHash,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
 }
 
 func UpdateSessionActivity(db *sql.DB, token string, lastActive time.Time, expiresAt time.Time) error {
 	_, err := db.Exec(`UPDATE session SET last_active = ?, expires_at = ? WHERE token = ?`,
 		lastActive,
 		expiresAt,
+		token,
+	)
+	return err
+}
+
+func DeleteSession(db *sql.DB, token string) error {
+	_, err := db.Exec(
+		`DELETE FROM session WHERE token = ?`,
 		token,
 	)
 	return err

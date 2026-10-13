@@ -9,6 +9,7 @@ import (
 	"io/fs"
 	"log"
 	"net/http"
+	"path/filepath"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -18,6 +19,12 @@ const port = ":8080"
 func main() {
 	seed := flag.Bool("seed", false, "fill an empty database with example data")
 	flag.Parse()
+
+	dbPath, err := filepath.Abs("./database.db")
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Println("Database path:", dbPath)
 
 	db, err := sql.Open("sqlite3", "./database.db?_foreign_keys=on")
 	if err != nil {
@@ -53,8 +60,21 @@ func main() {
 	mux.HandleFunc("/{$}", holder.LoadFrontPage)
 	mux.HandleFunc("POST /post", holder.CreatePost)
 	mux.HandleFunc("/login", holder.LoadRegistryPage)
-	mux.HandleFunc("/register", holder.Register)
+	mux.HandleFunc("/register", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodGet {
+			holder.LoadRegistrationPage(w, r)
+			return
+		}
+
+		if r.Method == http.MethodPost {
+			holder.Register(w, r)
+			return
+		}
+
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+	})
 	mux.HandleFunc("/profile", holder.LoadProfilePage)
+	mux.HandleFunc("/logout", holder.Logout)
 
 	//handlefunc yada yada
 

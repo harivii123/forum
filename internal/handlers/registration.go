@@ -11,9 +11,20 @@ import (
 
 func (h *Holder) Register(w http.ResponseWriter, r *http.Request) {
 	var user models.User
+
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
 	user.Username = r.FormValue("username")
 	user.Email = r.FormValue("email")
 	password := r.FormValue("password")
+
+	if user.Username == "" || user.Email == "" || password == "" {
+		http.Error(w, "Username, email and password are required", http.StatusBadRequest)
+		return
+	}
 
 	_, err := database.GetUserByUsername(h.db, user.Username)
 	if err == nil {

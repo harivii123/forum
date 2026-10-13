@@ -22,6 +22,7 @@ func (h *Holder) GetCurrentUser(w http.ResponseWriter, r *http.Request) (*models
 
 	userID, err := database.GetSessionUserID(h.db, cookie.Value)
 	if errors.Is(err, sql.ErrNoRows) {
+		clearSessionCookie(w)
 		return nil, false, nil
 	}
 
@@ -32,6 +33,7 @@ func (h *Holder) GetCurrentUser(w http.ResponseWriter, r *http.Request) (*models
 	// update new Expired time in DB and Browser cookie
 	user, err := database.GetUserByID(h.db, userID)
 	if errors.Is(err, sql.ErrNoRows) {
+		clearSessionCookie(w)
 		return nil, false, nil
 	}
 
