@@ -33,7 +33,9 @@ func (h *Holder) LoadRegistryPage(w http.ResponseWriter, r *http.Request) {
 		// 1. Find user
 		user, err := database.GetUserByEmail(h.db, email)
 		if errors.Is(err, sql.ErrNoRows) {
-			http.Error(w, "Invalid email or password", http.StatusUnauthorized)
+			// http.Error(w, "Invalid email or password", http.StatusUnauthorized)
+			h.err.Er, h.err.Code = err, http.StatusUnauthorized
+			h.ErrorOut(w)
 			return
 		}
 
@@ -45,7 +47,9 @@ func (h *Holder) LoadRegistryPage(w http.ResponseWriter, r *http.Request) {
 		// 2. Check password
 		err = service.CheckPassword(user.PasswordHash, password)
 		if err != nil {
-			http.Error(w, "Invalid email or password", http.StatusUnauthorized)
+			h.err.Er, h.err.Code = err, http.StatusUnauthorized
+			h.ErrorOut(w)
+			// http.Error(w, "Invalid email or password", http.StatusUnauthorized)
 			return
 		}
 
@@ -146,7 +150,18 @@ func (h *Holder) LoadRegistrationPage(w http.ResponseWriter, r *http.Request) {
 //}
 
 func (h *Holder) CreatePost(w http.ResponseWriter, r *http.Request) {
-	//get post title and body from request
+	//Check if user is logged in
+	_, ok, err := h.GetCurrentUser(w, r)
+	if err != nil {
+		h.err.Er, h.err.Code = err, http.StatusInternalServerError
+		h.ErrorOut(w)
+		return
+	}
+	if !ok {
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		return
+	}
+
 	newPost := models.Post{
 		Title: r.FormValue("title"),
 		Body:  r.FormValue("body"),
@@ -161,7 +176,6 @@ func (h *Holder) CreatePost(w http.ResponseWriter, r *http.Request) {
 	}
 	//redirect back to homepage if everything went well
 	http.Redirect(w, r, "/", httpStatus)
-	return
 }
 
 func (h *Holder) LoadProfilePage(w http.ResponseWriter, r *http.Request) {
@@ -199,7 +213,6 @@ func (h *Holder) AddComment(w http.ResponseWriter, r *http.Request) {
 	}
 	//redirect back to homepage if everything went well
 	http.Redirect(w, r, "/", httpStatus)
-	return
 }
 
 func filtersFromQuery(q url.Values, userID int, loggedIn bool) (string, []any) {

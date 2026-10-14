@@ -1,0 +1,11 @@
+{{ define "error" }}
+
+<div>
+    <p>Oops! Something went wrong...</p>
+    <p>{{ .Err}}</p>
+    <p>{{ .Code}}</p>
+    <nav>
+        <a href="/">Home</a>
+    </nav>
+</div>
+{{ end }}
