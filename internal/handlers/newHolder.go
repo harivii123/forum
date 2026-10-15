@@ -12,5 +12,6 @@ type Holder struct { //can be used to carry other stuff too if needed
 }
 
 func NewHolder(db *sql.DB, engine *template.Engine) *Holder {
-	return &Holder{db: db, engine: engine}
+		errors :=&Err{nil, 0}
+	return &Holder{db: db, engine: engine, err: errors}
 }

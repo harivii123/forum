@@ -30,7 +30,8 @@ func NewEngine(basePath string) *Engine {
 func (e *Engine) ParseTemplates() {
 	funcMap := e.funcMap.Map()
 	templates := map[string][]string{
-		"index.html": {"posts.html", "filters.html", "login.html", "register.html", "logout.html", "generals.html", "profile.html", "iconic.html", "comment.html", "error.html"},
+		"index.html": {"posts.html", "filters.html", "login.html", "register.html", "logout.html", "generals.html", "profile.html", "iconic.html", "comment.html", "video.html"},
+		"error.html":{"video.html"},
 	}
 
 	for name, components := range templates {
@@ -52,14 +53,14 @@ func (e *Engine) ParseTemplates() {
 	}
 }
 
-func (e *Engine) Render(name string, data map[string]any) []byte {
+func (e *Engine) Render(name string, base string, data map[string]any) []byte {
 	tpl, ok := e.templates[name]
 	if !ok {
 		panic("The template " + name + " does not exists.")
 	}
 
 	var b bytes.Buffer
-	if err := tpl.ExecuteTemplate(&b, "base", data); err != nil {
+	if err := tpl.ExecuteTemplate(&b, base, data); err != nil {
 		panic(err)
 	}
 
