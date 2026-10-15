@@ -31,22 +31,21 @@
                     <button name="vote" value="-1">{{ template "thumb-down" }}{{ len .PostDislikers }}</button>
                     <input type="hidden" name="redirect" value="{{ $.Query }}" />
                 </form>
-                <div>
-                    {{ template "comment" }}
-                    <p>{{ len .Comments }}</p>
-                </div>
+                <button class="comment-button" popovertarget="comment-section">{{ template "comment-icon" }}{{ len .Comments}}</button>
             </div>
         </div>
+            <div id="comment-section" popover="auto">
 
-        {{ range $comment := $post.Comments }}
-           <p>{{ $comment.Commenter.Username }}: {{ $comment.Body }}</p>
+                {{ range $comment := $post.Comments }}
+                <p>{{ $comment.Commenter.Username }}: {{ $comment.Body }}</p>
 
-           <form method="POST" action="/comments/{{ $comment.ID }}/vote">
-                <button name="vote" value="1">{{ template "thumb-up" }}{{ len $comment.CommentLikers }}</button>
-                <button name="vote" value="-1">{{ template "thumb-down" }}{{ len $comment.CommentDislikers }}</button>
-                <input type="hidden" name="redirect" value="{{ $.Query }}" />
-           </form>
-        {{ end }}
+                <form method="POST" action="/comments/{{ $comment.ID }}/vote">
+                        <button name="vote" value="1">{{ template "thumb-up" }}{{ len $comment.CommentLikers }}</button>
+                        <button name="vote" value="-1">{{ template "thumb-down" }}{{ len $comment.CommentDislikers }}</button>
+                        <input type="hidden" name="redirect" value="{{ $.Query }}" />
+                </form>
+                {{ end }}
+            </div>
         </div>
     </div>
     {{ end }}
