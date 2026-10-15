@@ -25,13 +25,13 @@
         <div>
             <h3>{{ .Title }}</h3>
             <p>{{ truncate .Body 40 }}</p>
-            <div>
-                <form method="POST" action="/posts/{{ $post.ID }}/vote">
-                    <button name="vote" value="1">{{ template "thumb-up" }}{{ len .PostLikers }}</button>
-                    <button name="vote" value="-1">{{ template "thumb-down" }}{{ len .PostDislikers }}</button>
+            <div class=" gap-(--px8) flex flex-row">
+                <form class="gap-(--px8) flex flex-row" method="POST" action="/posts/{{ $post.ID }}/vote">
+                    <button id="react-btn" name="vote" value="1">{{ template "thumb-up" }}{{ len .PostLikers }}</button>
+                    <button id="react-btn" name="vote" value="-1">{{ template "thumb-down" }}{{ len .PostDislikers }}</button>
                     <input type="hidden" name="redirect" value="{{ $.Query }}" />
                 </form>
-                <button class="comment-button" popovertarget="comment-section">{{ template "comment-icon" }}{{ len .Comments}}</button>
+                <button id="react-btn" class="comment-button" popovertarget="comment-section">{{ template "comment-icon" }}{{ len .Comments}}</button>
             </div>
         </div>
             <div id="comment-section" popover="auto">
