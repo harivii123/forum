@@ -7,6 +7,7 @@ import (
 	"forum/internal/database"
 	"forum/internal/models"
 	"net/http"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -76,6 +77,10 @@ func postComments(comments string, commentLikers string, commentDislikers string
 		comment.CommentDislikers = commentLikeSplitter(commentDislikers, commentId)
 		result = append(result, comment)
 	}
+	sort.Slice(result, func(i, j int) bool {
+		return len(result[i].CommentLikers) > len(result[j].CommentLikers)
+	})
+
 	return result
 }
 
@@ -131,8 +136,10 @@ func postCats(match string) []models.CategoryView {
 
 func CreatePost(cookie *http.Cookie, newPost models.Post, db *sql.DB) (error, int) {
 
-	if newPost.Body == "" || newPost.Title == "" {
-		return errors.New("Empty post"), http.StatusBadRequest // do nothing
+	if (newPost.Body == "" && newPost.Title != "") || (newPost.Title == "" && newPost.Body != "") {
+		return errors.New("Please fill out both fields when making a new post"), http.StatusBadRequest
+	} else if newPost.Body == "" && newPost.Title == "" {
+		return nil, http.StatusSeeOther
 	}
 
 	tx, err := db.Begin()

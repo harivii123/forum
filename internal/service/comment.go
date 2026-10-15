@@ -9,7 +9,9 @@ import (
 )
 
 func CreateComment(newComment models.Comment, cookie *http.Cookie, db *sql.DB) (error, int) {
-
+	if newComment.Body==""{
+		return nil, http.StatusSeeOther
+	}
 	tx, err := db.Begin()
 	if err != nil {
 		return err, http.StatusInternalServerError

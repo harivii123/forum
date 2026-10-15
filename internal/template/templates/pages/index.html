@@ -15,10 +15,7 @@
     <div class="dim-layer"></div>
     {{ template "header" . }}
 
-    {{ if .LoggedIn }}
-        <p>Welcome, {{ .User.Username }}</p>
-        {{ template "logout" . }}
-    {{ else if .ShowRegister }}
+    {{ if .ShowRegister }}
         {{ template "register" . }}
     {{ end }}
 
