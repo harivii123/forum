@@ -27,11 +27,15 @@
             <p>{{ truncate .Body 40 }}</p>
             <div class=" gap-(--px8) flex flex-row">
                 <form class="gap-(--px8) flex flex-row" method="POST" action="/posts/{{ $post.ID }}/vote">
-                    <button id="react-btn" name="vote" value="1">{{ template "thumb-up" }}{{ len .PostLikers }}</button>
-                    <button id="react-btn" name="vote" value="-1">{{ template "thumb-down" }}{{ len .PostDislikers }}</button>
+                    <button class="react-btn" name="vote" value="1"
+                    {{ range .PostLikers }}{{ if eq .ID $.Profile.ID }}aria-pressed="true"{{ end }}{{ end }}>
+                    {{ template "thumb-up" }}{{ len .PostLikers }}
+                    </button>
+                    <button class="react-btn" name="vote" value="-1"
+                    {{ range .PostDislikers }}{{ if eq .ID $.Profile.ID }}aria-pressed="true"{{ end }}{{ end }}>{{ template "thumb-down" }}{{ len .PostDislikers }}</button>
                     <input type="hidden" name="redirect" value="{{ $.Query }}" />
                 </form>
-                <button id="react-btn" class="comment-button" popovertarget="comment-section">{{ template "comment-icon" }}{{ len .Comments}}</button>
+                <button class="react-btn" class="comment-button" popovertarget="comment-section">{{ template "comment-icon" }}{{ len .Comments}}</button>
             </div>
         </div>
             <div id="comment-section" popover="auto">
@@ -40,8 +44,10 @@
                 <p>{{ $comment.Commenter.Username }}: {{ $comment.Body }}</p>
 
                 <form method="POST" action="/comments/{{ $comment.ID }}/vote">
-                        <button name="vote" value="1">{{ template "thumb-up" }}{{ len $comment.CommentLikers }}</button>
-                        <button name="vote" value="-1">{{ template "thumb-down" }}{{ len $comment.CommentDislikers }}</button>
+                        <button name="vote" value="1"
+                        {{ range .CommentLikers }}{{ if eq .ID $.Profile.ID }}aria-pressed="true"{{ end }}{{ end }}>{{ template "thumb-up" }}{{ len $comment.CommentLikers }}</button>
+                        <button name="vote" value="-1"
+                        {{ range .CommentDislikers }}{{ if eq .ID $.Profile.ID }}aria-pressed="true"{{ end }}{{ end }}>{{ template "thumb-down" }}{{ len $comment.CommentDislikers }}</button>
                         <input type="hidden" name="redirect" value="{{ $.Query }}" />
                 </form>
                 {{ end }}

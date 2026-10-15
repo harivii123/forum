@@ -85,7 +85,7 @@ body {
     h3 {
         font-family: var(--font-family);
         font-style: normal;
-        font-weight: 600;
+        font-weight: 700;
         font-size: var(--px14);
         line-height: 16px;
     }
@@ -101,7 +101,7 @@ body {
     p {
         font-family: var(--font-family);
         font-style: normal;
-        font-weight: 400;
+        font-weight: 300;
         font-size: var(--px14);
         line-height: 24px;
     }
@@ -249,12 +249,26 @@ body {
 
 }
 
-#react-btn {
+.react-btn {
     font-size: var(--px12);
     padding: unset;
     gap: var(--px4);
     align-items: center;
+    font-weight: 700;
+}
 
+.react-btn[aria-pressed=true] {
+    color: var(--blue-light);
+    svg > * {
+        fill: var(--blue-light);
+    }
+}
+
+#comment-section {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    background: var(--peach-tr);
 }
 
 .col {
