@@ -1,0 +1,23 @@
+{{ define "error" }}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link rel="stylesheet" href="/static/styles/styles.css">
+	<script src="/static/js/simple-search.js" defer></script>
+	<title>Oops</title>
+</head>
+<body class="flex flex-row">
+    {{ template "video-background" . }}
+<div class="p-(--px24) sm:p-(--px32) md:p-(--px64) h1-(--px100)">
+    <h1>Oops! Something went wrong...</h1>
+    <p>{{ .Err}}</p>
+    <p>{{ .Code}}</p>
+    <nav>
+        <a href="/">Home</a>
+    </nav>
+</div>
+</body>
+{{ end }}

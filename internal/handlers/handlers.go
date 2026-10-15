@@ -19,7 +19,7 @@ func (h *Holder) LoadRegistryPage(w http.ResponseWriter, r *http.Request) {
 	}
 	// GET /login → show login component
 	if r.Method == http.MethodGet {
-		loginPage := h.engine.Render("index.html", map[string]any{
+		loginPage := h.engine.Render("index.html", "base", map[string]any{
 			"ShowLogin": true,
 		})
 		w.WriteHeader(http.StatusOK)
@@ -33,7 +33,9 @@ func (h *Holder) LoadRegistryPage(w http.ResponseWriter, r *http.Request) {
 		// 1. Find user
 		user, err := database.GetUserByEmail(h.db, email)
 		if errors.Is(err, sql.ErrNoRows) {
-			http.Error(w, "Invalid email or password", http.StatusUnauthorized)
+			// http.Error(w, "Invalid email or password", http.StatusUnauthorized)
+			h.err.Er, h.err.Code = err, http.StatusUnauthorized
+			h.ErrorOut(w)
 			return
 		}
 
@@ -45,7 +47,9 @@ func (h *Holder) LoadRegistryPage(w http.ResponseWriter, r *http.Request) {
 		// 2. Check password
 		err = service.CheckPassword(user.PasswordHash, password)
 		if err != nil {
-			http.Error(w, "Invalid email or password", http.StatusUnauthorized)
+			h.err.Er, h.err.Code = err, http.StatusUnauthorized
+			h.ErrorOut(w)
+			// http.Error(w, "Invalid email or password", http.StatusUnauthorized)
 			return
 		}
 
@@ -109,7 +113,7 @@ func (h *Holder) LoadFrontPage(w http.ResponseWriter, r *http.Request) {
 	categories, err = service.GetCategories(ctx, h.db)
 	query := r.URL.RawQuery
 
-	frontPage := h.engine.Render("index.html", map[string]any{
+	frontPage := h.engine.Render("index.html", "base", map[string]any{
 		"Posts":      posts,
 		"Profile":    profile,
 		"Categories": categories,
@@ -133,7 +137,7 @@ func (h *Holder) LoadRegistrationPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	page := h.engine.Render("index.html", map[string]any{
+	page := h.engine.Render("index.html", "base", map[string]any{
 		"ShowRegister": true,
 	})
 
@@ -146,7 +150,18 @@ func (h *Holder) LoadRegistrationPage(w http.ResponseWriter, r *http.Request) {
 //}
 
 func (h *Holder) CreatePost(w http.ResponseWriter, r *http.Request) {
-	//get post title and body from request
+	//Check if user is logged in
+	_, ok, err := h.GetCurrentUser(w, r)
+	if err != nil {
+		h.err.Er, h.err.Code = err, http.StatusInternalServerError
+		h.ErrorOut(w)
+		return
+	}
+	if !ok {
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		return
+	}
+
 	newPost := models.Post{
 		Title: r.FormValue("title"),
 		Body:  r.FormValue("body"),
@@ -156,12 +171,12 @@ func (h *Holder) CreatePost(w http.ResponseWriter, r *http.Request) {
 	//createpost returns err and appropriate http code
 	err, httpStatus := service.CreatePost(cookie, newPost, h.db)
 	if err != nil {
-		http.Error(w, err.Error(), httpStatus)
+		h.err.Er, h.err.Code =err, httpStatus
+		h.ErrorOut(w)
 		return
 	}
 	//redirect back to homepage if everything went well
 	http.Redirect(w, r, "/", httpStatus)
-	return
 }
 
 func (h *Holder) LoadProfilePage(w http.ResponseWriter, r *http.Request) {
@@ -171,15 +186,26 @@ func (h *Holder) LoadProfilePage(w http.ResponseWriter, r *http.Request) {
 
 func (h *Holder) AddComment(w http.ResponseWriter, r *http.Request) {
 	//get the post_id from request
-	pa := r.PathValue("ID")
-	log.Println(pa)
-	postID, err := strconv.Atoi(pa)
-	log.Println(postID)
+	_, loggedIn, err:=h.GetCurrentUser(w, r)
+	// err=errors.New("test error")
+	if err != nil{
+		h.err.Er, h.err.Code = err, http.StatusInternalServerError
+		h.ErrorOut(w)
+		return
+	}
+	if !loggedIn{
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		return
+	}
+	postIDStr := r.PathValue("ID")
+	// log.Println(pa, "pop")
+	postID, err := strconv.Atoi(postIDStr)
+	// log.Println(postID, "pop")
 	if err != nil {
 		log.Println("here")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
-	log.Println("here1")
+	// log.Println("here1")
 	//get comment value from request
 	newComment := models.Comment{
 		Post_id: postID,
@@ -194,12 +220,12 @@ func (h *Holder) AddComment(w http.ResponseWriter, r *http.Request) {
 	//service.CreateComment returns error and appropriate httpstatus
 	err, httpStatus := service.CreateComment(newComment, cookie, h.db)
 	if err != nil {
-		http.Error(w, err.Error(), httpStatus)
+		h.err.Er, h.err.Code = err, httpStatus
+	 	h.ErrorOut(w)
 		return
 	}
 	//redirect back to homepage if everything went well
 	http.Redirect(w, r, "/", httpStatus)
-	return
 }
 
 func filtersFromQuery(q url.Values, userID int, loggedIn bool) (string, []any) {

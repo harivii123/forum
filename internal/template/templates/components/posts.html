@@ -30,7 +30,7 @@
                     <input type="hidden" name="redirect" value="{{ $.Query }}" />
                 </form>
                 <div>
-                    {{ template "comment" }}
+                    {{ template "comment" .ID }}
                     <p>{{ len .Comments }}</p>
                 </div>
             </div>
