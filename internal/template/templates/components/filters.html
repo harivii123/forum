@@ -11,22 +11,22 @@
 {{ define "side-filters" }}
 <aside>
     <div class="col">
-    <fieldset class="gap-(--px8) flex flex-col {{ if .LoggedIn }}visible{{ else }}hidden{{ end }}">
+    <fieldset class="{{ if .LoggedIn }}visible{{ else }}hidden{{ end }}">
         <legend>You</legend>
         {{ template "you"  . }}
     </fieldset>
     <div class="divider {{ if .LoggedIn }}visible{{ else }}hidden{{ end }}"></div>
-    <fieldset class="gap-(--px8) flex flex-col">
+    <fieldset>
         <legend>Authors</legend>
         {{ template "authors" . }}
     </fieldset>
     <div class="divider"></div>
-    <fieldset class="gap-(--px8) flex flex-col">
+    <fieldset>
         <legend>Genres</legend>
         {{ template "genres" . }}
     </fieldset>
     <div class="divider"></div>
-    <fieldset class="gap-(--px8) flex flex-col">
+    <fieldset>
         <legend>Sort by</legend>
         {{ template "order-by"  . }}
     </fieldset>
@@ -56,7 +56,7 @@
 {{ end }}
 
 {{ define "order-by" }}
-<ul class="gap-(--px8) flex flex-col">
+<ul class="gap-(--px8) flex flex-col overflow-visible">
     <li>
         <label>
             <span>Newest first</span>

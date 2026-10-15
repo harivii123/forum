@@ -3,21 +3,23 @@
     <div class="post-frame">
         {{ template "post-borders" . }}
         <div class="pf-content">
-        <div>
-            {{ template "profile-pic" .Poster }}
-            <div>
-                <h4>{{ .Poster.Username }}</h4>
-                <p>{{ elapsed .Created }}</p>
+        <div class="flex flex-row justify-between px-[5rem] gap-(--px24)">
+            <div class="flex flex-row gap-(--px8)">
+                {{ template "profile-pic" .Poster }}
+                <div class="flex flex-col gap-(--px2) justify-center">
+                    <h3>{{ .Poster.Username }}</h3>
+                    <time>{{ elapsed .Created }}</time>
+                </div>
             </div>
-            <div>
+            <div class="overflow-x-scroll flex scrollbar-none h-fit w-full max-w-fit">
                 {{ range .Categories }}
-                    <span>
-                        {{ . }}
-                    </span>
+                    <small>
+                        {{ .Category }}
+                    </small>
                 {{ end }}
             </div>
         </div>
-        <div>
+        <div class="hidden">
             {{ .Image }}
         </div>
         <div>
