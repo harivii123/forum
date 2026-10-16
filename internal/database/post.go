@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"fmt"
 	"forum/internal/models"
 	"time"
 )
@@ -99,13 +98,11 @@ func GetPostsByCategory(db *sql.DB, categoryName string) ([]models.Post, error) 
 
 // creates a post to db
 func CreatePost(tx *sql.Tx, newPost models.Post) (err error) {
-	// fmt.Println("here")
 	_, err = tx.Exec(`
 		INSERT INTO post (user_id, title, body, created_at) VALUES (?, ?, ?, ?)
 		`, newPost.UserID, newPost.Title, newPost.Body, newPost.Created,
 	)
 	if err != nil {
-		fmt.Println("er")
 		return err
 	}
 	//if post does not appear in front page automatically. We need to return it from here
