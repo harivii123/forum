@@ -616,14 +616,3 @@ li:has(input:checked) .icon-unchecked {
 #register label:hover {
     background: none;
 }
-
-/* #register input {
-    box-sizing: border-box;
-    width: 100%;
-} */
-
-/* #register .login-prompt {
-    margin-top: var(--px16);
-    font-size: var(--px12);
-    line-height: 1.5;
-} */
