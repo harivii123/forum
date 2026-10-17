@@ -1,10 +1,10 @@
 package template
 
 import (
+	"fmt"
 	"math"
 	"text/template"
 	"time"
-	"fmt"
 )
 
 type funcMap struct {
@@ -13,9 +13,26 @@ type funcMap struct {
 
 func (f *funcMap) Map() template.FuncMap {
 	return template.FuncMap{
+		"dict":     dict,
 		"truncate": truncate,
 		"elapsed":  elapsed,
 	}
+}
+
+func dict(values ...any) (map[string]any, error) {
+	if len(values)%2 != 0 {
+		return nil, fmt.Errorf("needs pair")
+	}
+	keys := make(map[string]any)
+
+	for i := 0; i < len(values); i += 2 {
+		val, ok := values[i].(string)
+		if !ok {
+			return nil, fmt.Errorf("not stringable")
+		}
+		keys[val] = values[i+1]
+	}
+	return keys, nil
 }
 
 // {{ truncate .Post.Body Math.maxInt }}

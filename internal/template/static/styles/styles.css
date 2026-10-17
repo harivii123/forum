@@ -48,6 +48,7 @@
     --peach-50: rgba(255, 198, 144, 0.5);
     --peach-30: rgba(253, 207, 164, 0.3);
     --peach-tr: rgba(255, 198, 144, 0);
+    --small-overflow-gradient: linear-gradient(to left, transparent, black 3%, black 98%, transparent);
 
     --px2: 0.125;
     --px4: 0.25rem;
@@ -56,6 +57,7 @@
     --px14: 0.875rem;
     --px15: 0.938rem;
     --px16: 1rem;
+    --px18: 1.125rem;
     --px24: 1.5rem;
     --px32: 2rem;
     --px64: 4rem;
@@ -80,6 +82,7 @@ body {
         font-weight: 400;
         font-size: 1.75rem;
         line-height: 34px;
+        color: var(--peach);
     }
 
     h3 {
@@ -88,6 +91,7 @@ body {
         font-weight: 700;
         font-size: var(--px14);
         line-height: 16px;
+        color: var(--peach);
     }
 
     h5 {
@@ -96,6 +100,7 @@ body {
         font-weight: 400;
         font-size: 0.875rem;
         line-height: 17px;
+        color: var(--peach);
     }
 
     p {
@@ -103,7 +108,8 @@ body {
         font-style: normal;
         font-weight: 300;
         font-size: var(--px14);
-        line-height: 24px;
+        line-height: 18px;
+        color: var(--peach);
     }
 
     small {
@@ -113,7 +119,7 @@ body {
         font-size: 11px;
         line-height: 15px;
         color: var(--peach-50);
-        padding: 0.2rem 1rem;
+        padding: 0.05rem 0.65rem;
         min-width: max-content;
         background: var(--blue-light-20);
         corner-shape: bevel;
@@ -255,6 +261,10 @@ body {
     gap: var(--px4);
     align-items: center;
     font-weight: 700;
+    outline: unset;
+    background: unset;
+    border-radius: unset;
+    corner-shape: unset;
 }
 
 .react-btn[aria-pressed=true] {
@@ -264,11 +274,47 @@ body {
     }
 }
 
-#comment-section {
+.comment-button {
     display: flex;
-    position: relative;
+    cursor: pointer;
+}
+
+
+.comment-toggle {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.comment-section {
+    display: none;
+}
+
+.comment-section:popover-open {
+    display: flex;
     flex-direction: column;
+    position: fixed;
     background: var(--peach-tr);
+    margin: var(--px24);
+    width: calc(100vw - 48px);
+    height: auto;
+    overflow: visible;
+
+    top: 48%;
+    left: 47.5%;
+    transform: translate(-50%, -50%);
+    aspect-ratio: 4 / 3;
+    .post-frame {
+        --pf-fill: var(--blue);
+        svg > * {
+            fill-opacity: 1;
+        }
+    }
+}
+
+.comment-section::backdrop {
+    background: rgba(0, 0, 0, 0.7);
 }
 
 .col {
@@ -290,10 +336,19 @@ button {
     outline: 2px solid var(--peach-tr);
     cursor: pointer;
     color: var(--peach);
+    width: fit-content;
 }
 
 button:hover {
     color: var(--blue-light);
+    svg > * {
+        fill: var(--blue-light);
+    }
+}
+
+.close-section {
+    position: absolute;
+    right: 0;
 }
 
 .secondary-btn {
@@ -408,7 +463,7 @@ li:has(input:checked) .icon-unchecked { display: none; }
 }
 
 #phone-filters::backdrop {
-    inset: 65px 0 0 262px;
+    inset: 65px 0 0 257px;
     background: rgb(5 15 30 / .55);
     transition: background var(--drawer-speed) ease,
                 overlay var(--drawer-speed) allow-discrete,
@@ -459,6 +514,28 @@ li:has(input:checked) .icon-unchecked { display: none; }
     overflow-y: auto;
 } 
 
+.category-bar::-webkit-scrollbar {
+    height: 4px;
+    border-radius: 50px;
+    overflow-x: auto;
+    background: var(--peach-30);
+}
+
+.category-bar::-webkit-scrollbar-thumb {
+    border-radius: 50px;
+    background: var(--peach);
+    overflow-x: auto;
+} 
+
+
+.post-section {
+    width: 100%;
+    height: fit-content;
+    position: relative;
+    min-width: 350px;
+    max-width: 550px;
+}
+
 .post-frame {
     --pf-line: var(--peach);
     --pf-fill: var(--blue-60);
@@ -469,10 +546,13 @@ li:has(input:checked) .icon-unchecked { display: none; }
     --pf-bottom-h: 30px;   
     --pf-orn-w: 88px;  
 
-    position: relative;
+    position: absolute;
     isolation: isolate;
-    min-width: 350px;
-    max-width: 550px;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: -1;
 }
 
 .pf-fill { position: absolute; z-index: -1; background: var(--pf-fill); }
@@ -505,7 +585,7 @@ li:has(input:checked) .icon-unchecked { display: none; }
     display: flex;
     flex-direction: column;
     gap: var(--px16);
-    padding-bottom: 24px;
+    padding-bottom: 4px;
 }
 
 .hidden {
@@ -572,3 +652,11 @@ li:has(input:checked) .icon-unchecked { display: none; }
     margin-top: 24px;
 }
 
+
+/* holds shared svg <defs>; display:none would break the url(#id) references */
+.svg-defs {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+}
