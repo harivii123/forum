@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"errors"
 	"log"
 	"net/http"
 
@@ -10,7 +11,8 @@ import (
 func (h *Holder) Logout(w http.ResponseWriter, r *http.Request) {
 	log.Println("Logout handler called")
 	if r.Method != http.MethodPost {
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		h.err.Er, h.err.Code = errors.New("Method not allowed"), http.StatusMethodNotAllowed
+		h.ErrorOut(w)
 		return
 	}
 
