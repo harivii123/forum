@@ -11,7 +11,8 @@ func (h *Holder) VoteOnPost(w http.ResponseWriter, r *http.Request) {
 
 	user, loggedIn, err := h.GetCurrentUser(w, r)
 	if err != nil {
-		http.Error(w, "server error", http.StatusInternalServerError)
+		h.err.Er, h.err.Code = err, http.StatusInternalServerError
+		h.ErrorOut(w)
 		return
 	}
 	if !loggedIn { //No voting without being logged in
@@ -21,23 +22,27 @@ func (h *Holder) VoteOnPost(w http.ResponseWriter, r *http.Request) {
 
 	postID, err := strconv.Atoi(r.PathValue("id"))
 	if err != nil {
-		http.Error(w, "bad post id", http.StatusBadRequest)
+		h.err.Er, h.err.Code = err, http.StatusBadRequest
+		h.ErrorOut(w)
 		return
 	}
 
 	vote, err := strconv.Atoi(r.FormValue("vote"))
 	if err != nil {
-		http.Error(w, "bad vote", http.StatusBadRequest)
+		h.err.Er, h.err.Code = err, http.StatusBadRequest
+		h.ErrorOut(w)
 		return
 	}
 
 	err = service.SetPostVote(h.db, user.ID, postID, vote)
 	switch {
 	case errors.Is(err, service.ErrPostNotFound):
-		http.Error(w, "post not found", http.StatusNotFound)
+		h.err.Er, h.err.Code = errors.New("Post not found"),  http.StatusNotFound
+		h.ErrorOut(w)
 		return
 	case err != nil:
-		http.Error(w, "server error", http.StatusInternalServerError)
+		h.err.Er, h.err.Code = err, http.StatusInternalServerError 
+		h.ErrorOut(w)
 		return
 	}
 	query := r.FormValue("redirect")

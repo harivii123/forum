@@ -33,23 +33,22 @@ func (h *Holder) LoadRegistryPage(w http.ResponseWriter, r *http.Request) {
 		// 1. Find user
 		user, err := database.GetUserByEmail(h.db, email)
 		if errors.Is(err, sql.ErrNoRows) {
-			// http.Error(w, "Invalid email or password", http.StatusUnauthorized)
-			h.err.Er, h.err.Code = err, http.StatusUnauthorized
+			h.err.Er, h.err.Code = errors.New("Invalid email or password"), http.StatusUnauthorized
 			h.ErrorOut(w)
 			return
 		}
 
 		if err != nil {
-			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			h.err.Er, h.err.Code =err, http.StatusInternalServerError
+			h.ErrorOut(w)
 			return
 		}
 
 		// 2. Check password
 		err = service.CheckPassword(user.PasswordHash, password)
 		if err != nil {
-			h.err.Er, h.err.Code = err, http.StatusUnauthorized
+			h.err.Er, h.err.Code = errors.New("Invalid email or password"), http.StatusUnauthorized
 			h.ErrorOut(w)
-			// http.Error(w, "Invalid email or password", http.StatusUnauthorized)
 			return
 		}
 
@@ -60,7 +59,8 @@ func (h *Holder) LoadRegistryPage(w http.ResponseWriter, r *http.Request) {
 		err = database.CreateSession(h.db, session)
 		if err != nil {
 			log.Printf("Error creating session: %v", err)
-			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			h.err.Er, h.err.Code = err, http.StatusInternalServerError
+			h.ErrorOut(w)
 			return
 		}
 
@@ -84,7 +84,8 @@ func (h *Holder) LoadFrontPage(w http.ResponseWriter, r *http.Request) {
 	f.PageFilters(r.URL.Query())
 	user, loggedIn, err := h.GetCurrentUser(w, r)
 	if err != nil {
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		h.err.Er, h.err.Code = err, http.StatusInternalServerError
+		h.ErrorOut(w)
 		return
 	}
 	var profile models.UserView
@@ -104,7 +105,8 @@ func (h *Holder) LoadFrontPage(w http.ResponseWriter, r *http.Request) {
 
 	posts, err := service.FilterPosts(filters, args, ctx, h.db)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		h.err.Er, h.err.Code = err, http.StatusInternalServerError
+		h.ErrorOut(w)
 		return
 	}
 
@@ -133,7 +135,8 @@ func (h *Holder) LoadRegistrationPage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Method != http.MethodGet {
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		h.err.Er, h.err.Code = errors.New("Method not allowed"), http.StatusMethodNotAllowed
+		h.ErrorOut(w)
 		return
 	}
 
@@ -144,10 +147,6 @@ func (h *Holder) LoadRegistrationPage(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Write(page)
 }
-
-//func (h *Holder) CreatePost(w http.ResponseWriter, r *http.Request) {
-// http.Redirect(w, r, "/", http.StatusSeeOther)
-//}
 
 func (h *Holder) CreatePost(w http.ResponseWriter, r *http.Request) {
 	//Check if user is logged in
@@ -187,7 +186,6 @@ func (h *Holder) LoadProfilePage(w http.ResponseWriter, r *http.Request) {
 func (h *Holder) AddComment(w http.ResponseWriter, r *http.Request) {
 	//get the post_id from request
 	_, loggedIn, err:=h.GetCurrentUser(w, r)
-	// err=errors.New("test error")
 	if err != nil{
 		h.err.Er, h.err.Code = err, http.StatusInternalServerError
 		h.ErrorOut(w)
@@ -198,14 +196,12 @@ func (h *Holder) AddComment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	postIDStr := r.PathValue("ID")
-	// log.Println(pa, "pop")
 	postID, err := strconv.Atoi(postIDStr)
-	// log.Println(postID, "pop")
 	if err != nil {
-		log.Println("here")
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		h.err.Er, h.err.Code = err, http.StatusInternalServerError
+		h.ErrorOut(w)
+		return
 	}
-	// log.Println("here1")
 	//get comment value from request
 	newComment := models.Comment{
 		Post_id: postID,
@@ -214,9 +210,10 @@ func (h *Holder) AddComment(w http.ResponseWriter, r *http.Request) {
 	//get user data from request cookies
 	cookie, err := r.Cookie("session_token")
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		h.err.Er, h.err.Code = err, http.StatusInternalServerError
+		h.ErrorOut(w)
+		return
 	}
-	log.Println(cookie.Value, "cookie")
 	//service.CreateComment returns error and appropriate httpstatus
 	err, httpStatus := service.CreateComment(newComment, cookie, h.db)
 	if err != nil {
