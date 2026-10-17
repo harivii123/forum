@@ -4,10 +4,22 @@
         {{ template "logo" . }}
         {{ template "search-bar" . }}
     </div>
-    <div class="flex flex-row  {{ if and (not .LoggedIn) (not .ShowRegister) }}visible{{ else }}hidden{{ end }}">
-        <button class="login-trigger" popovertarget="login">Login</button>
+    {{ if not .LoggedIn }}
+    <div class="flex flex-row ">
+        {{ if .ShowRegister }}
+        <button class="register-trigger" popovertarget="register">
+            Register
+        </button>
+        {{else}}
+        <button class="login-trigger" popovertarget="login">
+            Login
+        </button>
+        {{end}}
+
         {{ template "login" . }}
+        {{ template "register" . }}
     </div>
+    {{ end }}
     <div class=" flex flex-row items-center {{ if .LoggedIn }}visible{{ else }}hidden{{ end }}">
         {{ template "logout" . }}
         {{ template "profile-pic" .Profile }}

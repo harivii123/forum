@@ -157,7 +157,8 @@ body {
 
     input[type="text"],
     input[type="email"],
-    input[type="password"] {
+    input[type="password"],
+    input[type="username"] {
         width: 100%;
         padding-right: var(--px24);
         padding-left: var(--px24);
@@ -173,14 +174,16 @@ body {
 
     input[type="text"]:hover,
     input[type="email"]:hover,
-    input[type="password"]:hover {
+    input[type="password"]:hover,
+    input[type="username"]:hover {
         background: var(--blue--light-15);
         transition: background .1s ease-in-out;
     }
 
     input[type="text"]:focus-visible,
     input[type="email"]:focus-visible,
-    input[type="password"]:focus-visible {
+    input[type="password"]:focus-visible,
+    input[type="username"]:focus-visible {
         outline: 2px solid var(--peach);
     }
 
@@ -499,77 +502,20 @@ li:has(input:checked) .icon-unchecked {
     display: none;
 }
 
-/* register page testing */
 
-.register-container {
-    width: min(100% - 32px, 480px);
-    margin: 100px auto 48px;
-    padding: 24px;
-    box-sizing: border-box;
-}
-
-.register-container h1 {
-    margin-bottom: 24px;
-}
-
-.register-container form {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-/* Prevent global filter-label styling from affecting the form */
-.register-container label {
-    display: block;
-    padding: 0;
-    background: none;
-    outline: none;
-    border-radius: 0;
-    cursor: default;
-}
-
-.register-container label:hover {
-    background: none;
-}
-
-/* Match text, email and password fields */
-.register-container input[type="text"],
-.register-container input[type="email"],
-.register-container input[type="password"] {
-    display: block;
-    width: 100%;
-    box-sizing: border-box;
-    padding: var(--px8) var(--px24);
-    background: var(--blue-light-20);
-    color: var(--peach);
-    border: none;
-    corner-shape: bevel;
-    border-radius: 50px;
-    outline: 2px solid var(--peach-tr);
-}
-
-.register-container input:focus-visible {
-    outline: 2px solid var(--peach);
-}
-
-.register-container button {
-    align-self: flex-start;
-    margin-top: 8px;
-}
-
-.register-container p {
-    margin-top: 24px;
-}
-
-/* Log in popup */
-
+/* Login and Register triggers */
 .login-trigger {
     anchor-name: --login-anchor;
 }
 
-#login[popover] {
+.register-trigger {
+    anchor-name: --register-anchor;
+}
+
+/* Shared popup styles */
+#login[popover],
+#register[popover] {
     box-sizing: border-box;
-    width: min(320px, calc(100vw - 32px));
     padding: var(--px16);
 
     background: var(--blue);
@@ -580,54 +526,104 @@ li:has(input:checked) .icon-unchecked {
 
     box-shadow: 0 var(--px8) var(--px24) var(--blue-dark-40);
 
-    /* Keep the existing anchor positioning */
     position: fixed;
-    position-anchor: --login-anchor;
     inset: auto;
     top: anchor(bottom);
-    right: anchor(right);
     margin: var(--px8) 0 0;
 }
 
-#login .main-btn {
-    width: 100%;
-    margin: 0;
-    box-sizing: border-box;
+/* Login popup position */
+#login[popover] {
+    width: min(320px, calc(100vw - 32px));
+    position-anchor: --login-anchor;
+    right: anchor(right);
 }
 
-#login .register-prompt {
+/* Register popup position */
+#register[popover] {
+    width: min(320px, calc(100vw - 32px));
+    max-height: calc(100vh - 32px);
+    overflow-y: auto;
+    position-anchor: --register-anchor;
+    right: anchor(right);
+}
+
+/* Form layout */
+#login form,
+#register form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--px8);
+    margin: 0;
+}
+
+#register input,
+#login input {
+    box-sizing: border-box;
+    font-family: inherit;
+    font-size: var(--px14);
+    line-height: 1.4;
+}
+
+#login .main-btn,
+#register .main-btn {
+    width: 100%;
+    margin-top: var(--px8);
+    box-sizing: border-box;
+    justify-content: center;
+}
+
+/* Content */
+#login h1,
+#register h1 {
+    text-align: center;
+    margin: 0 0 var(--px16);
+    font-size: var(--px16);
+    line-height: 1.4;
+}
+
+#login .register-prompt,
+#register .login-prompt {
     margin-top: var(--px12);
     font-size: var(--px12);
     line-height: 1.5;
 }
 
-#login .register-link {
+#login .register-link,
+#register .login-link {
     color: var(--peach);
     text-decoration: underline;
     text-underline-offset: 3px;
     transition: color 0.15s ease-in-out;
 }
 
-#login .register-link:hover {
+#login .register-link:hover,
+#register .login-link:hover {
     color: var(--blue-light);
 }
 
-#login h2 {
-    margin: 0 0 var(--px8);
-    font-size: var(--px16);
-    line-height: 1.4;
-}
-
-input[type="email"],
-input[type="password"] {
-    box-sizing: border-box;
+/* Register content */
+#register label {
+    display: block;
+    padding: 0;
+    background: none;
+    outline: none;
+    border-radius: 0;
+    cursor: default;
     font-size: var(--px14);
-    line-height: 1.4;
 }
 
-#login form {
-    display: flex;
-    flex-direction: column;
-    gap: var(--px8);
-    margin: 0;
+#register label:hover {
+    background: none;
 }
+
+/* #register input {
+    box-sizing: border-box;
+    width: 100%;
+} */
+
+/* #register .login-prompt {
+    margin-top: var(--px16);
+    font-size: var(--px12);
+    line-height: 1.5;
+} */
