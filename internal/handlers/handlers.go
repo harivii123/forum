@@ -19,11 +19,11 @@ func (h *Holder) LoadRegistryPage(w http.ResponseWriter, r *http.Request) {
 	}
 	// GET /login → show login component
 	if r.Method == http.MethodGet {
-		loginPage := h.engine.Render("index.html", "base", map[string]any{
-			"ShowLogin": true,
-		})
-		w.WriteHeader(http.StatusOK)
-		w.Write(loginPage)
+		if h.redirectIfLoggedIn(w, r) {
+			return
+		}
+
+		h.RenderFrontPage(w, r, "login")
 		return
 	}
 	// POST /login → process login
@@ -39,7 +39,7 @@ func (h *Holder) LoadRegistryPage(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if err != nil {
-			h.err.Er, h.err.Code =err, http.StatusInternalServerError
+			h.err.Er, h.err.Code = err, http.StatusInternalServerError
 			h.ErrorOut(w)
 			return
 		}
@@ -79,7 +79,7 @@ func (h *Holder) LoadRegistryPage(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (h *Holder) LoadFrontPage(w http.ResponseWriter, r *http.Request) {
+func (h *Holder) RenderFrontPage(w http.ResponseWriter, r *http.Request, showAuth string) {
 	var f models.Filters
 	f.PageFilters(r.URL.Query())
 	user, loggedIn, err := h.GetCurrentUser(w, r)
@@ -116,17 +116,23 @@ func (h *Holder) LoadFrontPage(w http.ResponseWriter, r *http.Request) {
 	query := r.URL.RawQuery
 
 	frontPage := h.engine.Render("index.html", "base", map[string]any{
-		"Posts":      posts,
-		"Profile":    profile,
-		"Categories": categories,
-		"User":       user,
-		"LoggedIn":   loggedIn,
-		"Filters":    f,
-		"Query":      query,
+		"Posts":        posts,
+		"Profile":      profile,
+		"Categories":   categories,
+		"User":         user,
+		"LoggedIn":     loggedIn,
+		"Filters":      f,
+		"Query":        query,
+		"ShowLogin":    showAuth == "login",
+		"ShowRegister": showAuth == "register",
 	})
 	w.WriteHeader(http.StatusOK)
 	w.Write(frontPage)
 	//something_here.Execute(w, match) //<-- dont know how to use the fancy template parser yet
+}
+
+func (h *Holder) LoadFrontPage(w http.ResponseWriter, r *http.Request) {
+	h.RenderFrontPage(w, r, "")
 }
 
 func (h *Holder) LoadRegistrationPage(w http.ResponseWriter, r *http.Request) {
@@ -140,12 +146,7 @@ func (h *Holder) LoadRegistrationPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	page := h.engine.Render("index.html", "base", map[string]any{
-		"ShowRegister": true,
-	})
-
-	w.WriteHeader(http.StatusOK)
-	w.Write(page)
+	h.RenderFrontPage(w, r, "register")
 }
 
 func (h *Holder) CreatePost(w http.ResponseWriter, r *http.Request) {
@@ -170,7 +171,7 @@ func (h *Holder) CreatePost(w http.ResponseWriter, r *http.Request) {
 	//createpost returns err and appropriate http code
 	err, httpStatus := service.CreatePost(cookie, newPost, h.db)
 	if err != nil {
-		h.err.Er, h.err.Code =err, httpStatus
+		h.err.Er, h.err.Code = err, httpStatus
 		h.ErrorOut(w)
 		return
 	}
@@ -185,13 +186,13 @@ func (h *Holder) LoadProfilePage(w http.ResponseWriter, r *http.Request) {
 
 func (h *Holder) AddComment(w http.ResponseWriter, r *http.Request) {
 	//get the post_id from request
-	_, loggedIn, err:=h.GetCurrentUser(w, r)
-	if err != nil{
+	_, loggedIn, err := h.GetCurrentUser(w, r)
+	if err != nil {
 		h.err.Er, h.err.Code = err, http.StatusInternalServerError
 		h.ErrorOut(w)
 		return
 	}
-	if !loggedIn{
+	if !loggedIn {
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 		return
 	}
@@ -218,7 +219,7 @@ func (h *Holder) AddComment(w http.ResponseWriter, r *http.Request) {
 	err, httpStatus := service.CreateComment(newComment, cookie, h.db)
 	if err != nil {
 		h.err.Er, h.err.Code = err, httpStatus
-	 	h.ErrorOut(w)
+		h.ErrorOut(w)
 		return
 	}
 	//redirect back to homepage if everything went well

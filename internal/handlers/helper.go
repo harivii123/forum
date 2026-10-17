@@ -17,7 +17,7 @@ func (h *Holder) redirectIfLoggedIn(w http.ResponseWriter, r *http.Request) bool
 	_, loggedIn, err := h.GetCurrentUser(w, r)
 	if err != nil {
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
-		return true
+		return false
 	}
 
 	if loggedIn {
