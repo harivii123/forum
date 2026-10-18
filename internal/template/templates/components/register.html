@@ -1,23 +1,25 @@
 {{ define "register" }}
-<div class="register-container">
-    <h1>Register</h1>
+<div class="register-container" id="register" popover="auto">
+    <h1>Create an account</h1>
 
-<form method="POST" action="/register">
-    <label>Username</label>
-    <input type="text" name="username" required>
+    <form method="POST" action="/register">
+        <label for="register-username">Username</label>
+        <input type="text" id="register-username" name="username" placeholder="Enter username" autocomplete="username"
+            required>
 
-    <label>Email</label>
-    <input type="email" name="email" required>
+        <label for="register-email">Email</label>
+        <input type="email" id="register-email" name="email" placeholder="Enter email" autocomplete="email" required>
 
-    <label>Password</label>
-    <input type="password" name="password" required>
+        <label for="register-password">Password</label>
+        <input type="password" id="register-password" name="password" placeholder="Create password"
+            autocomplete="new-password" required>
 
-    <button type="submit">Register</button>
-</form>
+        <button class="main-btn" type="submit">Register</button>
+    </form>
 
-<p> Already have an account?
-    <a href="/login"> Log in</a>
-</p>
+    <p class="login-prompt"> Already have an account?
+        <a class="login-link" href="/login"> Log in</a>
+    </p>
 </div>
 
 {{ end }}

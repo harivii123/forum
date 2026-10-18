@@ -3,11 +3,11 @@
 <html lang="en">
 
 <head>
-	<meta charset="UTF-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<link rel="stylesheet" href="/static/styles/styles.css">
-	<script src="/static/js/simple-search.js" defer></script>
-	<title>Lioooooon rawr</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/static/styles/styles.css">
+    <script src="/static/js/simple-search.js" defer></script>
+    <title>Lioooooon rawr</title>
 </head>
 
 <body class="flex flex-row">
@@ -16,20 +16,28 @@
     <div class="dim-layer"></div>
     {{ template "header" . }}
 
-    {{ if .ShowRegister }}
-        {{ template "register" . }}
-    {{ end }}
-
     <div id="computer-menu">
         {{ template "side-filters" . }}
     </div>
     
     <section class="p-(--px24) sm:p-(--px32) md:p-(--px64)">
         {{ template "create-post" . }}
-		{{ template "post" . }}
+        {{ template "post" . }}
     </section>
 
-	<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    {{ if .ShowLogin }}
+    <script>
+        document.getElementById("login")?.showPopover();
+    </script>
+    {{ end }}
+
+    {{ if .ShowRegister }}
+    <script>
+        document.getElementById("register")?.showPopover();
+    </script>
+    {{ end }}
 </body>
 
 </html>
