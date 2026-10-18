@@ -34,7 +34,45 @@
     unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 
+/* Inter (variable 100-900), SIL Open Font License 1.1 */
+@font-face {
+    font-family: "Inter";
+    font-style: normal;
+    font-weight: 100 900;
+    font-display: swap;
+    src: url("/static/fonts/inter-latin-normal.woff2") format("woff2");
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+    font-family: "Inter";
+    font-style: normal;
+    font-weight: 100 900;
+    font-display: swap;
+    src: url("/static/fonts/inter-latin-ext-normal.woff2") format("woff2");
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+    font-family: "Inter";
+    font-style: italic;
+    font-weight: 100 900;
+    font-display: swap;
+    src: url("/static/fonts/inter-latin-italic.woff2") format("woff2");
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+    font-family: "Inter";
+    font-style: italic;
+    font-weight: 100 900;
+    font-display: swap;
+    src: url("/static/fonts/inter-latin-ext-italic.woff2") format("woff2");
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
 :root {
+    --font-text: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     --font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", "Liberation Mono", "Courier New", monospace, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     --blue: #395782;
     --blue-60: rgba(57, 87, 130, 0.6);
@@ -105,7 +143,7 @@ body {
     }
 
     p {
-        font-family: var(--font-family);
+        font-family: var(--font-text);
         font-style: normal;
         font-weight: 300;
         font-size: var(--px14);
@@ -237,7 +275,8 @@ body {
         width: 100%;
     }
 
-    label {
+    label,
+    input[type="submit"] {
         font-size: var(--px14);
         display: flex;
         flex-direction: row;
@@ -251,7 +290,8 @@ body {
         cursor: pointer;
     }
 
-    label:hover {
+    label:hover,
+    input[type="submit"]:hover {
         background: rgba(154, 186, 232, 0.3);
     }
 
@@ -333,12 +373,35 @@ body {
 }
 
 .create-post-form{
-    input {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: space-between;
+    align-items: flex-end;
+    .profile-pic {
+        z-index: 0;
+    }
+    input[type="text"] {
         background: unset;
         corner-shape: unset;
         border-radius: unset;
         outline: unset;
+        padding: unset;
     }
+    input[type="submit"] {
+        width: fit-content;
+        padding-block: 0.3rem;
+        padding-inline: 1.5rem;
+    }
+    input[type="text"]::placeholder {
+            color: var(--peach-80);
+    }
+    input[name="body"] {
+        font-weight: 300;
+        font-size: var(--px14);
+        line-height: 18px;
+    }
+
 }
 
 .comment-button {
@@ -356,6 +419,45 @@ body {
 
 .comment-section {
     display: none;
+}
+
+/* .post-body prefix beats the global label rules (flex, padding, hover bg, checked outline) */
+.post-body label.see-more,
+.post-body label.see-more:hover,
+.post-body label.see-more:has(input:checked) {
+    display: inline;
+    padding: 0;
+    cursor: pointer;
+    font-weight: 400;
+    color: var(--blue-light);
+    background: none;
+    corner-shape: unset;
+    border-radius: 0;
+    outline: none;
+}
+
+.post-body label.see-more:hover {
+    text-decoration: underline;
+}
+
+/* visually hidden but still keyboard-focusable */
+.see-more-toggle {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.body-full,
+.see-less-text,
+.post-body:has(.see-more-toggle:checked) .body-short,
+.post-body:has(.see-more-toggle:checked) .see-more-text {
+    display: none;
+}
+
+.post-body:has(.see-more-toggle:checked) .body-full,
+.post-body:has(.see-more-toggle:checked) .see-less-text {
+    display: inline;
 }
 
 .comment-section:popover-open {
@@ -403,7 +505,7 @@ button {
     outline: 2px solid var(--peach-tr);
     cursor: pointer;
     color: var(--peach);
-    width: fit-content;
+    width: max-content;
 }
 
 button:hover {
@@ -439,6 +541,7 @@ a:hover {
     outline: 2px solid var(--peach-tr);
     cursor: pointer;
     color: var(--peach);
+    width: 100%;
 }
 
 .main-btn:hover {
@@ -903,5 +1006,4 @@ li:has(input:checked) .icon-unchecked {
     width: 0;
     height: 0;
     overflow: hidden;
-}
 }
