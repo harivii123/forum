@@ -21,7 +21,9 @@
     </div>
     
     <section class="p-(--px24) sm:p-(--px32) md:p-(--px64)">
+        {{ if .LoggedIn }}
         {{ template "create-post" . }}
+        {{ end }}
         {{ template "post" . }}
     </section>
 

@@ -73,7 +73,7 @@
 
 :root {
     --font-text: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    --font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", "Liberation Mono", "Courier New", monospace, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    --font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     --blue: #395782;
     --blue-60: rgba(57, 87, 130, 0.6);
     --blue-dark-40: rgba(8, 19, 32, 0.4);
@@ -85,6 +85,7 @@
     --peach-50: rgba(255, 198, 144, 0.5);
     --peach-30: rgba(253, 207, 164, 0.3);
     --peach-tr: rgba(255, 198, 144, 0);
+    --error: rgba(255, 0, 0, 1);
     --small-overflow-gradient: linear-gradient(to left, transparent, black 3%, black 98%, transparent);
 
     --px2: 0.125;
@@ -175,6 +176,19 @@ body {
         color: var(--peach-50)   
     }
 
+        textarea {
+        resize: none;
+        width: 100%;
+        field-sizing: content;
+        font-family: var(--font-text);
+        font-size: var(--px14);
+        color: var(--peach);
+    }
+
+    textarea:focus-visible {
+        outline: none;
+    }
+
 }
 
 @layer base {
@@ -237,6 +251,7 @@ body {
         outline: 2px solid var(--peach-tr);
         display: flex;
         flex-direction: row;
+        font-family: var(--font-text);
     }
 
     input[type="text"]:hover,
@@ -314,7 +329,7 @@ body {
 
 }
 
-.react-btn {
+.icon-btn {
     font-size: var(--px12);
     padding: unset;
     gap: var(--px4);
@@ -326,11 +341,19 @@ body {
     corner-shape: unset;
 }
 
-.react-btn[aria-pressed=true] {
+.icon-btn[aria-pressed=true] {
     color: var(--blue-light);
     svg > * {
         fill: var(--blue-light);
     }
+}
+
+.icon-btn > svg > * {
+    fill: var(--peach);
+}
+
+.icon-btn:hover > svg > * {
+    fill: var(--blue-light);
 }
 
 .post-creation-borders{
@@ -345,32 +368,39 @@ body {
     min-height: 200px;
     z-index: -1;
 
-    :nth-child(1) {
+    > :nth-child(1) {
         overflow: visible;
     }
-    :nth-child(2) {
+    > :nth-child(2) {
         height: 100%;
         grid-column: 2;
         grid-row: 1 / -1;
         width: 100%;
     }
-    :nth-child(3) {
+    > :nth-child(3) {
         overflow: visible;
     }
-    :nth-child(4) {
+    > :nth-child(4) {
         height: 100%;
         width: 100%;
     }
-    :nth-child(5) {
+    > :nth-child(5) {
         height: 100%;
         width: 100%;
     }
-    :nth-child(6) {
+    > :nth-child(6) {
         overflow: visible;
     }
-    :nth-child(7) {
+    > :nth-child(7) {
         overflow: visible;
     }
+}
+
+/* middle piece of the create post frame, lines up with the 2px corner strokes */
+.pcb-middle {
+    box-sizing: border-box;
+    background: var(--blue-60);
+    border-block: 2px solid var(--peach);
 }
 
 .create-post-form{
@@ -379,6 +409,7 @@ body {
     height: 100%;
     justify-content: space-between;
     align-items: flex-end;
+    gap: var(--px8);
     .profile-pic {
         z-index: 0;
     }
@@ -403,7 +434,14 @@ body {
         font-size: var(--px14);
         line-height: 18px;
     }
-
+    input[type="file"] {
+        width: fit-content;
+        display: flex;
+        text-align-last: right;
+    }
+    input[type="file"]::file-selector-button {
+        display: none;
+    }
 }
 
 .comment-button {
@@ -480,13 +518,12 @@ input[name="comment"] {
     background: var(--peach-tr);
     margin: var(--px24);
     width: calc(100vw - 48px);
-    height: auto;
-    overflow: visible;
+    height: 95%;
+    overflow-y: auto;
 
     top: 48%;
     left: 47.5%;
     transform: translate(-50%, -50%);
-    aspect-ratio: 4 / 3;
     .post-frame {
         --pf-fill: var(--blue);
         svg > * {
@@ -494,7 +531,7 @@ input[name="comment"] {
         }
     }
     .post-content {
-        padding: 0.3rem 1.2rem;
+        padding: 1rem 1.5rem;
     }
     .post-piece {
         padding: 0.7rem 6rem;
@@ -1020,4 +1057,13 @@ li:has(input:checked) .icon-unchecked {
     width: 0;
     height: 0;
     overflow: hidden;
+}
+
+/* small inline validation message, e.g. under the create post form */
+.form-error {
+    align-self: flex-start;
+    color: var(--error);
+    font-size: var(--px14);
+    padding-inline: 2.6rem;
+    font-weight: 600;
 }
