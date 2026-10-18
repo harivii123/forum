@@ -1,0 +1,20 @@
+{{ define "edit-profile" }}
+<main class="profile-edit">
+    <h1>Edit profile</h1>
+
+    <p>Username: {{ .User.Username }}</p>
+
+    <form action="/profile/edit" method="POST">
+        <label for="bio">About me</label>
+        <textarea
+            id="bio"
+            name="bio"
+            maxlength="500"
+            rows="5"
+        >{{ .User.Bio }}</textarea>
+
+        <button type="submit">Save changes</button>
+        <a href="/profile">Cancel</a>
+    </form>
+</main>
+{{ end }}
