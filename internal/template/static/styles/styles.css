@@ -335,7 +335,7 @@ body {
 
 .post-creation-borders{
     display: grid;
-    grid-template-columns: 266px 1fr 266px;
+    grid-template-columns: 48.5px 1fr 48.5px;
     grid-template-rows: 70px 1fr 70px;
     position: absolute;
     top: 0;
@@ -728,7 +728,7 @@ li:has(input:checked) .icon-unchecked {
     width: 100%;
     height: fit-content;
     position: relative;
-    min-width: 350px;
+    min-width: 320px;
     max-width: 550px;
 }
 
