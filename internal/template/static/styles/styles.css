@@ -1077,6 +1077,7 @@ li:has(input:checked) .icon-unchecked {
     border: 1px solid var(--peach-tr);
     border-radius: 12px;
     box-shadow: 0 4px 12px rgb(0 0 0 / 20%);
+    overflow-x: hidden;
 }
 
 #profile-menu:popover-open {
@@ -1102,6 +1103,13 @@ li:has(input:checked) .icon-unchecked {
     text-align: left;
     text-decoration: none;
     cursor: pointer;
+    min-width: 0
+}
+
+#profile-menu form {
+    min-width: 0;
+    width: 100%;
+    margin: 0;
 }
 
 #profile-menu a:hover,
@@ -1110,44 +1118,75 @@ li:has(input:checked) .icon-unchecked {
 }
 
 /* Edit profile popup */
-
 #edit-profile[popover] {
     box-sizing: border-box;
     position: fixed;
-    inset: 50% auto auto 50%;
-    transform: translate(-50%, -50%);
+    inset: 0;
+    margin: auto;
 
-    width: min(460px, calc(100vw - 32px));
-    padding: 20px;
+    width: min(600px, calc(100vw - 32px));
+    max-height: calc(100vh - 32px);
+    overflow-y: auto;
+    padding: var(--px24);
 
-    background: var(--blue);
     color: var(--peach);
-    border: 1px solid var(--peach-50);
-    border-radius: 12px;
-    box-shadow: 0 8px 24px rgb(0 0 0 / 30%);
+    background: var(--blue);
+    border: 1px solid var(--peach-80);
+    border-radius: 18px;
+    box-shadow: 0 8px 24px var(--blue-dark-40);
 }
 
 #edit-profile h2 {
-    margin: 0 0 4px;
-    font-size: 2rem;
+    margin: 0 0 var(--px8);
+}
+
+#edit-profile p {
+    margin: 0 0 var(--px8);
+}
+
+#edit-profile form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--px8);
+    margin: 0;
+}
+
+#edit-profile label {
+    display: block;
+    padding: 0.2rem 1rem;
 }
 
 #edit-profile textarea {
     box-sizing: border-box;
     width: 100%;
     min-height: 130px;
-    max-height: 220px;
-    resize: vertical;
+    padding: var(--px12);
 
-    background: var(--blue-dark-40);
-    color: var(--peach);
-    border: 1px solid var(--peach-50);
-    border-radius: 6px;
-    padding: var(--px8);
     font: inherit;
+    color: var(--peach);
+    background: var(--blue-dark-40);
+    border: 2px solid var(--peach-80);
+    border-radius: 10px;
+    resize: vertical;
 }
 
-#edit-profile textarea:focus {
-    outline: 2px solid var(--peach-80);
-    outline-offset: 2px;
+#edit-profile textarea:focus-visible {
+    outline: 1px solid var(--peach-30);
+}
+
+#edit-profile::backdrop {
+    background: rgba(8, 19, 32, 0.55);
+}
+
+.edit-profile-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--px8);
+    margin-top: var(--px8);
+}
+
+.edit-profile-actions button {
+    width: fit-content;
 }
