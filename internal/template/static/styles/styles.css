@@ -288,6 +288,7 @@ body {
         border-radius: 50px;
         outline: 2px solid var(--peach-tr);
         cursor: pointer;
+        color: var(--peach);
     }
 
     label:hover,
@@ -301,7 +302,7 @@ body {
 
     ul {
         max-height: 150px;
-        overflow-y: scroll;
+        overflow-y: auto;
         display: flex;
         flex-direction: column;
         gap: var(--px8);
@@ -392,6 +393,7 @@ body {
         width: fit-content;
         padding-block: 0.3rem;
         padding-inline: 1.5rem;
+        color: var(--peach);
     }
     input[type="text"]::placeholder {
             color: var(--peach-80);
@@ -419,6 +421,17 @@ body {
 
 .comment-section {
     display: none;
+}
+
+input[name="comment"] {
+    padding-right: var(--px8);
+    padding-left: var(--px8);
+    padding-block: 0;
+    background: unset;
+    corner-shape: unset;
+    border-radius: unset;
+    outline: unset; 
+    color: var(--peach-80);
 }
 
 /* .post-body prefix beats the global label rules (flex, padding, hover bg, checked outline) */
@@ -462,7 +475,7 @@ body {
 
 .comment-section:popover-open {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     position: fixed;
     background: var(--peach-tr);
     margin: var(--px24);
@@ -479,6 +492,12 @@ body {
         svg > * {
             fill-opacity: 1;
         }
+    }
+    .post-content {
+        padding: 0.3rem 1.2rem;
+    }
+    .post-piece {
+        padding: 0.7rem 6rem;
     }
 }
 
@@ -684,32 +703,26 @@ li:has(input:checked) .icon-unchecked {
     scale: 0.99;
 }
 
-.filter-list::-webkit-scrollbar {
+.bar::-webkit-scrollbar {
     width: 4px;
     border-radius: 50px;
     overflow-y: auto;
     background: var(--peach-30);
 }
 
-.filter-list::-webkit-scrollbar-thumb {
+.bar::-webkit-scrollbar-thumb {
     border-radius: 50px;
     background: var(--peach);
     overflow-y: auto;
 }
 
-.category-bar::-webkit-scrollbar {
-    height: 4px;
-    border-radius: 50px;
-    overflow-x: auto;
-    background: var(--peach-30);
+.post-piece {
+    display: flex; 
+    flex-direction: row;
+    justify-content: space-between; 
+    padding-inline: 5rem;
+    gap: var(--px24);
 }
-
-.category-bar::-webkit-scrollbar-thumb {
-    border-radius: 50px;
-    background: var(--peach);
-    overflow-x: auto;
-} 
-
 
 .post-section {
     width: 100%;
@@ -773,9 +786,10 @@ li:has(input:checked) .icon-unchecked {
 }
 
 .pf-piece--tl {
-    top: -0.8px;
-    left: 0.8px;
+    top: -1px;
+    left: 1px;
 }
+
 
 .pf-piece--tr {
     top: -0.9px;

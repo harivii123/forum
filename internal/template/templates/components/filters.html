@@ -84,7 +84,7 @@
 {{ define "authors" }}
 {{ template "simple-search" "author-list" }}
 
-<ul id="author-list" class="filter-list">
+<ul id="author-list" class="bar">
 {{ range .Categories }}
 {{ if eq .Type "authors" }} 
 <li class="sharp-borders" data-name="{{ .Category }}">
@@ -104,7 +104,7 @@
 {{ define "genres" }}
 {{ template "simple-search" "genre-list" }}
 
-<ul id="genre-list" class="filter-list">
+<ul id="genre-list" class="bar">
     {{ range .Categories }}
     {{ if eq .Type "genres" }}
     <li class="sharp-borders" data-name="{{ .Category }}">
