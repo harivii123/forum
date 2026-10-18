@@ -1,20 +1,21 @@
 {{ define "edit-profile" }}
-<main class="profile-edit">
-    <h1>Edit profile</h1>
+{{ if .LoggedIn }}
+<div id="edit-profile" popover="auto" class="edit-profile-popup">
+    <h2>Edit profile</h2>
 
     <p>Username: {{ .User.Username }}</p>
 
     <form action="/profile/edit" method="POST">
         <label for="bio">About me</label>
-        <textarea
-            id="bio"
-            name="bio"
-            maxlength="500"
-            rows="5"
-        >{{ .User.Bio }}</textarea>
+        <textarea id="bio" name="bio" maxlength="500" rows="5">{{ .User.Bio }}</textarea>
 
-        <button type="submit">Save changes</button>
-        <a href="/profile">Cancel</a>
+        <div class="edit-profile-actions">
+            <button type="button" popovertarget="edit-profile">
+                Cancel
+            </button>
+            <button type="submit">Save changes</button>
+        </div>
     </form>
-</main>
+</div>
+{{ end }}
 {{ end }}

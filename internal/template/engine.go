@@ -30,9 +30,8 @@ func NewEngine(basePath string) *Engine {
 func (e *Engine) ParseTemplates() {
 	funcMap := e.funcMap.Map()
 	templates := map[string][]string{
-		"index.html":        {"posts.html", "filters.html", "login.html", "register.html", "logout.html", "generals.html", "profile.html", "iconic.html", "comment.html", "video.html"},
-		"error.html":        {"video.html"},
-		"profile-edit.html": {"edit-profile.html"},
+		"index.html": {"posts.html", "filters.html", "login.html", "register.html", "logout.html", "generals.html", "profile.html", "iconic.html", "comment.html", "video.html", "edit-profile.html"},
+		"error.html": {"video.html"},
 	}
 
 	for name, components := range templates {

@@ -9,35 +9,35 @@ import (
 )
 
 // LoadEditProfilePage displays the profile editing form for the currently logged-in user.
-func (h *Holder) LoadEditProfilePage(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
-		h.err.Er = errors.New("Method not allowed")
-		h.err.Code = http.StatusMethodNotAllowed
-		h.ErrorOut(w)
-		return
-	}
+// func (h *Holder) LoadEditProfilePage(w http.ResponseWriter, r *http.Request) {
+	// if r.Method != http.MethodGet {
+	// 	h.err.Er = errors.New("Method not allowed")
+	// 	h.err.Code = http.StatusMethodNotAllowed
+	// 	h.ErrorOut(w)
+	// 	return
+	// }
 
-	user, loggedIn, err := h.GetCurrentUser(w, r)
-	if err != nil {
-		h.err.Er = err
-		h.err.Code = http.StatusInternalServerError
-		h.ErrorOut(w)
-		return
-	}
+// 	user, loggedIn, err := h.GetCurrentUser(w, r)
+// 	if err != nil {
+// 		h.err.Er = err
+// 		h.err.Code = http.StatusInternalServerError
+// 		h.ErrorOut(w)
+// 		return
+// 	}
 
-	if !loggedIn {
-		http.Redirect(w, r, "/login", http.StatusSeeOther)
-		return
-	}
+// 	if !loggedIn {
+// 		http.Redirect(w, r, "/login", http.StatusSeeOther)
+// 		return
+// 	}
 
-	page := h.engine.Render("profile-edit.html", "profile-edit", map[string]any{
-		"User": user,
-	})
+// 	page := h.engine.Render("profile-edit.html", "profile-edit", map[string]any{
+// 		"User": user,
+// 	})
 
-	w.WriteHeader(http.StatusOK)
-	_, _ = w.Write(page)
+// 	w.WriteHeader(http.StatusOK)
+// 	_, _ = w.Write(page)
 
-}
+// }
 
 // UpdateProfile saves the bio of the currently logged-in user.
 func (h *Holder) UpdateProfile(w http.ResponseWriter, r *http.Request) {
@@ -77,5 +77,5 @@ func (h *Holder) UpdateProfile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	http.Redirect(w, r, "/profile/edit", http.StatusSeeOther)
+	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
