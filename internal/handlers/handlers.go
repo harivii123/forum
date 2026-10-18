@@ -171,8 +171,6 @@ func (h *Holder) CreatePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if !ok {
-		// read the unread upload first, otherwise Go closes the connection
-		// mid-upload and the browser shows ERR_CONNECTION_RESET
 		io.Copy(io.Discard, r.Body)
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 		return

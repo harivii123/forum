@@ -396,7 +396,6 @@ body {
     }
 }
 
-/* middle piece of the create post frame, lines up with the 2px corner strokes */
 .pcb-middle {
     box-sizing: border-box;
     background: var(--blue-60);
@@ -472,7 +471,6 @@ input[name="comment"] {
     color: var(--peach-80);
 }
 
-/* .post-body prefix beats the global label rules (flex, padding, hover bg, checked outline) */
 .post-body label.see-more,
 .post-body label.see-more:hover,
 .post-body label.see-more:has(input:checked) {
@@ -491,7 +489,6 @@ input[name="comment"] {
     text-decoration: underline;
 }
 
-/* visually hidden but still keyboard-focusable */
 .see-more-toggle {
     position: absolute;
     opacity: 0;
@@ -903,11 +900,6 @@ li:has(input:checked) .icon-unchecked {
     display: none;
 }
 
-/* .register-container {
-    width: min(100% - 32px, 480px);
-    margin: 100px auto 48px;
-    padding: 24px; */
-
 /* Login and Register triggers */
 .login-trigger {
     anchor-name: --login-anchor;
@@ -1050,8 +1042,6 @@ li:has(input:checked) .icon-unchecked {
     margin-top: 24px;
 }
 
-
-/* holds shared svg <defs>; display:none would break the url(#id) references */
 .svg-defs {
     position: absolute;
     width: 0;
@@ -1059,7 +1049,6 @@ li:has(input:checked) .icon-unchecked {
     overflow: hidden;
 }
 
-/* small inline validation message, e.g. under the create post form */
 .form-error {
     align-self: flex-start;
     color: var(--error);
