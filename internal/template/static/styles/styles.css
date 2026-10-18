@@ -160,6 +160,7 @@ body {
         min-height: 100vh;
         padding: 114px 16px;
         box-sizing: border-box;
+        margin-top: 95px;
     }
     
     section > * {
@@ -271,6 +272,55 @@ body {
     color: var(--blue-light);
     svg > * {
         fill: var(--blue-light);
+    }
+}
+
+.post-creation-borders{
+    display: grid;
+    grid-template-columns: 266px 1fr 266px;
+    grid-template-rows: 70px 1fr 70px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    min-height: 200px;
+    z-index: -1;
+
+    :nth-child(1) {
+        overflow: visible;
+    }
+    :nth-child(2) {
+        height: 100%;
+        grid-column: 2;
+        grid-row: 1 / -1;
+        width: 100%;
+    }
+    :nth-child(3) {
+        overflow: visible;
+    }
+    :nth-child(4) {
+        height: 100%;
+        width: 100%;
+    }
+    :nth-child(5) {
+        height: 100%;
+        width: 100%;
+    }
+    :nth-child(6) {
+        overflow: visible;
+    }
+    :nth-child(7) {
+        overflow: visible;
+    }
+}
+
+.create-post-form{
+    input {
+        background: unset;
+        corner-shape: unset;
+        border-radius: unset;
+        outline: unset;
     }
 }
 
