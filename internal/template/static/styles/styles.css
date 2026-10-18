@@ -1,42 +1,79 @@
-/* Fragment Mono, SIL Open Font License 1.1 */
 @font-face {
-    font-family: "Fragment Mono";
+    font-family: "JetBrains Mono";
     font-style: normal;
-    font-weight: 400;
+    font-weight: 100 800;
     font-display: swap;
-    src: url("/static/fonts/fragment-mono-latin-normal.woff2") format("woff2");
+    src: url("/static/fonts/jetbrains-mono-latin-normal.woff2") format("woff2");
     unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
 @font-face {
-    font-family: "Fragment Mono";
+    font-family: "JetBrains Mono";
     font-style: normal;
-    font-weight: 400;
+    font-weight: 100 800;
     font-display: swap;
-    src: url("/static/fonts/fragment-mono-latin-ext-normal.woff2") format("woff2");
+    src: url("/static/fonts/jetbrains-mono-latin-ext-normal.woff2") format("woff2");
     unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 
 @font-face {
-    font-family: "Fragment Mono";
+    font-family: "JetBrains Mono";
     font-style: italic;
-    font-weight: 400;
+    font-weight: 100 800;
     font-display: swap;
-    src: url("/static/fonts/fragment-mono-latin-italic.woff2") format("woff2");
+    src: url("/static/fonts/jetbrains-mono-latin-italic.woff2") format("woff2");
     unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
 @font-face {
-    font-family: "Fragment Mono";
+    font-family: "JetBrains Mono";
     font-style: italic;
-    font-weight: 400;
+    font-weight: 100 800;
     font-display: swap;
-    src: url("/static/fonts/fragment-mono-latin-ext-italic.woff2") format("woff2");
+    src: url("/static/fonts/jetbrains-mono-latin-ext-italic.woff2") format("woff2");
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* Inter (variable 100-900), SIL Open Font License 1.1 */
+@font-face {
+    font-family: "Inter";
+    font-style: normal;
+    font-weight: 100 900;
+    font-display: swap;
+    src: url("/static/fonts/inter-latin-normal.woff2") format("woff2");
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+    font-family: "Inter";
+    font-style: normal;
+    font-weight: 100 900;
+    font-display: swap;
+    src: url("/static/fonts/inter-latin-ext-normal.woff2") format("woff2");
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+    font-family: "Inter";
+    font-style: italic;
+    font-weight: 100 900;
+    font-display: swap;
+    src: url("/static/fonts/inter-latin-italic.woff2") format("woff2");
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+    font-family: "Inter";
+    font-style: italic;
+    font-weight: 100 900;
+    font-display: swap;
+    src: url("/static/fonts/inter-latin-ext-italic.woff2") format("woff2");
     unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 
 :root {
-    --font-family: "Fragment Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", "Liberation Mono", "Courier New", monospace, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    --font-text: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", "Liberation Mono", "Courier New", monospace, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     --blue: #395782;
     --blue-60: rgba(57, 87, 130, 0.6);
     --blue-dark-40: rgba(8, 19, 32, 0.4);
@@ -48,12 +85,16 @@
     --peach-50: rgba(255, 198, 144, 0.5);
     --peach-30: rgba(253, 207, 164, 0.3);
     --peach-tr: rgba(255, 198, 144, 0);
+    --small-overflow-gradient: linear-gradient(to left, transparent, black 3%, black 98%, transparent);
 
+    --px2: 0.125;
     --px4: 0.25rem;
     --px8: 0.5rem;
     --px12: 0.75rem;
     --px14: 0.875rem;
+    --px15: 0.938rem;
     --px16: 1rem;
+    --px18: 1.125rem;
     --px24: 1.5rem;
     --px32: 2rem;
     --px64: 4rem;
@@ -80,14 +121,16 @@ body {
         font-weight: 400;
         font-size: 1.75rem;
         line-height: 34px;
+        color: var(--peach);
     }
 
     h3 {
         font-family: var(--font-family);
         font-style: normal;
-        font-weight: 400;
-        font-size: var(--px16);
-        line-height: 19px;
+        font-weight: 700;
+        font-size: var(--px14);
+        line-height: 16px;
+        color: var(--peach);
     }
 
     h5 {
@@ -96,49 +139,73 @@ body {
         font-weight: 400;
         font-size: 0.875rem;
         line-height: 17px;
+        color: var(--peach);
     }
 
     p {
+        font-family: var(--font-text);
+        font-style: normal;
+        font-weight: 300;
+        font-size: var(--px14);
+        line-height: 18px;
+        color: var(--peach);
+    }
+
+    small {
         font-family: var(--font-family);
         font-style: normal;
         font-weight: 400;
-        font-size: var(--px16);
-        line-height: 24px;
+        font-size: 11px;
+        line-height: 15px;
+        color: var(--peach-50);
+        padding: 0.05rem 0.65rem;
+        min-width: max-content;
+        background: var(--blue-light-20);
+        corner-shape: bevel;
+        border-radius: 50px;
+        outline: 2px solid var(--peach-tr);
+    }
+
+    time {
+        font-family: var(--font-family);
+        font-style: normal;
+        font-weight: 400;
+        font-size: 11px;
+        line-height: 11px;
+        color: var(--peach-50)   
     }
 
 }
 
 @layer base {
     header {
-        backdrop-filter: blur(12px);
         position: fixed;
         width: 100%;
     }
-
-    section {
-        padding: var(--px24);
-        padding-top: 114px;
-        gap: 84px;
-        display: flex;
-        flex-direction: column;
-        flex: 1;
-        justify-items: center;
-        min-height: 100vh;
-        padding-bottom: 114px;
-        /* sm:p-(--px32) md:p-(--px64) */
+    header::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        backdrop-filter: blur(12px);
+        z-index: -1;
     }
 
-    /* li {
+    section {
         display: flex;
-        flex-direction: row;
-        padding: 0.2rem 1rem;
-        gap: var(--px8);
-        justify-content: space-between;
-        background: var(--blue-light-20);
-        corner-shape: bevel;
-        border-radius: 50px;
-        outline: 2px solid var(--peach-tr);
-    } */
+        flex-direction: column;
+        align-items: center;
+        gap: 84px;
+        width: 100%;
+        min-height: 100vh;
+        padding: 114px 16px;
+        box-sizing: border-box;
+        margin-top: 95px;
+    }
+    
+    section > * {
+        width: 100%;
+        max-width: 550px;
+    }
     legend {
         padding-left: 14px;
         padding-right: 14px;
@@ -199,10 +266,17 @@ body {
         z-index: 10;
         max-height: calc(100vh - 66px);
         backdrop-filter: blur(12px);
-        min-width: max-content;
     }
 
-    label {
+    fieldset {
+        gap: var(--px8);
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    label,
+    input[type="submit"] {
         font-size: var(--px14);
         display: flex;
         flex-direction: row;
@@ -214,9 +288,11 @@ body {
         border-radius: 50px;
         outline: 2px solid var(--peach-tr);
         cursor: pointer;
+        color: var(--peach);
     }
 
-    label:hover {
+    label:hover,
+    input[type="submit"]:hover {
         background: rgba(154, 186, 232, 0.3);
     }
 
@@ -226,7 +302,7 @@ body {
 
     ul {
         max-height: 150px;
-        overflow-y: scroll;
+        overflow-y: auto;
         display: flex;
         flex-direction: column;
         gap: var(--px8);
@@ -238,14 +314,204 @@ body {
 
 }
 
+.react-btn {
+    font-size: var(--px12);
+    padding: unset;
+    gap: var(--px4);
+    align-items: center;
+    font-weight: 700;
+    outline: unset;
+    background: unset;
+    border-radius: unset;
+    corner-shape: unset;
+}
+
+.react-btn[aria-pressed=true] {
+    color: var(--blue-light);
+    svg > * {
+        fill: var(--blue-light);
+    }
+}
+
+.post-creation-borders{
+    display: grid;
+    grid-template-columns: 48.5px 1fr 48.5px;
+    grid-template-rows: 70px 1fr 70px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    min-height: 200px;
+    z-index: -1;
+
+    :nth-child(1) {
+        overflow: visible;
+    }
+    :nth-child(2) {
+        height: 100%;
+        grid-column: 2;
+        grid-row: 1 / -1;
+        width: 100%;
+    }
+    :nth-child(3) {
+        overflow: visible;
+    }
+    :nth-child(4) {
+        height: 100%;
+        width: 100%;
+    }
+    :nth-child(5) {
+        height: 100%;
+        width: 100%;
+    }
+    :nth-child(6) {
+        overflow: visible;
+    }
+    :nth-child(7) {
+        overflow: visible;
+    }
+}
+
+.create-post-form{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: space-between;
+    align-items: flex-end;
+    .profile-pic {
+        z-index: 0;
+    }
+    input[type="text"] {
+        background: unset;
+        corner-shape: unset;
+        border-radius: unset;
+        outline: unset;
+        padding: unset;
+    }
+    input[type="submit"] {
+        width: fit-content;
+        padding-block: 0.3rem;
+        padding-inline: 1.5rem;
+        color: var(--peach);
+    }
+    input[type="text"]::placeholder {
+            color: var(--peach-80);
+    }
+    input[name="body"] {
+        font-weight: 300;
+        font-size: var(--px14);
+        line-height: 18px;
+    }
+
+}
+
+.comment-button {
+    display: flex;
+    cursor: pointer;
+}
+
+
+.comment-toggle {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.comment-section {
+    display: none;
+}
+
+input[name="comment"] {
+    padding-right: var(--px8);
+    padding-left: var(--px8);
+    padding-block: 0;
+    background: unset;
+    corner-shape: unset;
+    border-radius: unset;
+    outline: unset; 
+    color: var(--peach-80);
+}
+
+/* .post-body prefix beats the global label rules (flex, padding, hover bg, checked outline) */
+.post-body label.see-more,
+.post-body label.see-more:hover,
+.post-body label.see-more:has(input:checked) {
+    display: inline;
+    padding: 0;
+    cursor: pointer;
+    font-weight: 400;
+    color: var(--blue-light);
+    background: none;
+    corner-shape: unset;
+    border-radius: 0;
+    outline: none;
+}
+
+.post-body label.see-more:hover {
+    text-decoration: underline;
+}
+
+/* visually hidden but still keyboard-focusable */
+.see-more-toggle {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.body-full,
+.see-less-text,
+.post-body:has(.see-more-toggle:checked) .body-short,
+.post-body:has(.see-more-toggle:checked) .see-more-text {
+    display: none;
+}
+
+.post-body:has(.see-more-toggle:checked) .body-full,
+.post-body:has(.see-more-toggle:checked) .see-less-text {
+    display: inline;
+}
+
+.comment-section:popover-open {
+    display: flex;
+    flex-direction: row;
+    position: fixed;
+    background: var(--peach-tr);
+    margin: var(--px24);
+    width: calc(100vw - 48px);
+    height: auto;
+    overflow: visible;
+
+    top: 48%;
+    left: 47.5%;
+    transform: translate(-50%, -50%);
+    aspect-ratio: 4 / 3;
+    .post-frame {
+        --pf-fill: var(--blue);
+        svg > * {
+            fill-opacity: 1;
+        }
+    }
+    .post-content {
+        padding: 0.3rem 1.2rem;
+    }
+    .post-piece {
+        padding: 0.7rem 6rem;
+    }
+}
+
+.comment-section::backdrop {
+    background: rgba(0, 0, 0, 0.7);
+}
+
 .col {
-    width: fit-content;
+    width: 100%;
     display: flex;
     flex-direction: column;
     gap: var(--px16);
     align-self: flex-start;
     overflow-y: auto;
-    min-width: max-content;
     height: 100%;
 }
 
@@ -258,10 +524,19 @@ button {
     outline: 2px solid var(--peach-tr);
     cursor: pointer;
     color: var(--peach);
+    width: max-content;
 }
 
 button:hover {
     color: var(--blue-light);
+    svg > * {
+        fill: var(--blue-light);
+    }
+}
+
+.close-section {
+    position: absolute;
+    right: 0;
 }
 
 a:hover {
@@ -285,6 +560,7 @@ a:hover {
     outline: 2px solid var(--peach-tr);
     cursor: pointer;
     color: var(--peach);
+    width: 100%;
 }
 
 .main-btn:hover {
@@ -358,23 +634,102 @@ li:has(input:checked) .icon-unchecked {
     width: fit-content;
 }
 
+#phone-filters {
+    display: none;
+}
 
+#phone-filters:popover-open {
+    display: flex;
+    position: fixed;
+    inset: 65px auto auto 0;
+    margin: 0;
+    z-index: 60;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    background: none;
+    width: min-content;
+    gap: var(--px16);
+    min-height: 100vh;
+    padding: var(--px16);
+    flex-direction: column;
+    color: var(--peach);
+    animation: slide-in .3s ease;
+    aside {
+        padding: unset;
+    }
+    #filters {
+        display: flex;
+        max-width: unset;
+        width: 100%;
+    }
+}
+
+#phone-filters::backdrop {
+    inset: 65px 0 0 257px;
+    background: rgb(5 15 30 / .55);
+    transition: background var(--drawer-speed) ease,
+                overlay var(--drawer-speed) allow-discrete,
+                display var(--drawer-speed) allow-discrete;
+            }
+
+
+
+
+#phone-menu {
+    display: none;
+}
+#computer-menu {
+    display: flex;
+}
+
+@media (max-width: 920px) {
+    #filters {
+        display: none;
+    }
+    #phone-menu {
+        display: flex;
+    }
+
+    #computer-menu {
+        display: none;
+    }
+
+    section {
+        padding: 0;
+    }
+}
 
 .scale-h:hover {
     scale: 0.99;
 }
 
-.filter-list::-webkit-scrollbar {
+.bar::-webkit-scrollbar {
     width: 4px;
     border-radius: 50px;
     overflow-y: auto;
     background: var(--peach-30);
 }
 
-.filter-list::-webkit-scrollbar-thumb {
+.bar::-webkit-scrollbar-thumb {
     border-radius: 50px;
     background: var(--peach);
     overflow-y: auto;
+}
+
+.post-piece {
+    display: flex; 
+    flex-direction: row;
+    justify-content: space-between; 
+    padding-inline: 5rem;
+    gap: var(--px24);
+}
+
+.post-section {
+    width: 100%;
+    height: fit-content;
+    position: relative;
+    min-width: 320px;
+    max-width: 550px;
 }
 
 .post-frame {
@@ -387,9 +742,13 @@ li:has(input:checked) .icon-unchecked {
     --pf-bottom-h: 30px;
     --pf-orn-w: 88px;
 
-    position: relative;
+    position: absolute;
     isolation: isolate;
-    min-width: 350px;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: -1;
 }
 
 .pf-fill {
@@ -427,9 +786,10 @@ li:has(input:checked) .icon-unchecked {
 }
 
 .pf-piece--tl {
-    top: -0.8px;
-    left: 0.8px;
+    top: -1px;
+    left: 1px;
 }
+
 
 .pf-piece--tr {
     top: -0.9px;
@@ -494,14 +854,22 @@ li:has(input:checked) .icon-unchecked {
 }
 
 .pf-content {
-    position: relative;
-    padding: 4rem 2rem 2rem;
+    position: relative; 
+    padding: var(--px12); 
+    display: flex;
+    flex-direction: column;
+    gap: var(--px16);
+    padding-bottom: 4px;
 }
 
 .hidden {
     display: none;
 }
 
+/* .register-container {
+    width: min(100% - 32px, 480px);
+    margin: 100px auto 48px;
+    padding: 24px; */
 
 /* Login and Register triggers */
 .login-trigger {
@@ -615,4 +983,41 @@ li:has(input:checked) .icon-unchecked {
 
 #register label:hover {
     background: none;
+}
+
+.register-container input[type="text"],
+.register-container input[type="email"],
+.register-container input[type="password"] {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    padding: var(--px8) var(--px24);
+    background: var(--blue-light-20);
+    color: var(--peach);
+    border: none;
+    corner-shape: bevel;
+    border-radius: 50px;
+    outline: 2px solid var(--peach-tr);
+}
+
+.register-container input:focus-visible {
+    outline: 2px solid var(--peach);
+}
+
+.register-container button {
+    align-self: flex-start;
+    margin-top: 8px;
+}
+
+.register-container p {
+    margin-top: 24px;
+}
+
+
+/* holds shared svg <defs>; display:none would break the url(#id) references */
+.svg-defs {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
 }

@@ -2,6 +2,7 @@
 <header class="top-0 z-10 gap-(--px16) items-center flex flex-row justify-between py-(--px8) px-(--px24)">
     <div class="w-full items-center flex flex-row gap-(--px8)">
         {{ template "logo" . }}
+        {{ template "burger-filters" . }}
         {{ template "search-bar" . }}
     </div>
     {{ if not .LoggedIn }}
@@ -27,8 +28,14 @@
 </header>
 {{ end }}
 
-<!--{{ define "video-background" }}
-<video autoplay muted loop id="background-video">
-    <source src="/static/videos/Smoke_Background.mp4" type="video/mp4">
-</video>
-{{ end }}-->
+
+{{ define "burger-filters" }}
+<div id="phone-menu">
+    <button class="phone-menu-button" popovertarget="phone-filters">{{ template "burger" }}</button>
+    <div id="phone-filters" popover="auto">
+        {{ template "search-bar" . }}
+
+        {{ template "side-filters" . }}
+    </div>
+</div>
+{{ end }}

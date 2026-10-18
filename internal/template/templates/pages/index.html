@@ -11,11 +11,15 @@
 </head>
 
 <body class="flex flex-row">
+	{{ template "avatar-defs" }}
     {{ template "video-background" . }}
+    <div class="dim-layer"></div>
     {{ template "header" . }}
 
-    {{ template "side-filters" . }}
-
+    <div id="computer-menu">
+        {{ template "side-filters" . }}
+    </div>
+    
     <section class="p-(--px24) sm:p-(--px32) md:p-(--px64)">
         {{ template "create-post" . }}
         {{ template "post" . }}
