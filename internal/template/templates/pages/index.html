@@ -20,7 +20,7 @@
         {{ template "side-filters" . }}
     </div>
     
-    <section class="p-(--px24) sm:p-(--px32) md:p-(--px64)">
+    <section class="p-(--px24) sm:px-(--px32) md:px-(--px64)">
         {{ if .LoggedIn }}
         {{ template "create-post" . }}
         {{ end }}
