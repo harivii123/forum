@@ -1088,22 +1088,27 @@ li:has(input:checked) .icon-unchecked {
 
 /* Menu items */
 #profile-menu a,
+#profile-menu>button,
 #profile-menu form button {
     display: block;
     box-sizing: border-box;
     width: 100%;
     padding: var(--px8);
-
     border: none;
     border-radius: 6px;
     background: transparent;
-
     color: var(--peach);
     font: inherit;
     text-align: left;
     text-decoration: none;
     cursor: pointer;
-    min-width: 0
+    min-width: 0;
+}
+
+#profile-menu a:hover,
+#profile-menu>button:hover,
+#profile-menu form button:hover {
+    background: var(--blue--light-15);
 }
 
 #profile-menu form {
@@ -1112,10 +1117,6 @@ li:has(input:checked) .icon-unchecked {
     margin: 0;
 }
 
-#profile-menu a:hover,
-#profile-menu form button:hover {
-    background: var(--blue--light-15);
-}
 
 /* Edit profile popup */
 #edit-profile[popover] {
@@ -1138,6 +1139,7 @@ li:has(input:checked) .icon-unchecked {
 
 #edit-profile h2 {
     margin: 0 0 var(--px8);
+    text-align: center;
 }
 
 #edit-profile p {
