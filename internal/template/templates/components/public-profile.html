@@ -1,0 +1,31 @@
+{{ define "public-profile" }}
+<section class="public-profile-page">
+    <div class="public-profile-card">
+        <div class="public-profile-banner"></div>
+
+        <div class="public-profile-content">
+            {{ template "profile-pic" .User }}
+
+            <h1>{{ .User.Username }}</h1>
+
+            <div class="public-profile-divider">
+                <span>✧</span>
+            </div>
+
+            <div class="public-profile-bio">
+                {{ if .User.Bio }}
+                <p>{{ .User.Bio }}</p>
+                {{ else }}
+                <p>No bio yet.</p>
+                {{ end }}
+            </div>
+
+            <a href="/" class="public-profile-back">
+                ← Back to forum
+            </a>
+        </div>
+
+        <span class="public-profile-ornament">✧</span>
+    </div>
+</section>
+{{ end }}
