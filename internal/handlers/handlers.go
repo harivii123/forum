@@ -165,6 +165,7 @@ func (h *Holder) CreatePost(w http.ResponseWriter, r *http.Request) {
 	newPost := models.Post{
 		Title: r.FormValue("title"),
 		Body:  r.FormValue("body"),
+	//	Category: r.FormValue("genre"),
 	}
 	//user data from request cookies
 	cookie, err := r.Cookie("session_token")
