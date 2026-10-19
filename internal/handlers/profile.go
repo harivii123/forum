@@ -1,43 +1,14 @@
 package handlers
 
 import (
+	"database/sql"
 	"errors"
 	"forum/internal/database"
 	"net/http"
+	"strconv"
 	"strings"
 	"unicode/utf8"
 )
-
-// LoadEditProfilePage displays the profile editing form for the currently logged-in user.
-// func (h *Holder) LoadEditProfilePage(w http.ResponseWriter, r *http.Request) {
-	// if r.Method != http.MethodGet {
-	// 	h.err.Er = errors.New("Method not allowed")
-	// 	h.err.Code = http.StatusMethodNotAllowed
-	// 	h.ErrorOut(w)
-	// 	return
-	// }
-
-// 	user, loggedIn, err := h.GetCurrentUser(w, r)
-// 	if err != nil {
-// 		h.err.Er = err
-// 		h.err.Code = http.StatusInternalServerError
-// 		h.ErrorOut(w)
-// 		return
-// 	}
-
-// 	if !loggedIn {
-// 		http.Redirect(w, r, "/login", http.StatusSeeOther)
-// 		return
-// 	}
-
-// 	page := h.engine.Render("profile-edit.html", "profile-edit", map[string]any{
-// 		"User": user,
-// 	})
-
-// 	w.WriteHeader(http.StatusOK)
-// 	_, _ = w.Write(page)
-
-// }
 
 // UpdateProfile saves the bio of the currently logged-in user.
 func (h *Holder) UpdateProfile(w http.ResponseWriter, r *http.Request) {
@@ -78,4 +49,29 @@ func (h *Holder) UpdateProfile(w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.Redirect(w, r, "/", http.StatusSeeOther)
+}
+
+func (h *Holder) LoadPublicProfilePage(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(r.PathValue("id"))
+	if err != nil || id <= 0 {
+		http.NotFound(w, r)
+		return
+	}
+
+	user, err := database.GetUserByID(h.db, id)
+	if errors.Is(err, sql.ErrNoRows) {
+		http.NotFound(w, r)
+		return
+	}
+	if err != nil {
+		h.ErrorOut(w)
+		return
+	}
+
+	data := map[string]any{
+		"User":            user,
+		"IsPublicProfile": true,
+	}
+
+	w.Write(h.engine.Render("index.html", "base", data))
 }

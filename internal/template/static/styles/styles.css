@@ -1176,8 +1176,11 @@ li:has(input:checked) .icon-unchecked {
     outline: 1px solid var(--peach-30);
 }
 
-#edit-profile::backdrop {
+#edit-profile::backdrop,
+#login::backdrop,
+#register::backdrop {
     background: rgba(8, 19, 32, 0.55);
+    backdrop-filter: blur(1px);
 }
 
 .edit-profile-actions {
@@ -1191,4 +1194,84 @@ li:has(input:checked) .icon-unchecked {
 
 .edit-profile-actions button {
     width: fit-content;
+}
+
+
+/* Public profile — restore card frame and layout */
+
+.public-profile-page {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100%;
+    min-width: 0;
+    height: auto;
+    min-height: 0;
+    margin: 0;
+    padding: 24px;
+    box-sizing: border-box;
+}
+
+.public-profile-card {
+    display: block;
+    width: min(560px, 100%);
+    margin: 0;
+    box-sizing: border-box;
+    border: 1px solid var(--peach);
+    background: var(--blue-dark-40);
+}
+
+.public-profile-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.public-profile-banner,
+.public-profile-divider,
+.public-profile-ornament {
+    display: none;
+}
+
+.public-profile-content>.profile-pic {
+    width: 64px;
+    height: 64px;
+    border: 2px solid var(--peach);
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.public-profile-content h1 {
+    margin: 16px 0 24px;
+    overflow-wrap: anywhere;
+}
+
+.public-profile-bio {
+    width: 100%;
+    margin: 8px 0 24px;
+    padding: 16px;
+    box-sizing: border-box;
+    border: 1px solid var(--peach-30);
+    background: var(--blue-60);
+}
+
+.public-profile-back {
+    display: inline-block;
+    padding: 10px 20px;
+    border: 1px solid var(--peach);
+    color: var(--peach);
+    text-decoration: none;
+}
+
+@media (max-width: 600px) {
+    .public-profile-page {
+        padding: 16px 12px;
+    }
+
+    .public-profile-content {
+        padding: 24px 16px;
+    }
 }
