@@ -10,6 +10,7 @@ func Router(holder *Holder) *http.ServeMux {
 	mux := http.NewServeMux()
 	sub, _ := fs.Sub(template.Statics, "static")
 	mux.Handle("GET /static/", http.StripPrefix("/static/", http.FileServer(http.FS(sub))))
+	mux.Handle("GET /uploads/", http.StripPrefix("/uploads/", http.FileServer(http.Dir("uploads"))))
 	mux.HandleFunc("/{$}", holder.LoadFrontPage)
 	mux.HandleFunc("POST /post", holder.CreatePost)
 	mux.HandleFunc("/login", holder.LoadRegistryPage)
@@ -28,6 +29,8 @@ func Router(holder *Holder) *http.ServeMux {
 	})
 	mux.HandleFunc("/logout", holder.Logout)
 	mux.HandleFunc("/profile", holder.LoadProfilePage)
+	mux.HandleFunc("GET /users/{id}", holder.LoadPublicProfilePage)
+	mux.HandleFunc("POST /profile/edit", holder.UpdateProfile)
 	mux.HandleFunc("POST /posts/{id}/vote", holder.VoteOnPost)
 	mux.HandleFunc("POST /{ID}/comment", holder.AddComment)
 

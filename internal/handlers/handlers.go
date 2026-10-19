@@ -6,11 +6,15 @@ import (
 	"forum/internal/database"
 	"forum/internal/models"
 	"forum/internal/service"
+	"io"
 	"log"
 	"net/http"
 	"net/url"
+	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
+	"uuid"
 )
 
 func (h *Holder) LoadRegistryPage(w http.ResponseWriter, r *http.Request) {
@@ -113,7 +117,13 @@ func (h *Holder) RenderFrontPage(w http.ResponseWriter, r *http.Request, showAut
 	var categories []models.CategoryView
 
 	categories, err = service.GetCategories(ctx, h.db)
-	query := r.URL.RawQuery
+
+	// post_error is a one-time message from CreatePost; drop it from Query so
+	// vote redirects don't carry it along and show it again
+	q := r.URL.Query()
+	postErr := postErrorMessages[q.Get("post_error")]
+	q.Del("post_error")
+	query := q.Encode()
 
 	frontPage := h.engine.Render("index.html", "base", map[string]any{
 		"Posts":        posts,
@@ -125,6 +135,7 @@ func (h *Holder) RenderFrontPage(w http.ResponseWriter, r *http.Request, showAut
 		"Query":        query,
 		"ShowLogin":    showAuth == "login",
 		"ShowRegister": showAuth == "register",
+		"PostError":    postErr,
 	})
 	w.WriteHeader(http.StatusOK)
 	w.Write(frontPage)
@@ -150,6 +161,8 @@ func (h *Holder) LoadRegistrationPage(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Holder) CreatePost(w http.ResponseWriter, r *http.Request) {
+	r.Body = http.MaxBytesReader(w, r.Body, 20<<20)
+
 	//Check if user is logged in
 	_, ok, err := h.GetCurrentUser(w, r)
 	if err != nil {
@@ -158,24 +171,103 @@ func (h *Holder) CreatePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if !ok {
+		io.Copy(io.Discard, r.Body)
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 		return
+	}
+
+	if err := r.ParseMultipartForm(20 << 20); err != nil {
+		var tooBig *http.MaxBytesError
+		if errors.As(err, &tooBig) {
+			postError(w, r, "too_large")
+			return
+		}
+		h.err.Er, h.err.Code = err, http.StatusBadRequest
+		h.ErrorOut(w)
+		return
+	}
+	if strings.TrimSpace(r.FormValue("title")) == "" || strings.TrimSpace(r.FormValue("body")) == "" {
+		postError(w, r, "empty")
+		return
+	}
+	file, header, err := r.FormFile("image")
+	if err != nil && !errors.Is(err, http.ErrMissingFile) {
+		h.err.Er, h.err.Code = err, http.StatusInternalServerError
+		h.ErrorOut(w)
+		return
+	}
+	var imagePath string
+	var path string
+	if file != nil {
+		defer file.Close()
+		if header.Size > 5<<20 {
+			postError(w, r, "too_large")
+			return
+		}
+		isImage := make([]byte, 512)
+		n, err := file.Read(isImage)
+		if err != nil {
+			h.err.Er, h.err.Code = err, http.StatusBadRequest
+			h.ErrorOut(w)
+			return
+		}
+		fileType := http.DetectContentType(isImage[:n])
+		name := uuid.New().String()
+		var end string
+		switch fileType {
+		case "image/png":
+			end = ".png"
+		case "image/jpeg":
+			end = ".jpeg"
+		case "image/gif":
+			end = ".gif"
+		default:
+			postError(w, r, "bad_type")
+			return
+		}
+		_, err = file.Seek(0, 0)
+		if err != nil {
+			h.err.Er, h.err.Code = err, http.StatusInternalServerError
+			h.ErrorOut(w)
+			return
+		}
+		imagePath = "/uploads/" + name + end
+		path = filepath.Join("uploads", name+end)
+		dst, err := os.Create(path)
+		if err != nil {
+			h.err.Er, h.err.Code = err, http.StatusInternalServerError
+			h.ErrorOut(w)
+			return
+		}
+		defer dst.Close()
+
+		_, err = io.Copy(dst, file)
+		if err != nil {
+			h.err.Er, h.err.Code = err, http.StatusInternalServerError
+			os.Remove(path)
+			h.ErrorOut(w)
+			return
+		}
 	}
 
 	newPost := models.Post{
 		Title: r.FormValue("title"),
 		Body:  r.FormValue("body"),
-	//	Category: r.FormValue("genre"),
+		Image: imagePath,
 	}
 	//user data from request cookies
 	cookie, err := r.Cookie("session_token")
 	//createpost returns err and appropriate http code
 	err, httpStatus := service.CreatePost(cookie, newPost, h.db)
 	if err != nil {
-		h.err.Er, h.err.Code = err, httpStatus
+		h.err.Er, h.err.Code = err, http.StatusInternalServerError
+		if path != "" {
+			os.Remove(path)
+		}
 		h.ErrorOut(w)
 		return
 	}
+
 	//redirect back to homepage if everything went well
 	http.Redirect(w, r, "/", httpStatus)
 }
@@ -274,4 +366,17 @@ func filtersFromQuery(q url.Values, userID int, loggedIn bool) (string, []any) {
 	}
 
 	return result, args
+}
+
+// user-facing messages for create post validation errors, keyed by the
+// post_error query value so arbitrary text can't be injected via the URL
+var postErrorMessages = map[string]string{
+	"empty":     "Title and text cannot be empty.",
+	"too_large": "Image is too large (max 5 MB).",
+	"bad_type":  "Only PNG, JPEG and GIF images are allowed.",
+}
+
+// sends the user back to the front page where the form shows the error
+func postError(w http.ResponseWriter, r *http.Request, code string) {
+	http.Redirect(w, r, "/?post_error="+code, http.StatusSeeOther)
 }

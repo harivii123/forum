@@ -1,8 +1,11 @@
 {{ define "header" }}
 <header class="top-0 z-10 gap-(--px16) items-center flex flex-row justify-between py-(--px8) px-(--px24)">
     <div class="w-full items-center flex flex-row gap-(--px8)">
-        {{ template "logo" . }}
+        <a href="/" aria-label="Home">{{ template "logo" . }}</a>
+        {{ if not .IsPublicProfile }}
+        {{ template "burger-filters" . }}
         {{ template "search-bar" . }}
+        {{ end }}
     </div>
     {{ if not .LoggedIn }}
     <div class="flex flex-row ">
@@ -21,14 +24,29 @@
     </div>
     {{ end }}
     <div class=" flex flex-row items-center {{ if .LoggedIn }}visible{{ else }}hidden{{ end }}">
-        {{ template "logout" . }}
-        {{ template "profile-pic" .Profile }}
+        <div class="header-avatar">
+            <button type="button" class="profile-menu-trigger" popovertarget="profile-menu"
+                aria-label="Open profile menu">
+                {{ template "avatar-borders" .Profile }}
+                <img class="profile-pic"
+                    src="{{ if .Profile.ProfilePicture }}{{ .Profile.ProfilePicture }}{{ else }}/static/avatars/default-avatar.png{{ end }}"
+                    alt="{{ .Profile.Username }}">
+            </button>
+        </div>
+        {{ template "profile-menu" . }}
+        {{ template "edit-profile" . }}
     </div>
 </header>
 {{ end }}
 
-<!--{{ define "video-background" }}
-<video autoplay muted loop id="background-video">
-    <source src="/static/videos/Smoke_Background.mp4" type="video/mp4">
-</video>
-{{ end }}-->
+
+{{ define "burger-filters" }}
+<div id="phone-menu">
+    <button class="phone-menu-button" popovertarget="phone-filters">{{ template "burger" }}</button>
+    <div id="phone-filters" popover="auto">
+        {{ template "search-bar" . }}
+
+        {{ template "side-filters" . }}
+    </div>
+</div>
+{{ end }}

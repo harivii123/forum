@@ -45,7 +45,7 @@ func GetSessionUserID(db *sql.DB, token string) (int, error) {
 
 func GetUserByID(db *sql.DB, userID int) (*models.User, error) {
 	var user models.User
-	err := db.QueryRow(`SELECT id, username, email FROM user WHERE id = ?`, userID).Scan(&user.ID, &user.Username, &user.Email)
+	err := db.QueryRow(`SELECT id, username, email, COALESCE(bio,''), COALESCE(profile_picture,'') FROM user WHERE id = ?`, userID).Scan(&user.ID, &user.Username, &user.Email, &user.Bio, &user.ProfilePicture)
 
 	if err != nil {
 		return nil, err

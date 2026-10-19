@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"database/sql"
-	"errors"
 	"forum/internal/database"
 	"forum/internal/models"
 	"net/http"
@@ -136,12 +135,6 @@ func postCats(match string) []models.CategoryView {
 
 func CreatePost(cookie *http.Cookie, newPost models.Post, db *sql.DB) (error, int) {
 
-	if (newPost.Body == "" && newPost.Title != "") || (newPost.Title == "" && newPost.Body != "") {
-		return errors.New("Please fill out both fields when making a new post"), http.StatusBadRequest
-	} else if newPost.Body == "" && newPost.Title == "" {
-		return nil, http.StatusSeeOther
-	}
-
 	tx, err := db.Begin()
 	if err != nil {
 		return err, http.StatusInternalServerError
@@ -154,9 +147,15 @@ func CreatePost(cookie *http.Cookie, newPost models.Post, db *sql.DB) (error, in
 	}
 	newPost.UserID, newPost.Created = userID, time.Now()
 
-	err = database.CreatePost(tx, newPost)
+	err, pID := database.CreatePost(tx, newPost)
 	if err != nil {
 		return err, http.StatusInternalServerError
+	}
+	for i:=range newPost.Categories{
+		err = database.AddCategoryPostRelationship(tx, pID, newPost.Categories[i].ID)
+		if err != nil {
+			return err, http.StatusInternalServerError
+		}
 	}
 	err = tx.Commit()
 	if err != nil {

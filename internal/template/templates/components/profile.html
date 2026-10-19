@@ -1,6 +1,20 @@
 {{ define "profile-pic" }}
-    <div class="avatar">
-        <img class="profile-pic" src="{{ if .ProfilePicture }}{{ .ProfilePicture }}{{ else }}/static/avatars/default-avatar.png{{ end }}" alt="{{ .Username }}">
-        {{ template "avatar-borders" . }}
-    </div>
+<div class="avatar">
+    {{ template "avatar-borders" . }}
+    <img class="profile-pic"
+        src="{{ if .ProfilePicture }}{{ .ProfilePicture }}{{ else }}/static/avatars/default-avatar.png{{ end }}"
+        alt="{{ .Username }}">
+</div>
+{{ end }}
+
+{{ define "profile-menu"}}
+<nav id="profile-menu" popover="auto" class="profile-menu-dropdown">
+    <button type="button" popovertarget="edit-profile">
+        Edit profile
+    </button>
+    <form action="/logout" method="POST">
+        <button type="submit">Log out</button>
+    </form>
+</nav>
+
 {{ end }}
