@@ -99,8 +99,8 @@ func GetPostsByCategory(db *sql.DB, categoryName string) ([]models.Post, error) 
 // creates a post to db
 func CreatePost(tx *sql.Tx, newPost models.Post) (err error) {
 	_, err = tx.Exec(`
-		INSERT INTO post (user_id, title, body, created_at) VALUES (?, ?, ?, ?)
-		`, newPost.UserID, newPost.Title, newPost.Body, newPost.Created,
+		INSERT INTO post (user_id, title, body, image, created_at) VALUES (?, ?, ?, ?, ?)
+		`, newPost.UserID, newPost.Title, newPost.Body, newPost.Image, newPost.Created,
 	)
 	if err != nil {
 		return err

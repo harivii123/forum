@@ -73,7 +73,7 @@
 
 :root {
     --font-text: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    --font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", "Liberation Mono", "Courier New", monospace, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    --font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     --blue: #395782;
     --blue-60: rgba(57, 87, 130, 0.6);
     --blue-dark-40: rgba(8, 19, 32, 0.4);
@@ -85,6 +85,7 @@
     --peach-50: rgba(255, 198, 144, 0.5);
     --peach-30: rgba(253, 207, 164, 0.3);
     --peach-tr: rgba(255, 198, 144, 0);
+    --error: rgba(255, 0, 0, 1);
     --small-overflow-gradient: linear-gradient(to left, transparent, black 3%, black 98%, transparent);
 
     --px2: 0.125;
@@ -175,6 +176,19 @@ body {
         color: var(--peach-50)
     }
 
+        textarea {
+        resize: none;
+        width: 100%;
+        field-sizing: content;
+        font-family: var(--font-text);
+        font-size: var(--px14);
+        color: var(--peach);
+    }
+
+    textarea:focus-visible {
+        outline: none;
+    }
+
 }
 
 @layer base {
@@ -239,6 +253,7 @@ body {
         outline: 2px solid var(--peach-tr);
         display: flex;
         flex-direction: row;
+        font-family: var(--font-text);
     }
 
     input[type="text"]:hover,
@@ -316,7 +331,7 @@ body {
 
 }
 
-.react-btn {
+.icon-btn {
     font-size: var(--px12);
     padding: unset;
     gap: var(--px4);
@@ -328,13 +343,22 @@ body {
     corner-shape: unset;
 }
 
-.react-btn[aria-pressed=true] {
+.icon-btn[aria-pressed=true] {
     color: var(--blue-light);
 
     svg>* {
         fill: var(--blue-light);
     }
 }
+
+.icon-btn > svg > * {
+    fill: var(--peach);
+}
+
+.icon-btn:hover > svg > * {
+    fill: var(--blue-light);
+}
+
 
 .post-creation-borders {
     display: grid;
@@ -348,38 +372,39 @@ body {
     min-height: 200px;
     z-index: -1;
 
-    :nth-child(1) {
+    > :nth-child(1) {
         overflow: visible;
     }
+    > :nth-child(2) {
 
-    :nth-child(2) {
         height: 100%;
         grid-column: 2;
         grid-row: 1 / -1;
         width: 100%;
     }
-
-    :nth-child(3) {
+    > :nth-child(3) {
         overflow: visible;
     }
-
-    :nth-child(4) {
+    > :nth-child(4) {
         height: 100%;
         width: 100%;
     }
-
-    :nth-child(5) {
+    > :nth-child(5) {
         height: 100%;
         width: 100%;
     }
-
-    :nth-child(6) {
+    > :nth-child(6) {
         overflow: visible;
     }
-
-    :nth-child(7) {
+    > :nth-child(7) {
         overflow: visible;
     }
+}
+
+.pcb-middle {
+    box-sizing: border-box;
+    background: var(--blue-60);
+    border-block: 2px solid var(--peach);
 }
 
 .create-post-form {
@@ -388,6 +413,7 @@ body {
     height: 100%;
     justify-content: space-between;
     align-items: flex-end;
+    gap: var(--px8);
 
     .profile-pic {
         z-index: 0;
@@ -417,7 +443,14 @@ body {
         font-size: var(--px14);
         line-height: 18px;
     }
-
+    input[type="file"] {
+        width: fit-content;
+        display: flex;
+        text-align-last: right;
+    }
+    input[type="file"]::file-selector-button {
+        display: none;
+    }
 }
 
 .comment-button {
@@ -448,7 +481,6 @@ input[name="comment"] {
     color: var(--peach-80);
 }
 
-/* .post-body prefix beats the global label rules (flex, padding, hover bg, checked outline) */
 .post-body label.see-more,
 .post-body label.see-more:hover,
 .post-body label.see-more:has(input:checked) {
@@ -467,7 +499,6 @@ input[name="comment"] {
     text-decoration: underline;
 }
 
-/* visually hidden but still keyboard-focusable */
 .see-more-toggle {
     position: absolute;
     opacity: 0;
@@ -493,15 +524,15 @@ input[name="comment"] {
     position: fixed;
     background: var(--peach-tr);
     margin: var(--px24);
-    width: calc(100vw - 48px);
-    height: auto;
-    overflow: visible;
+    width: fit-content;
+    max-width: calc(100vw - 48px);
+    max-height: 95%;
+    height: fit-content;
+    overflow-y: auto;
 
     top: 48%;
     left: 47.5%;
     transform: translate(-50%, -50%);
-    aspect-ratio: 4 / 3;
-
     .post-frame {
         --pf-fill: var(--blue);
 
@@ -511,7 +542,7 @@ input[name="comment"] {
     }
 
     .post-content {
-        padding: 0.3rem 1.2rem;
+        padding: 1rem 1.5rem;
     }
 
     .post-piece {
@@ -889,11 +920,6 @@ li:has(input:checked) .icon-unchecked {
     display: none;
 }
 
-/* .register-container {
-    width: min(100% - 32px, 480px);
-    margin: 100px auto 48px;
-    padding: 24px; */
-
 /* Login and Register triggers */
 .login-trigger {
     anchor-name: --login-anchor;
@@ -1036,13 +1062,19 @@ li:has(input:checked) .icon-unchecked {
     margin-top: 24px;
 }
 
-
-/* holds shared svg <defs>; display:none would break the url(#id) references */
 .svg-defs {
     position: absolute;
     width: 0;
     height: 0;
     overflow: hidden;
+}
+
+.form-error {
+    align-self: flex-start;
+    color: var(--error);
+    font-size: var(--px14);
+    padding-inline: 2.6rem;
+    font-weight: 600;
 }
 
 /* Profile menu trigger */

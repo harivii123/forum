@@ -1,58 +1,69 @@
 {{ define "post" }}
-{{ range .Posts }}
-<div class="post-section">
-    <div class="post-frame">
-        {{ template "post-borders" }}
+    {{ range .Posts }}
+    <div class="post-section">
+        <div class="post-frame">
+            {{ template "post-borders" }}
+        </div>
+        <div class="pf-content">
+            {{ template "post-content" (dict "Post" . "Profile" $.Profile "Query" $.Query) }}
+            {{ template "comment-section" (dict "Post" . "Profile" $.Profile "Query" $.Query "LoggedIn" $.LoggedIn) }}
+        </div>
     </div>
-    <div class="pf-content">
-        {{ template "post-content" (dict "Post" . "Profile" $.Profile "Query" $.Query) }}
-        {{ template "comment-section" (dict "Post" . "Profile" $.Profile "Query" $.Query) }}
-    </div>
-</div>
 {{ end }}
 {{ end }}
 
 {{ define "create-post" }}
-<div class="relative h-fit flex flex-col min-h-[200px] px-[3.1rem] py-[0.8rem]">
-    <form class="create-post-form" method="POST" action="/post">
-        <div class="w-full flex flex-col gap-(--px8)">
-            <div class="flex flex-row gap-(--px8)">
-                {{ template "profile-pic" .Post.Poster }}
-                <input type="text" name="title" placeholder="Title" />
-            </div>
-            <input type="text" name="body" placeholder="What’s in your mind?" />
-        </div>
-        <input type="submit" value="Post" placeholder="Submit" />
-    </form>
+<div class="flex flex-col gap-(--px8)">
+    {{ if .PostError }}
+        <p class="form-error" role="alert">{{ .PostError }}</p>
+    {{ end }}
+    <div class="relative h-fit flex flex-col min-h-[200px] px-[3.1rem] py-[0.8rem]">
+            <form class="create-post-form" method="POST" action="/post" enctype="multipart/form-data">
+                <div class="w-full flex flex-col gap-(--px8)">
+                    <div class="flex flex-row gap-(--px8)">
+                        {{ template "profile-pic" .Post.Poster }}
+                        <input type="text" name="title" placeholder="Title" />
+                    </div>
+                    <textarea type="text" name="body" placeholder="What’s in your mind?" ></textarea>
+                </div>
+                <div class="flex flex-row gap-(--px8)">
+                    <label class="icon-btn">
+                        <input type="file" name="image" accept="image/png, image/jpeg, image/gif">
+                        {{ template "add-imgage-icon" }}
+                    </label>
+                    <input type="submit" value="Post" placeholder="Submit" />     
+                </div>
+            </form>
 
-    <div class="post-creation-borders">{{ template "post-creation-borders" }}</div>
+        <div class="post-creation-borders">{{ template "post-creation-borders" }}</div>
+    </div>
 </div>
 {{ end }}
 
 {{ define "post-content" }}
-{{ template "post-details" . }}
-
-<div class="flex flex-col gap-(--px4)">
-    <div class="px-(--px18) gap-(--px8) flex flex-row">
-        {{ template "post-likes" . }}
-        <button class="react-btn comment-button" popovertarget="comments-{{ .Post.ID }}">
-            {{ template "comment-icon" }}{{ len .Post.Comments}}
-        </button>
+    {{ template "post-details" . }}
+    <div class="flex flex-col gap-(--px4)">
+        <div class="px-(--px18) gap-(--px8) flex flex-row">
+            {{ template "post-likes" . }}
+            <button class="icon-btn comment-button" popovertarget="comments-{{ .Post.ID }}">
+                {{ template "comment-icon" }}{{ len .Post.Comments}}
+            </button>
+        </div>
     </div>
 </div>
 
 {{ end }}
 
 {{ define "post-likes" }}
-<form class="gap-(--px8) flex flex-row" method="POST" action="/posts/{{ .Post.ID }}/vote">
-    <button class="react-btn" name="vote" value="1" {{ range .Post.PostLikers }}{{ if eq .ID $.Profile.ID
-        }}aria-pressed="true" {{ end }}{{ end }}>
+    <form class="gap-(--px8) flex flex-row" method="POST" action="/posts/{{ .Post.ID }}/vote">
+        <button class="icon-btn" name="vote" value="1"
+        {{ range .Post.PostLikers }}{{ if eq .ID $.Profile.ID }}aria-pressed="true"{{ end }}{{ end }}>
         {{ template "thumb-up" }}{{ len .Post.PostLikers }}
-    </button>
-    <button class="react-btn" name="vote" value="-1" {{ range .Post.PostDislikers }}{{ if eq .ID $.Profile.ID
-        }}aria-pressed="true" {{ end }}{{ end }}>{{ template "thumb-down" }}{{ len .Post.PostDislikers }}</button>
-    <input type="hidden" name="redirect" value="{{ $.Query }}" />
-</form>
+        </button>
+        <button class="icon-btn" name="vote" value="-1"
+        {{ range .Post.PostDislikers }}{{ if eq .ID $.Profile.ID }}aria-pressed="true"{{ end }}{{ end }}>{{ template "thumb-down" }}{{ len .Post.PostDislikers }}</button>
+        <input type="hidden" name="redirect" value="{{ $.Query }}" />
+    </form>
 {{ end }}
 
 {{ define "post-details" }}
@@ -69,15 +80,9 @@
             <time>{{ elapsed .Post.Created }}</time>
         </div>
     </div>
-</div>
-
-
-<div class="hidden">
-    {{ .Post.Image }}
-</div>
-
-
-<div class="post-content flex flex-col gap-(--px8)">
+</div>    
+{{ if .Post.Image }}<img src="{{ .Post.Image }}"></img>{{ end }}
+<div class="post-content flex flex-col gap-(--px8) w-0 min-w-full">
     <div class="flex flex-col gap-(--px4)">
         <h3>{{ .Post.Title }}</h3>
         {{ if gt (len .Post.Body) 200 }}
@@ -94,6 +99,7 @@
         <p>{{ .Post.Body }}</p>
         {{ end }}
     </div>
+    {{ if .Post.Categories }}
     <div class="category-bar mask-(--small-overflow-gradient) gap-(--px4) overflow-x-auto flex pb-(--px4) h-fit w-full">
         {{ range .Post.Categories }}
         <small>
@@ -101,37 +107,43 @@
         </small>
         {{ end }}
     </div>
+    {{ end }}
 </div>
 {{ end }}
 
 {{ define "comment-section" }}
 <div class="comment-section" id="comments-{{ .Post.ID }}" popover="auto">
-    <div class="post-frame">{{ template "post-borders" . }}</div>
-    {{ .Post.Image }}
-    <div class="flex flex-col w-full ">
-        {{ template "post-details" . }}
-        <button class="close-section" popovertarget="comments-{{ .Post.ID }}" popovertargetaction="hide">{{ template
-            "close-icon" }}</button>
-        <div class="divider"></div>
-        <div class="h-full flex flex-col p-(--px16)">
-            <div class="flex flex-col h-full gap-(--px16) items-start bar overflow-y-auto">
-                {{ range $comment := .Post.Comments }}
-                <div class="flex flex-col">
-                    <div class="items-start flex flex-row gap-(--px8) items-center justify-center">
-                        {{ template "profile-pic" $comment.Commenter }}
+    <div class="w-fit relative flex flex-col h-fit">
+        <div class="post-frame">{{ template "post-borders" . }}</div>
+        <div class="w-fit flex flex-col [&>img]:px-4 [&>img]:py-1 [&>img]:max-h-[calc(95dvh-65px)] [&>img]:h-fit [&>img]:w-auto [&>img]:max-w-[calc(100dvw-42px)] [&>img]:self-center [&>img]:object-contain">
+            {{ template "post-details" . }}
+            <button class="close-section" popovertarget="comments-{{ .Post.ID }}" popovertargetaction="hide">{{ template "close-icon" }}</button>
+            <div class="divider"></div>
+            <div class="h-full flex flex-col p-(--px16) gap-(--px16) w-0 min-w-full">
+                <div class="px-(--px8) flex flex-col h-full gap-(--px16) items-start bar overflow-y-auto">
+                    {{ if .Post.Comments }}
+                        {{ range $comment := .Post.Comments }}
                         <div class="flex flex-col">
-                            <p>{{ $comment.Body }}</p>
-                            {{ template "comment-likes" ( dict "Comment" $comment "Profile" $.Profile "Query" $.Query )
-                            }}
+                            <div class="items-start flex flex-row gap-(--px8) items-center justify-center">
+                                {{ template "profile-pic" $comment.Commenter }} 
+                                <div class="flex flex-col">
+                                    <p>{{ $comment.Body }}</p>
+                                    {{ template "comment-likes" ( dict "Comment" $comment "Profile" $.Profile "Query" $.Query ) }}
+                                </div>
+                            </div>
                         </div>
+                        {{ end }}
+                    {{ else }}
+                        <p class="px-(--px8)">No comments yet.</p>
+                    {{ end }}
+                </div>
+                <div class="flex flex-col gap-(--px8)">
+                    <div class="py-px bg-(--peach-30) w-full"></div>
+                    <div class="px-(--px8) flex flex-col">
+                        <div class="flex flex-row">{{ template "post-likes" . }}</div>
+                        {{ if .LoggedIn }}{{ template "comment" . }}{{ end }}
                     </div>
                 </div>
-                {{ end }}
-            </div>
-            <div class="flex flex-col gap-(--px8)">
-                <div class="py-px bg-(--peach-30) w-full"></div>
-                <div class="flex flex-row px-(--px8)">{{ template "post-likes" . }}</div>
-                {{ template "comment" . }}
             </div>
         </div>
     </div>
@@ -140,10 +152,10 @@
 
 {{ define "comment-likes" }}
 <form class="flex flex-row gap-(--px8)" method="POST" action="/comments/{{ .Comment.ID }}/vote">
-    <button class="react-btn" name="vote" value="1" {{ range .Comment.CommentLikers }}{{ if eq .ID $.Profile.ID
-        }}aria-pressed="true" {{ end }}{{ end }}>{{ template "thumb-up" }}{{ len .Comment.CommentLikers }}</button>
-    <button class="react-btn" name="vote" value="-1" {{ range .Comment.CommentDislikers }}{{ if eq .ID $.Profile.ID
-        }}aria-pressed="true" {{ end }}{{ end }}>{{ template "thumb-down" }}{{ len .Comment.CommentDislikers }}</button>
-    <input type="hidden" name="redirect" value="{{ .Query }}" />
+        <button class="icon-btn" name="vote" value="1"
+        {{ range .Comment.CommentLikers }}{{ if eq .ID $.Profile.ID }}aria-pressed="true"{{ end }}{{ end }}>{{ template "thumb-up" }}{{ len .Comment.CommentLikers }}</button>
+        <button class="icon-btn" name="vote" value="-1"
+        {{ range .Comment.CommentDislikers }}{{ if eq .ID $.Profile.ID }}aria-pressed="true"{{ end }}{{ end }}>{{ template "thumb-down" }}{{ len .Comment.CommentDislikers }}</button>
+        <input type="hidden" name="redirect" value="{{ .Query }}" />
 </form>
 {{ end }}

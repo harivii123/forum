@@ -8,6 +8,7 @@ import (
 	"forum/internal/template"
 	"log"
 	"net/http"
+	"os"
 	"path/filepath"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -16,6 +17,9 @@ import (
 const port = ":8080"
 
 func main() {
+	if err := os.MkdirAll("uploads", 0755); err != nil {
+		log.Fatal(err)
+	}
 	seed := flag.Bool("seed", false, "fill an empty database with example data")
 	flag.Parse()
 
@@ -49,7 +53,6 @@ func main() {
 
 	templateEngine := template.NewEngine("")
 	templateEngine.ParseTemplates()
-	
 
 	holder := handlers.NewHolder(db, templateEngine)
 

@@ -9,6 +9,7 @@ type Post struct {
 	UserID     int
 	Title      string
 	Body       string
+	Image      string
 	Created    time.Time
 	Categories []string
 }

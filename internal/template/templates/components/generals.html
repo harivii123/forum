@@ -1,9 +1,11 @@
 {{ define "header" }}
 <header class="top-0 z-10 gap-(--px16) items-center flex flex-row justify-between py-(--px8) px-(--px24)">
     <div class="w-full items-center flex flex-row gap-(--px8)">
-        {{ template "logo" . }}
+        <a href="/" aria-label="Home">{{ template "logo" . }}</a>
+        {{ if not .IsPublicProfile }}
         {{ template "burger-filters" . }}
         {{ template "search-bar" . }}
+        {{ end }}
     </div>
     {{ if not .LoggedIn }}
     <div class="flex flex-row ">
