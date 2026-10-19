@@ -159,3 +159,12 @@
         <input type="hidden" name="redirect" value="{{ .Query }}" />
 </form>
 {{ end }}
+
+{{ define "delete-button" }}
+<form method="POST" action="/posts/{{ .Post.ID }}/vote">
+    <label>
+        <input name="delete" value="{{ .Post.ID }}" />
+        <p>Delete post.</p>
+    </label>
+</form>
+{{ end }}

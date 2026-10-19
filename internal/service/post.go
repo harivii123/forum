@@ -165,3 +165,7 @@ func CreatePost(cookie *http.Cookie, newPost models.Post, db *sql.DB) (error, in
 
 	return nil, http.StatusSeeOther
 }
+
+func DeletePost(db *sql.DB, userID int, postID int) error {
+
+}

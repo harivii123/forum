@@ -125,3 +125,16 @@ func PostExists(tx *sql.Tx, postID int) (bool, error) {
 
 	return true, nil
 }
+
+func DeletePost(tx *sql.Tx, postID int) error {
+	_, err := tx.Exec(
+		"DELETE FROM post WHERE id=?", postID,
+	)
+	return err
+}
+
+func SearchCreater(tx *sql.Tx, userID int) (string, error) {
+	var image string
+	if err := tx.Query("SELECT user_id, image FROM post WHERE id = ?", userID).Scan(&image) {}
+	return 
+}
