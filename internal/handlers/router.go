@@ -29,6 +29,8 @@ func Router(holder *Holder) *http.ServeMux {
 	})
 	mux.HandleFunc("/logout", holder.Logout)
 	mux.HandleFunc("/profile", holder.LoadProfilePage)
+	mux.HandleFunc("GET /users/{id}", holder.LoadPublicProfilePage)
+	mux.HandleFunc("POST /profile/edit", holder.UpdateProfile)
 	mux.HandleFunc("POST /posts/{id}/vote", holder.VoteOnPost)
 	mux.HandleFunc("POST /{ID}/comment", holder.AddComment)
 

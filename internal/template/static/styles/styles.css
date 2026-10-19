@@ -173,7 +173,7 @@ body {
         font-weight: 400;
         font-size: 11px;
         line-height: 11px;
-        color: var(--peach-50)   
+        color: var(--peach-50)
     }
 
         textarea {
@@ -196,6 +196,7 @@ body {
         position: fixed;
         width: 100%;
     }
+
     header::before {
         content: "";
         position: absolute;
@@ -215,11 +216,12 @@ body {
         box-sizing: border-box;
         margin-top: 95px;
     }
-    
-    section > * {
+
+    section>* {
         width: 100%;
         max-width: 550px;
     }
+
     legend {
         padding-left: 14px;
         padding-right: 14px;
@@ -343,7 +345,8 @@ body {
 
 .icon-btn[aria-pressed=true] {
     color: var(--blue-light);
-    svg > * {
+
+    svg>* {
         fill: var(--blue-light);
     }
 }
@@ -356,7 +359,8 @@ body {
     fill: var(--blue-light);
 }
 
-.post-creation-borders{
+
+.post-creation-borders {
     display: grid;
     grid-template-columns: 48.5px 1fr 48.5px;
     grid-template-rows: 70px 1fr 70px;
@@ -372,6 +376,7 @@ body {
         overflow: visible;
     }
     > :nth-child(2) {
+
         height: 100%;
         grid-column: 2;
         grid-row: 1 / -1;
@@ -402,16 +407,18 @@ body {
     border-block: 2px solid var(--peach);
 }
 
-.create-post-form{
+.create-post-form {
     display: flex;
     flex-direction: column;
     height: 100%;
     justify-content: space-between;
     align-items: flex-end;
     gap: var(--px8);
+
     .profile-pic {
         z-index: 0;
     }
+
     input[type="text"] {
         background: unset;
         corner-shape: unset;
@@ -419,15 +426,18 @@ body {
         outline: unset;
         padding: unset;
     }
+
     input[type="submit"] {
         width: fit-content;
         padding-block: 0.3rem;
         padding-inline: 1.5rem;
         color: var(--peach);
     }
+
     input[type="text"]::placeholder {
-            color: var(--peach-80);
+        color: var(--peach-80);
     }
+
     input[name="body"] {
         font-weight: 300;
         font-size: var(--px14);
@@ -467,7 +477,7 @@ input[name="comment"] {
     background: unset;
     corner-shape: unset;
     border-radius: unset;
-    outline: unset; 
+    outline: unset;
     color: var(--peach-80);
 }
 
@@ -514,8 +524,10 @@ input[name="comment"] {
     position: fixed;
     background: var(--peach-tr);
     margin: var(--px24);
-    width: calc(100vw - 48px);
-    height: 95%;
+    width: fit-content;
+    max-width: calc(100vw - 48px);
+    max-height: 95%;
+    height: fit-content;
     overflow-y: auto;
 
     top: 48%;
@@ -523,13 +535,16 @@ input[name="comment"] {
     transform: translate(-50%, -50%);
     .post-frame {
         --pf-fill: var(--blue);
-        svg > * {
+
+        svg>* {
             fill-opacity: 1;
         }
     }
+
     .post-content {
         padding: 1rem 1.5rem;
     }
+
     .post-piece {
         padding: 0.7rem 6rem;
     }
@@ -563,7 +578,8 @@ button {
 
 button:hover {
     color: var(--blue-light);
-    svg > * {
+
+    svg>* {
         fill: var(--blue-light);
     }
 }
@@ -688,9 +704,11 @@ li:has(input:checked) .icon-unchecked {
     flex-direction: column;
     color: var(--peach);
     animation: slide-in .3s ease;
+
     aside {
         padding: unset;
     }
+
     #filters {
         display: flex;
         max-width: unset;
@@ -702,9 +720,9 @@ li:has(input:checked) .icon-unchecked {
     inset: 65px 0 0 257px;
     background: rgb(5 15 30 / .55);
     transition: background var(--drawer-speed) ease,
-                overlay var(--drawer-speed) allow-discrete,
-                display var(--drawer-speed) allow-discrete;
-            }
+        overlay var(--drawer-speed) allow-discrete,
+        display var(--drawer-speed) allow-discrete;
+}
 
 
 
@@ -712,6 +730,7 @@ li:has(input:checked) .icon-unchecked {
 #phone-menu {
     display: none;
 }
+
 #computer-menu {
     display: flex;
 }
@@ -720,6 +739,7 @@ li:has(input:checked) .icon-unchecked {
     #filters {
         display: none;
     }
+
     #phone-menu {
         display: flex;
     }
@@ -751,9 +771,9 @@ li:has(input:checked) .icon-unchecked {
 }
 
 .post-piece {
-    display: flex; 
+    display: flex;
     flex-direction: row;
-    justify-content: space-between; 
+    justify-content: space-between;
     padding-inline: 5rem;
     gap: var(--px24);
 }
@@ -888,8 +908,8 @@ li:has(input:checked) .icon-unchecked {
 }
 
 .pf-content {
-    position: relative; 
-    padding: var(--px12); 
+    position: relative;
+    padding: var(--px12);
     display: flex;
     flex-direction: column;
     gap: var(--px16);
@@ -1055,4 +1075,235 @@ li:has(input:checked) .icon-unchecked {
     font-size: var(--px14);
     padding-inline: 2.6rem;
     font-weight: 600;
+}
+
+/* Profile menu trigger */
+.header-avatar {
+    anchor-name: --profile-anchor;
+}
+
+.profile-menu-trigger {
+    position: relative;
+    display: block;
+    padding: 0;
+    background: transparent;
+    cursor: pointer;
+}
+
+/* Profile popup  */
+#profile-menu[popover] {
+    box-sizing: border-box;
+    position: fixed;
+    position-anchor: --profile-anchor;
+    inset: auto;
+
+    top: anchor(bottom);
+    right: anchor(right);
+    margin: var(--px8) 0 0;
+
+    width: min(160px, calc(100vw - 32px));
+    padding: var(--px8);
+
+    background: var(--blue);
+    color: var(--peach);
+    border: 1px solid var(--peach-tr);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgb(0 0 0 / 20%);
+    overflow-x: hidden;
+}
+
+#profile-menu:popover-open {
+    display: flex;
+    flex-direction: column;
+    gap: var(--px4);
+}
+
+/* Menu items */
+#profile-menu a,
+#profile-menu>button,
+#profile-menu form button {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    padding: var(--px8);
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--peach);
+    font: inherit;
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+    min-width: 0;
+}
+
+#profile-menu a:hover,
+#profile-menu>button:hover,
+#profile-menu form button:hover {
+    background: var(--blue--light-15);
+}
+
+#profile-menu form {
+    min-width: 0;
+    width: 100%;
+    margin: 0;
+}
+
+
+/* Edit profile popup */
+#edit-profile[popover] {
+    box-sizing: border-box;
+    position: fixed;
+    inset: 0;
+    margin: auto;
+
+    width: min(600px, calc(100vw - 32px));
+    max-height: calc(100vh - 32px);
+    overflow-y: auto;
+    padding: var(--px24);
+
+    color: var(--peach);
+    background: var(--blue);
+    border: 1px solid var(--peach-80);
+    border-radius: 18px;
+    box-shadow: 0 8px 24px var(--blue-dark-40);
+}
+
+#edit-profile h2 {
+    margin: 0 0 var(--px8);
+    text-align: center;
+}
+
+#edit-profile p {
+    margin: 0 0 var(--px8);
+}
+
+#edit-profile form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--px8);
+    margin: 0;
+}
+
+#edit-profile label {
+    display: block;
+    padding: 0.2rem 1rem;
+}
+
+#edit-profile textarea {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 130px;
+    padding: var(--px12);
+
+    font: inherit;
+    color: var(--peach);
+    background: var(--blue-dark-40);
+    border: 2px solid var(--peach-80);
+    border-radius: 10px;
+    resize: vertical;
+}
+
+#edit-profile textarea:focus-visible {
+    outline: 1px solid var(--peach-30);
+}
+
+#edit-profile::backdrop,
+#login::backdrop,
+#register::backdrop {
+    background: rgba(8, 19, 32, 0.55);
+    backdrop-filter: blur(1px);
+}
+
+.edit-profile-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--px8);
+    margin-top: var(--px8);
+}
+
+.edit-profile-actions button {
+    width: fit-content;
+}
+
+
+/* Public profile — restore card frame and layout */
+
+.public-profile-page {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100%;
+    min-width: 0;
+    height: auto;
+    min-height: 0;
+    margin: 0;
+    padding: 24px;
+    box-sizing: border-box;
+}
+
+.public-profile-card {
+    display: block;
+    width: min(560px, 100%);
+    margin: 0;
+    box-sizing: border-box;
+    border: 1px solid var(--peach);
+    background: var(--blue-dark-40);
+}
+
+.public-profile-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.public-profile-banner,
+.public-profile-divider,
+.public-profile-ornament {
+    display: none;
+}
+
+.public-profile-content>.profile-pic {
+    width: 64px;
+    height: 64px;
+    border: 2px solid var(--peach);
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.public-profile-content h1 {
+    margin: 16px 0 24px;
+    overflow-wrap: anywhere;
+}
+
+.public-profile-bio {
+    width: 100%;
+    margin: 8px 0 24px;
+    padding: 16px;
+    box-sizing: border-box;
+    border: 1px solid var(--peach-30);
+    background: var(--blue-60);
+}
+
+.public-profile-back {
+    display: inline-block;
+    padding: 10px 20px;
+    border: 1px solid var(--peach);
+    color: var(--peach);
+    text-decoration: none;
+}
+
+@media (max-width: 600px) {
+    .public-profile-page {
+        padding: 16px 12px;
+    }
+
+    .public-profile-content {
+        padding: 24px 16px;
+    }
 }

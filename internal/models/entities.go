@@ -15,10 +15,12 @@ type Post struct {
 }
 
 type User struct {
-	ID           int
-	Username     string
-	Email        string
-	PasswordHash string
+	ID             int
+	Username       string
+	Email          string
+	PasswordHash   string
+	Bio            string
+	ProfilePicture string
 }
 
 type Session struct {
