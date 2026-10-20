@@ -8,13 +8,13 @@ Built with Go (standard library `net/http` and `html/template`), SQLite and plai
 
 - [Features](#features)
 - [Running with Docker (recommended)](#running-with-docker-recommended)
-  - [Useful commands]
-  - [Rebuilding after code changes]
-  - [Cleaning up]
+  - Useful commands
+  - Rebuilding after code changes
+  - Cleaning up
 - [Running without Docker](#running-without-docker)
 - [Project structure](#project-structure)
 - [Database](#database)
-  - [Entity relationship diagram]
+  - Entity relationship diagram
 - [Routes](#routes)
 - [How login works](#how-login-works)
 - [Authors](#authors)
