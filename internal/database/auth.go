@@ -27,17 +27,12 @@ func GetUserByEmail(db *sql.DB, email string) (*models.User, error) {
 	return &user, nil
 }
 
-func CreateSession(db *sql.DB, session models.Session) error {
-	_, err := db.Exec(`INSERT INTO session (token, user_id, created_at, expires_at, last_active) VALUES (?, ?, ?, ?, ?)`, session.Token, session.UserID, session.CreatedAt, session.ExpiresAt, session.LastActive)
-	return err
-}
-
 func GetSessionUserID(db *sql.DB, token string) (int, error) {
 	var userID int
 	err := db.QueryRow(`
 		SELECT user_id
 		FROM session
-		WHERE token = ? AND expires_at > ?
+		WHERE token = ? AND julianday(expires_at) > julianday(?)
 	`, token, time.Now()).Scan(&userID)
 
 	return userID, err
@@ -74,30 +69,4 @@ func GetUserByUsername(db *sql.DB, username string) (*models.User, error) {
 	}
 
 	return &user, nil
-}
-
-// update session activity if it's not expired
-func UpdateSessionActivity(db *sql.DB, token string, lastActive time.Time, expiresAt time.Time) error {
-	result, err := db.Exec(`UPDATE session SET last_active = ?, expires_at = ? WHERE token = ? AND expires_at > ? `,
-		lastActive, expiresAt, token, lastActive)
-	if err != nil {
-		return err
-	}
-
-	rowsAffected, err := result.RowsAffected()
-	if err != nil {
-		return err
-	}
-	if rowsAffected == 0 {
-		return sql.ErrNoRows
-	}
-	return nil
-}
-
-func DeleteSession(db *sql.DB, token string) error {
-	_, err := db.Exec(
-		`DELETE FROM session WHERE token = ?`,
-		token,
-	)
-	return err
 }

@@ -5,6 +5,7 @@ import (
 	"flag"
 	"forum/internal/database"
 	"forum/internal/handlers"
+	"forum/internal/service"
 	"forum/internal/template"
 	"log"
 	"net/http"
@@ -50,6 +51,8 @@ func main() {
 		}
 		log.Println("Example data seeded")
 	}
+
+	service.StartSessionCleanUp(db)
 
 	templateEngine := template.NewEngine("")
 	templateEngine.ParseTemplates()
