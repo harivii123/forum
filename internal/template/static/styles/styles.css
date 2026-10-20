@@ -576,7 +576,7 @@ button {
     width: max-content;
 }
 
-button:hover {
+button:not(.profile-menu-trigger):hover {
     color: var(--blue-light);
 
     svg>* {

@@ -26,9 +26,11 @@
         {{ if .IsPublicProfile }}
         {{ template "public-profile" . }}
         {{ else }}
+        {{ if .LoggedIn }}
         {{ template "create-post" . }}
         {{ end }}
         {{ template "post" . }}
+        {{ end }}
 
     </section>
 
