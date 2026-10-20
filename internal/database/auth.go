@@ -54,10 +54,7 @@ func GetUserByID(db *sql.DB, userID int) (*models.User, error) {
 	return &user, nil
 }
 
-func GetUserByUsername(
-	db *sql.DB,
-	username string,
-) (*models.User, error) {
+func GetUserByUsername(db *sql.DB, username string) (*models.User, error) {
 	// TODO
 	var user models.User
 

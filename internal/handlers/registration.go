@@ -1,69 +1,53 @@
 package handlers
 
 import (
-	"database/sql"
 	"errors"
 	"forum/internal/database"
-	"forum/internal/models"
 	"forum/internal/service"
+	"log"
 	"net/http"
 )
 
 func (h *Holder) Register(w http.ResponseWriter, r *http.Request) {
-	var user models.User
-
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
 
-	user.Username = r.FormValue("username")
-	user.Email = r.FormValue("email")
+	username := r.FormValue("username")
+	email := r.FormValue("email")
 	password := r.FormValue("password")
 
-	if user.Username == "" || user.Email == "" || password == "" {
-		http.Error(w, "Username, email and password are required", http.StatusBadRequest)
-		return
-	}
-
-	_, err := database.GetUserByUsername(h.db, user.Username)
-	if err == nil {
-		http.Error(w, "Username already exists", http.StatusConflict)
-		return
-	}
-	if !errors.Is(err, sql.ErrNoRows) {
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
-		return
-	}
-
-	_, err = database.GetUserByEmail(h.db, user.Email)
-	if err == nil {
-		http.Error(w, "Email already exists", http.StatusConflict)
-		return
-	}
-	if !errors.Is(err, sql.ErrNoRows) {
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
-		return
-	}
-
-	passwordHash, err := service.HashPassword(password)
+	user, err := service.RegisterUser(h.db, username, email, password)
 	if err != nil {
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
-		return
-	}
-	user.PasswordHash = passwordHash
+		// status := http.StatusBadRequest
+		message := "Something went wrong. Please try again."
 
-	user.ID, err = database.CreateUser(h.db, user)
+		switch {
+		case errors.Is(err, service.ErrMissingFields):
+			message = "Please fill in all fields"
+		case errors.Is(err, service.ErrInvalidEmail):
+			message = "Please enter a valid email address"
+		case errors.Is(err, service.ErrUsernameTaken):
+			// status = http.StatusConflict
+			message = "This username is already taken"
+		case errors.Is(err, service.ErrEmailTaken):
+			// status = http.StatusConflict
+			message = "This email is already registered"
+		default:
+			// status = http.StatusInternalServerError
+			log.Printf("Registration failed: %v", err)
+		}
 
-	if err != nil {
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		h.RenderFrontPage(w, r, "register", message)
 		return
 	}
 
 	session := service.NewSession(user.ID)
 	err = database.CreateSession(h.db, session)
 	if err != nil {
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		log.Printf("Error creating session after registration: %v", err)
+		h.RenderFrontPage(w, r, "register", "Your account was created, but we couldn't log you in. Please try logging in.")
 		return
 	}
 

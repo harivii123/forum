@@ -3,10 +3,10 @@ package handlers
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"forum/internal/database"
 	"forum/internal/models"
 	"forum/internal/service"
-	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -28,7 +28,7 @@ func (h *Holder) LoadRegistryPage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		h.RenderFrontPage(w, r, "login")
+		h.RenderFrontPage(w, r, "login", "")
 		return
 	}
 	// POST /login → process login
@@ -84,7 +84,7 @@ func (h *Holder) LoadRegistryPage(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (h *Holder) RenderFrontPage(w http.ResponseWriter, r *http.Request, showAuth string) {
+func (h *Holder) RenderFrontPage(w http.ResponseWriter, r *http.Request, showAuth string, authError string) {
 	var f models.Filters
 	f.PageFilters(r.URL.Query())
 	user, loggedIn, err := h.GetCurrentUser(w, r)
@@ -137,6 +137,7 @@ func (h *Holder) RenderFrontPage(w http.ResponseWriter, r *http.Request, showAut
 		"ShowLogin":    showAuth == "login",
 		"ShowRegister": showAuth == "register",
 		"PostError":    postErr,
+		"AuthError":    authError,
 	})
 	w.WriteHeader(http.StatusOK)
 	w.Write(frontPage)
@@ -144,7 +145,7 @@ func (h *Holder) RenderFrontPage(w http.ResponseWriter, r *http.Request, showAut
 }
 
 func (h *Holder) LoadFrontPage(w http.ResponseWriter, r *http.Request) {
-	h.RenderFrontPage(w, r, "")
+	h.RenderFrontPage(w, r, "", "")
 }
 
 func (h *Holder) LoadRegistrationPage(w http.ResponseWriter, r *http.Request) {
@@ -158,7 +159,7 @@ func (h *Holder) LoadRegistrationPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	h.RenderFrontPage(w, r, "register")
+	h.RenderFrontPage(w, r, "register", "")
 }
 
 func (h *Holder) CreatePost(w http.ResponseWriter, r *http.Request) {
@@ -250,15 +251,15 @@ func (h *Holder) CreatePost(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	err=r.ParseForm()
+	err = r.ParseForm()
 	if err != nil {
 		h.err.Er, h.err.Code = err, http.StatusInternalServerError
 		h.ErrorOut(w)
 		return
 	}
-	categories:=r.Form["category"]
+	categories := r.Form["category"]
 	fmt.Println(categories)
-	
+
 	newPost := models.Post{
 		Title: r.FormValue("title"),
 		Body:  r.FormValue("body"),
@@ -280,11 +281,6 @@ func (h *Holder) CreatePost(w http.ResponseWriter, r *http.Request) {
 
 	//redirect back to homepage if everything went well
 	http.Redirect(w, r, "/", httpStatus)
-}
-
-func (h *Holder) LoadProfilePage(w http.ResponseWriter, r *http.Request) {
-	// get stuff from db insert into page bang
-	// can be maybe also used to checkout other profiles not just ur own?
 }
 
 func (h *Holder) AddComment(w http.ResponseWriter, r *http.Request) {

@@ -28,7 +28,7 @@ func Router(holder *Holder) *http.ServeMux {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 	})
 	mux.HandleFunc("/logout", holder.Logout)
-	mux.HandleFunc("/profile", holder.LoadProfilePage)
+	// mux.HandleFunc("/profile", holder.LoadProfilePage)
 	mux.HandleFunc("GET /users/{id}", holder.LoadPublicProfilePage)
 	mux.HandleFunc("POST /profile/edit", holder.UpdateProfile)
 	mux.HandleFunc("POST /posts/{id}/vote", holder.VoteOnPost)
