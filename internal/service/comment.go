@@ -6,9 +6,10 @@ import (
 	"forum/internal/models"
 	"net/http"
 	"time"
+	"context"
 )
 
-func CreateComment(newComment models.Comment, cookie *http.Cookie, db *sql.DB) (error, int) {
+func CreateComment(ctx context.Context, newComment models.Comment, cookie *http.Cookie, db *sql.DB) (error, int) {
 	if newComment.Body==""{
 		return nil, http.StatusSeeOther
 	}
@@ -18,7 +19,7 @@ func CreateComment(newComment models.Comment, cookie *http.Cookie, db *sql.DB) (
 	}
 	defer tx.Rollback()
 
-	userID, err := database.GetUserIDWithToken(tx, cookie.Value)
+	userID, err := database.GetUserIDWithToken(ctx, tx, cookie.Value)
 	if err != nil {
 		return err, http.StatusInternalServerError
 	}

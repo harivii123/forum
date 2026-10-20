@@ -133,7 +133,7 @@ func postCats(match string) []models.CategoryView {
 	return categories
 }
 
-func CreatePost(cookie *http.Cookie, newPost models.Post, db *sql.DB, categories []string) (error, int) {
+func CreatePost(ctx context.Context, cookie *http.Cookie, newPost models.Post, db *sql.DB, categories []string) (error, int) {
 
 	tx, err := db.Begin()
 	if err != nil {
@@ -141,13 +141,13 @@ func CreatePost(cookie *http.Cookie, newPost models.Post, db *sql.DB, categories
 	}
 	defer tx.Rollback()
 
-	userID, err := database.GetUserIDWithToken(tx, cookie.Value)
+	userID, err := database.GetUserIDWithToken(ctx, tx, cookie.Value)
 	if err != nil {
 		return err, http.StatusInternalServerError
 	}
 	newPost.UserID, newPost.Created = userID, time.Now()
 
-	err, pID := database.CreatePost(tx, newPost)
+	err, pID := database.CreatePost(ctx, tx, newPost)
 	if err != nil {
 		return err, http.StatusInternalServerError
 	}
@@ -156,7 +156,7 @@ func CreatePost(cookie *http.Cookie, newPost models.Post, db *sql.DB, categories
 		if err != nil{
 			return err, 0
 		}
-		err = database.AddCategoryPostRelationship(tx, pID, cID)
+		err = database.AddCategoryPostRelationship(ctx, tx, pID, cID)
 		if err != nil {
 			return err, http.StatusInternalServerError
 		}
