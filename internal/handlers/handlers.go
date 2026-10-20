@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"database/sql"
 	"errors"
 	"fmt"
 	"forum/internal/database"
@@ -28,39 +27,38 @@ func (h *Holder) LoadRegistryPage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		h.RenderFrontPage(w, r, "login", "")
+		h.RenderFrontPage(w, r, "login", "", http.StatusOK)
 		return
 	}
 	// POST /login → process login
 	if r.Method == http.MethodPost {
 		email := r.FormValue("email")
 		password := r.FormValue("password")
-		// 1. Find user
-		user, err := database.GetUserByEmail(h.db, email)
-		if errors.Is(err, sql.ErrNoRows) {
-			h.err.Er, h.err.Code = errors.New("Invalid email or password"), http.StatusUnauthorized
-			h.ErrorOut(w)
-			return
-		}
-
+		// 1. Authenticate user
+		user, err := service.AuthenticateUser(h.db, email, password)
 		if err != nil {
-			h.err.Er, h.err.Code = err, http.StatusInternalServerError
-			h.ErrorOut(w)
+			status := http.StatusBadRequest
+			message := "Something went wrong. Please try again."
+
+			switch {
+			case errors.Is(err, service.ErrMissingFields):
+				message = "Please enter your email and password"
+			case errors.Is(err, service.ErrInvalidCredentials):
+				message = "Invalid email or password"
+				status = http.StatusUnauthorized
+			default:
+				status = http.StatusInternalServerError
+				log.Printf("Login failed: %v", err)
+			}
+
+			h.RenderFrontPage(w, r, "login", message, status)
 			return
 		}
 
-		// 2. Check password
-		err = service.CheckPassword(user.PasswordHash, password)
-		if err != nil {
-			h.err.Er, h.err.Code = errors.New("Invalid email or password"), http.StatusUnauthorized
-			h.ErrorOut(w)
-			return
-		}
-
-		// 3. Create UUID session
+		// 2. Create UUID session
 		session := service.NewSession(user.ID)
 
-		// 4. Save session to DB
+		// 3. Save session to DB
 		err = database.CreateSession(h.db, session)
 		if err != nil {
 			log.Printf("Error creating session: %v", err)
@@ -69,7 +67,7 @@ func (h *Holder) LoadRegistryPage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// 5. Give session token to browser
+		// 4. Give session token to browser
 		http.SetCookie(w, &http.Cookie{
 			Name:     "session_token",
 			Value:    session.Token,
@@ -78,13 +76,13 @@ func (h *Holder) LoadRegistryPage(w http.ResponseWriter, r *http.Request) {
 			HttpOnly: true,
 			SameSite: http.SameSiteLaxMode,
 		})
-		// 6. Login finished / Redirect
+		// 5. Login finished / Redirect
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
 }
 
-func (h *Holder) RenderFrontPage(w http.ResponseWriter, r *http.Request, showAuth string, authError string) {
+func (h *Holder) RenderFrontPage(w http.ResponseWriter, r *http.Request, showAuth string, authError string, status int) {
 	var f models.Filters
 	f.PageFilters(r.URL.Query())
 	user, loggedIn, err := h.GetCurrentUser(w, r)
@@ -139,13 +137,13 @@ func (h *Holder) RenderFrontPage(w http.ResponseWriter, r *http.Request, showAut
 		"PostError":    postErr,
 		"AuthError":    authError,
 	})
-	w.WriteHeader(http.StatusOK)
+	w.WriteHeader(status)
 	w.Write(frontPage)
 	//something_here.Execute(w, match) //<-- dont know how to use the fancy template parser yet
 }
 
 func (h *Holder) LoadFrontPage(w http.ResponseWriter, r *http.Request) {
-	h.RenderFrontPage(w, r, "", "")
+	h.RenderFrontPage(w, r, "", "", http.StatusOK)
 }
 
 func (h *Holder) LoadRegistrationPage(w http.ResponseWriter, r *http.Request) {
@@ -159,7 +157,7 @@ func (h *Holder) LoadRegistrationPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	h.RenderFrontPage(w, r, "register", "")
+	h.RenderFrontPage(w, r, "register", "", http.StatusOK)
 }
 
 func (h *Holder) CreatePost(w http.ResponseWriter, r *http.Request) {

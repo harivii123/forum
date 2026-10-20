@@ -20,7 +20,7 @@ func (h *Holder) Register(w http.ResponseWriter, r *http.Request) {
 
 	user, err := service.RegisterUser(h.db, username, email, password)
 	if err != nil {
-		// status := http.StatusBadRequest
+		status := http.StatusBadRequest
 		message := "Something went wrong. Please try again."
 
 		switch {
@@ -29,17 +29,17 @@ func (h *Holder) Register(w http.ResponseWriter, r *http.Request) {
 		case errors.Is(err, service.ErrInvalidEmail):
 			message = "Please enter a valid email address"
 		case errors.Is(err, service.ErrUsernameTaken):
-			// status = http.StatusConflict
+			status = http.StatusConflict
 			message = "This username is already taken"
 		case errors.Is(err, service.ErrEmailTaken):
-			// status = http.StatusConflict
+			status = http.StatusConflict
 			message = "This email is already registered"
 		default:
-			// status = http.StatusInternalServerError
+			status = http.StatusInternalServerError
 			log.Printf("Registration failed: %v", err)
 		}
 
-		h.RenderFrontPage(w, r, "register", message)
+		h.RenderFrontPage(w, r, "register", message, status)
 		return
 	}
 
@@ -47,7 +47,7 @@ func (h *Holder) Register(w http.ResponseWriter, r *http.Request) {
 	err = database.CreateSession(h.db, session)
 	if err != nil {
 		log.Printf("Error creating session after registration: %v", err)
-		h.RenderFrontPage(w, r, "register", "Your account was created, but we couldn't log you in. Please try logging in.")
+		h.RenderFrontPage(w, r, "register", "Your account was created, but we couldn't log you in. Please try logging in.", http.StatusInternalServerError)
 		return
 	}
 

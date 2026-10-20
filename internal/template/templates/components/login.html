@@ -8,6 +8,9 @@
         <input type="password" name="password" placeholder="Password" required>
 
         <button class="main-btn" type="submit">Continue</button>
+        {{ if .AuthError }}
+        <p class="auth-error" role="alert"> {{ .AuthError }}</p>
+        {{ end }}
     </form>
 
     <p class="register-prompt">
