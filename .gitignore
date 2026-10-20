@@ -3,4 +3,4 @@ internal/database/hash.go
 .air.toml
 tmp
 forum
-uploads/
+uploads//forum
