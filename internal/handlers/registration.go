@@ -13,7 +13,8 @@ func (h *Holder) Register(w http.ResponseWriter, r *http.Request) {
 	var user models.User
 
 	if r.Method != http.MethodPost {
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		h.err.Er, h.err.Code = errors.New("Method not allowed"), http.StatusMethodNotAllowed
+		h.ErrorOut(w)
 		return
 	}
 
@@ -22,33 +23,39 @@ func (h *Holder) Register(w http.ResponseWriter, r *http.Request) {
 	password := r.FormValue("password")
 
 	if user.Username == "" || user.Email == "" || password == "" {
-		http.Error(w, "Username, email and password are required", http.StatusBadRequest)
+		h.err.Er, h.err.Code = errors.New("Username, email and password are required"), http.StatusBadRequest
+		h.ErrorOut(w)
 		return
 	}
 
 	_, err := database.GetUserByUsername(h.db, user.Username)
 	if err == nil {
-		http.Error(w, "Username already exists", http.StatusConflict)
+		h.err.Er, h.err.Code = errors.New("Username already exists"), http.StatusConflict
+		h.ErrorOut(w)
 		return
 	}
 	if !errors.Is(err, sql.ErrNoRows) {
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		h.err.Er, h.err.Code = err, http.StatusInternalServerError
+		h.ErrorOut(w)
 		return
 	}
 
 	_, err = database.GetUserByEmail(h.db, user.Email)
 	if err == nil {
-		http.Error(w, "Email already exists", http.StatusConflict)
+		h.err.Er, h.err.Code = errors.New("Email already exists"), http.StatusConflict
+		h.ErrorOut(w)
 		return
 	}
 	if !errors.Is(err, sql.ErrNoRows) {
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		h.err.Er, h.err.Code = err, http.StatusInternalServerError
+		h.ErrorOut(w)
 		return
 	}
 
 	passwordHash, err := service.HashPassword(password)
 	if err != nil {
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		h.err.Er, h.err.Code = err, http.StatusInternalServerError
+		h.ErrorOut(w)
 		return
 	}
 	user.PasswordHash = passwordHash
@@ -56,14 +63,16 @@ func (h *Holder) Register(w http.ResponseWriter, r *http.Request) {
 	user.ID, err = database.CreateUser(h.db, user)
 
 	if err != nil {
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		h.err.Er, h.err.Code = err, http.StatusInternalServerError
+		h.ErrorOut(w)
 		return
 	}
 
 	session := service.NewSession(user.ID)
 	err = database.CreateSession(h.db, session)
 	if err != nil {
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		h.err.Er, h.err.Code = err, http.StatusInternalServerError
+		h.ErrorOut(w)
 		return
 	}
 
