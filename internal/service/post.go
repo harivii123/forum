@@ -6,7 +6,7 @@ import (
 	"forum/internal/database"
 	"forum/internal/models"
 	"net/http"
-	"sort"
+	"sort" 
 	"strconv"
 	"strings"
 	"time"
@@ -133,7 +133,7 @@ func postCats(match string) []models.CategoryView {
 	return categories
 }
 
-func CreatePost(cookie *http.Cookie, newPost models.Post, db *sql.DB) (error, int) {
+func CreatePost(cookie *http.Cookie, newPost models.Post, db *sql.DB, categories []string) (error, int) {
 
 	tx, err := db.Begin()
 	if err != nil {
@@ -151,8 +151,12 @@ func CreatePost(cookie *http.Cookie, newPost models.Post, db *sql.DB) (error, in
 	if err != nil {
 		return err, http.StatusInternalServerError
 	}
-	for i:=range newPost.Categories{
-		err = database.AddCategoryPostRelationship(tx, pID, newPost.Categories[i].ID)
+	for i:=range categories{
+		cID, err :=strconv.Atoi(categories[i])
+		if err != nil{
+			return err, 0
+		}
+		err = database.AddCategoryPostRelationship(tx, pID, cID)
 		if err != nil {
 			return err, http.StatusInternalServerError
 		}
