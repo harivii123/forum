@@ -76,13 +76,22 @@ func GetUserByUsername(db *sql.DB, username string) (*models.User, error) {
 	return &user, nil
 }
 
+// update session activity if it's not expired
 func UpdateSessionActivity(db *sql.DB, token string, lastActive time.Time, expiresAt time.Time) error {
-	_, err := db.Exec(`UPDATE session SET last_active = ?, expires_at = ? WHERE token = ?`,
-		lastActive,
-		expiresAt,
-		token,
-	)
-	return err
+	result, err := db.Exec(`UPDATE session SET last_active = ?, expires_at = ? WHERE token = ? AND expires_at > ? `,
+		lastActive, expiresAt, token, lastActive)
+	if err != nil {
+		return err
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if rowsAffected == 0 {
+		return sql.ErrNoRows
+	}
+	return nil
 }
 
 func DeleteSession(db *sql.DB, token string) error {
