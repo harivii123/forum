@@ -6,6 +6,7 @@ import (
 	"forum/internal/database"
 	"forum/internal/models"
 	"forum/internal/service"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -249,16 +250,25 @@ func (h *Holder) CreatePost(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-
+	err=r.ParseForm()
+	if err != nil {
+		h.err.Er, h.err.Code = err, http.StatusInternalServerError
+		h.ErrorOut(w)
+		return
+	}
+	categories:=r.Form["category"]
+	fmt.Println(categories)
+	
 	newPost := models.Post{
 		Title: r.FormValue("title"),
 		Body:  r.FormValue("body"),
 		Image: imagePath,
+		//Categories: r.FormValue("categories"),
 	}
 	//user data from request cookies
 	cookie, err := r.Cookie("session_token")
 	//createpost returns err and appropriate http code
-	err, httpStatus := service.CreatePost(cookie, newPost, h.db)
+	err, httpStatus := service.CreatePost(r.Context(), cookie, newPost, h.db, categories)
 	if err != nil {
 		h.err.Er, h.err.Code = err, http.StatusInternalServerError
 		if path != "" {
@@ -309,7 +319,7 @@ func (h *Holder) AddComment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	//service.CreateComment returns error and appropriate httpstatus
-	err, httpStatus := service.CreateComment(newComment, cookie, h.db)
+	err, httpStatus := service.CreateComment(r.Context(), newComment, cookie, h.db)
 	if err != nil {
 		h.err.Er, h.err.Code = err, httpStatus
 		h.ErrorOut(w)

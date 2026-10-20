@@ -3,9 +3,9 @@ package database
 import (
 	"context"
 	"database/sql"
-	"errors"
 	"forum/internal/models"
 	"time"
+	"errors"
 )
 
 type PostSearch struct {
@@ -97,17 +97,22 @@ func GetPostsByCategory(db *sql.DB, categoryName string) ([]models.Post, error) 
 }
 
 // creates a post to db
-func CreatePost(tx *sql.Tx, newPost models.Post) (err error) {
-	_, err = tx.Exec(`
+func CreatePost(ctx context.Context, tx *sql.Tx, newPost models.Post) (err error, pID int) {
+	_, err = tx.ExecContext(ctx,`
 		INSERT INTO post (user_id, title, body, image, created_at) VALUES (?, ?, ?, ?, ?)
 		`, newPost.UserID, newPost.Title, newPost.Body, newPost.Image, newPost.Created,
 	)
 	if err != nil {
-		return err
+		return err, 0
 	}
+	
+	
+	 err = tx.QueryRowContext(ctx,`
+		SELECT id FROM post WHERE title= ? `, newPost.Title,
+		).Scan(&pID)
 	//if post does not appear in front page automatically. We need to return it from here
 
-	return nil
+	return nil, pID
 }
 
 func PostExists(tx *sql.Tx, postID int) (bool, error) {

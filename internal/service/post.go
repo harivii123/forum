@@ -3,11 +3,10 @@ package service
 import (
 	"context"
 	"database/sql"
-	"errors"
 	"forum/internal/database"
 	"forum/internal/models"
 	"net/http"
-	"sort"
+	"sort" 
 	"strconv"
 	"strings"
 	"time"
@@ -134,13 +133,7 @@ func postCats(match string) []models.CategoryView {
 	return categories
 }
 
-func CreatePost(cookie *http.Cookie, newPost models.Post, db *sql.DB) (error, int) {
-
-	if (newPost.Body == "" && newPost.Title != "") || (newPost.Title == "" && newPost.Body != "") {
-		return errors.New("Please fill out both fields when making a new post"), http.StatusBadRequest
-	} else if newPost.Body == "" && newPost.Title == "" {
-		return nil, http.StatusSeeOther
-	}
+func CreatePost(ctx context.Context, cookie *http.Cookie, newPost models.Post, db *sql.DB, categories []string) (error, int) {
 
 	tx, err := db.Begin()
 	if err != nil {
@@ -148,15 +141,25 @@ func CreatePost(cookie *http.Cookie, newPost models.Post, db *sql.DB) (error, in
 	}
 	defer tx.Rollback()
 
-	userID, err := database.GetUserIDWithToken(tx, cookie.Value)
+	userID, err := database.GetUserIDWithToken(ctx, tx, cookie.Value)
 	if err != nil {
 		return err, http.StatusInternalServerError
 	}
 	newPost.UserID, newPost.Created = userID, time.Now()
 
-	err = database.CreatePost(tx, newPost)
+	err, pID := database.CreatePost(ctx, tx, newPost)
 	if err != nil {
 		return err, http.StatusInternalServerError
+	}
+	for i:=range categories{
+		cID, err :=strconv.Atoi(categories[i])
+		if err != nil{
+			return err, 0
+		}
+		err = database.AddCategoryPostRelationship(ctx, tx, pID, cID)
+		if err != nil {
+			return err, http.StatusInternalServerError
+		}
 	}
 	err = tx.Commit()
 	if err != nil {
