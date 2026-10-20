@@ -97,8 +97,8 @@ func GetPostsByCategory(db *sql.DB, categoryName string) ([]models.Post, error) 
 }
 
 // creates a post to db
-func CreatePost(tx *sql.Tx, newPost models.Post) (err error, pID int) {
-	_, err = tx.Exec(`
+func CreatePost(ctx context.Context, tx *sql.Tx, newPost models.Post) (err error, pID int) {
+	_, err = tx.ExecContext(ctx,`
 		INSERT INTO post (user_id, title, body, image, created_at) VALUES (?, ?, ?, ?, ?)
 		`, newPost.UserID, newPost.Title, newPost.Body, newPost.Image, newPost.Created,
 	)
@@ -107,7 +107,7 @@ func CreatePost(tx *sql.Tx, newPost models.Post) (err error, pID int) {
 	}
 	
 	
-	 err = tx.QueryRow(`
+	 err = tx.QueryRowContext(ctx,`
 		SELECT id FROM post WHERE title= ? `, newPost.Title,
 		).Scan(&pID)
 	//if post does not appear in front page automatically. We need to return it from here

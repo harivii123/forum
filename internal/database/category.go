@@ -30,9 +30,9 @@ func GetCategories(ctx context.Context, tx *sql.Tx) ([]models.CategoryView, erro
 	return categories, nil
 }
 
-func AddCategoryPostRelationship(tx *sql.Tx, pID, cID int) error{
+func AddCategoryPostRelationship(ctx context.Context, tx *sql.Tx, pID, cID int) error{
 
-	_, err :=tx.Exec(`
+	_, err :=tx.ExecContext(ctx,`
 		INSERT INTO category_post (category_id, post_id) VALUES (?, ?)
 		`, cID, pID,
 		)

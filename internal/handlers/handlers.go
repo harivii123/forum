@@ -268,7 +268,7 @@ func (h *Holder) CreatePost(w http.ResponseWriter, r *http.Request) {
 	//user data from request cookies
 	cookie, err := r.Cookie("session_token")
 	//createpost returns err and appropriate http code
-	err, httpStatus := service.CreatePost(cookie, newPost, h.db, categories)
+	err, httpStatus := service.CreatePost(r.Context(), cookie, newPost, h.db, categories)
 	if err != nil {
 		h.err.Er, h.err.Code = err, http.StatusInternalServerError
 		if path != "" {
@@ -319,7 +319,7 @@ func (h *Holder) AddComment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	//service.CreateComment returns error and appropriate httpstatus
-	err, httpStatus := service.CreateComment(newComment, cookie, h.db)
+	err, httpStatus := service.CreateComment(r.Context(), newComment, cookie, h.db)
 	if err != nil {
 		h.err.Er, h.err.Code = err, httpStatus
 		h.ErrorOut(w)
