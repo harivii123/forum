@@ -31,6 +31,14 @@
                         <input type="file" name="image" accept="image/png, image/jpeg, image/gif">
                         {{ template "add-imgage-icon" }}
                     </label>
+                <select>
+                    {{range .Categories }}
+                <label>
+                <input type="checkbox" id="category-{{ .ID }}" name="category" value="{{ .ID }}" /> 
+                     {{.Category}}
+                    </label>
+                     {{end}}
+                        </select>
                     <input type="submit" value="Post" placeholder="Submit" />     
                 </div>
             </form>
@@ -38,7 +46,7 @@
         <div class="post-creation-borders">{{ template "post-creation-borders" }}</div>
     </div>
 </div>
-{{ end }}
+{{end}}
 
 {{ define "post-content" }}
     {{ template "post-details" . }}
@@ -159,3 +167,4 @@
         <input type="hidden" name="redirect" value="{{ .Query }}" />
 </form>
 {{ end }}
+>>>>>>> d20f14b79b73e4447a17994d4273a9b19d7e4d2b
