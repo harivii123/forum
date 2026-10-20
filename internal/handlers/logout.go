@@ -23,9 +23,9 @@ func (h *Holder) Logout(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
+		log.Println("Session deleted from database")
 	}
 
-	log.Println("Session deleted from database")
 	http.SetCookie(w, &http.Cookie{
 		Name:     "session_token",
 		Value:    "",

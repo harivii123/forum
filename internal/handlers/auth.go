@@ -1,9 +1,7 @@
 package handlers
 
 import (
-	"database/sql"
 	"errors"
-	"forum/internal/database"
 	"forum/internal/models"
 	"forum/internal/service"
 	"net/http"
@@ -20,8 +18,9 @@ func (h *Holder) GetCurrentUser(w http.ResponseWriter, r *http.Request) (*models
 		return nil, false, err
 	}
 
-	userID, err := database.GetSessionUserID(h.db, cookie.Value)
-	if errors.Is(err, sql.ErrNoRows) {
+	// check if session is active and valid, else clear cookie and treat as guest
+	user, newExpiry, err := service.GetAuthenticatedUser(h.db, cookie.Value)
+	if errors.Is(err, service.ErrInvalidSession) {
 		clearSessionCookie(w)
 		return nil, false, nil
 	}
@@ -30,24 +29,7 @@ func (h *Holder) GetCurrentUser(w http.ResponseWriter, r *http.Request) (*models
 		return nil, false, err
 	}
 
-	// update new Expired time in DB and Browser cookie
-	user, err := database.GetUserByID(h.db, userID)
-	if errors.Is(err, sql.ErrNoRows) {
-		clearSessionCookie(w)
-		return nil, false, nil
-	}
-
-	if err != nil {
-		return nil, false, err
-	}
-
-	now, newExpiry := service.RefreshSessionTime()
-	err = database.UpdateSessionActivity(h.db, cookie.Value, now, newExpiry)
-
-	if err != nil {
-		return nil, false, err
-	}
-
+	// Refresh the browser cookie expiration time
 	http.SetCookie(w, &http.Cookie{
 		Name:     "session_token",
 		Value:    cookie.Value,

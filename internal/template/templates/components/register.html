@@ -15,6 +15,9 @@
             autocomplete="new-password" required>
 
         <button class="main-btn" type="submit">Register</button>
+        {{ if .AuthError }}
+        <p class="auth-error" role="alert"> {{ .AuthError }} </p>
+        {{ end }}
     </form>
 
     <p class="login-prompt"> Already have an account?
