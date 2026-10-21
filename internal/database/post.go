@@ -3,9 +3,9 @@ package database
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"forum/internal/models"
 	"time"
-	"errors"
 )
 
 type PostSearch struct {
@@ -98,18 +98,17 @@ func GetPostsByCategory(db *sql.DB, categoryName string) ([]models.Post, error) 
 
 // creates a post to db
 func CreatePost(ctx context.Context, tx *sql.Tx, newPost models.Post) (err error, pID int) {
-	_, err = tx.ExecContext(ctx,`
+	_, err = tx.ExecContext(ctx, `
 		INSERT INTO post (user_id, title, body, image, created_at) VALUES (?, ?, ?, ?, ?)
 		`, newPost.UserID, newPost.Title, newPost.Body, newPost.Image, newPost.Created,
 	)
 	if err != nil {
 		return err, 0
 	}
-	
-	
-	 err = tx.QueryRowContext(ctx,`
+
+	err = tx.QueryRowContext(ctx, `
 		SELECT id FROM post WHERE title= ? `, newPost.Title,
-		).Scan(&pID)
+	).Scan(&pID)
 	//if post does not appear in front page automatically. We need to return it from here
 
 	return nil, pID
@@ -129,4 +128,21 @@ func PostExists(tx *sql.Tx, postID int) (bool, error) {
 	}
 
 	return true, nil
+}
+
+func DeletePost(ctx context.Context, tx *sql.Tx, postID int) error {
+	_, err := tx.ExecContext(ctx,
+		"DELETE FROM post WHERE id=?", postID,
+	)
+	return err
+}
+
+func SearchCreater(ctx context.Context, tx *sql.Tx, postID int) (int, string, error) {
+	var userId int
+	var image string
+	err := tx.QueryRowContext(ctx, "SELECT user_id, COALESCE(image, '') FROM post WHERE id = ?", postID).Scan(&userId, &image)
+	if err != nil {
+		return 0, "", err
+	}
+	return userId, image, nil
 }

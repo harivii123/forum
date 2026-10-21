@@ -1,11 +1,11 @@
 {{ define "post" }}
     {{ range .Posts }}
-    <div class="post-section">
+    <div class="post-section" id="post-{{ .ID }}">
         <div class="post-frame">
             {{ template "post-borders" }}
         </div>
         <div class="pf-content">
-            {{ template "post-content" (dict "Post" . "Profile" $.Profile "Query" $.Query) }}
+            {{ template "post-content" (dict "Post" . "Profile" $.Profile "Query" $.Query "ShowMenu" true ) }}
             {{ template "comment-section" (dict "Post" . "Profile" $.Profile "Query" $.Query "LoggedIn" $.LoggedIn) }}
         </div>
     </div>
@@ -102,6 +102,14 @@
             <time>{{ elapsed .Post.Created }}</time>
         </div>
     </div>
+    {{ if eq .Post.Poster.ID .Profile.ID }}
+    {{ if .ShowMenu }}
+    <button style="anchor-name: --post-menu-{{ .Post.ID }}" type="button" class="icon-btn huh" popovertarget="post-menu-{{ .Post.ID }}">{{ template "more-dots-icon" }}</button>
+    <nav style="position-anchor: --post-menu-{{ .Post.ID }}" class="post-menu" id="post-menu-{{ .Post.ID }}" popover="auto">
+        {{ template "delete-button" . }}
+    </nav>
+    {{ end }}
+    {{ end }}
 </div>    
 
 {{ if .Post.Image }}<img class="pt-(--px8)" src="{{ .Post.Image }}"></img>{{ end }}
@@ -183,4 +191,11 @@
         <input type="hidden" name="redirect" value="{{ .Query }}" />
 </form>
 {{ end }}
->>>>>>> d20f14b79b73e4447a17994d4273a9b19d7e4d2b
+
+{{ define "delete-button" }}
+<form method="POST" action="/posts/{{ .Post.ID }}/delete">
+    <input type="hidden" name="redirect" value="{{ .Query }}" />
+    <button type="submit">Delete post</button>
+</form>
+{{ end }}
+

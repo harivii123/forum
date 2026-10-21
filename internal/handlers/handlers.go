@@ -117,8 +117,6 @@ func (h *Holder) RenderFrontPage(w http.ResponseWriter, r *http.Request, showAut
 
 	categories, err = service.GetCategories(ctx, h.db)
 
-	// post_error is a one-time message from CreatePost; drop it from Query so
-	// vote redirects don't carry it along and show it again
 	q := r.URL.Query()
 	postErr := postErrorMessages[q.Get("post_error")]
 	q.Del("post_error")
@@ -372,8 +370,6 @@ func filtersFromQuery(q url.Values, userID int, loggedIn bool) (string, []any) {
 	return result, args
 }
 
-// user-facing messages for create post validation errors, keyed by the
-// post_error query value so arbitrary text can't be injected via the URL
 var postErrorMessages = map[string]string{
 	"empty":     "Title and text cannot be empty.",
 	"too_large": "Image is too large (max 5 MB).",
@@ -383,4 +379,41 @@ var postErrorMessages = map[string]string{
 // sends the user back to the front page where the form shows the error
 func postError(w http.ResponseWriter, r *http.Request, code string) {
 	http.Redirect(w, r, "/?post_error="+code, http.StatusSeeOther)
+}
+
+func (h *Holder) DeletePost(w http.ResponseWriter, r *http.Request) {
+	user, loggedIn, err := h.GetCurrentUser(w, r)
+	if err != nil {
+		h.err.Er, h.err.Code = err, http.StatusInternalServerError
+		h.ErrorOut(w)
+		return
+	}
+	if !loggedIn {
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		return
+	}
+	postIDStr := r.PathValue("id")
+	postID, err := strconv.Atoi(postIDStr)
+	if err != nil {
+		h.err.Er, h.err.Code = err, http.StatusBadRequest
+		h.ErrorOut(w)
+		return
+	}
+	ctx := r.Context()
+	err = service.DeletePost(ctx, h.db, user.ID, postID)
+	switch {
+	case errors.Is(err, service.ErrPostNotFound):
+		h.err.Er, h.err.Code = err, http.StatusNotFound
+		h.ErrorOut(w)
+		return
+	case errors.Is(err, service.ErrNotOwner):
+		h.err.Er, h.err.Code = err, http.StatusForbidden
+		h.ErrorOut(w)
+		return
+	case err != nil:
+		h.err.Er, h.err.Code = err, http.StatusInternalServerError
+		h.ErrorOut(w)
+		return
+	}
+	http.Redirect(w, r, "/?"+r.FormValue("redirect"), http.StatusSeeOther)
 }
