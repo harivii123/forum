@@ -4,7 +4,7 @@
         <a href="/" aria-label="Home">{{ template "logo" . }}</a>
         {{ if not .IsPublicProfile }}
         {{ template "burger-filters" . }}
-        {{ template "search-bar" . }}
+        {{ template "search-bar" (dict "Filters" .Filters "Form" "filters") }}
         {{ end }}
     </div>
     {{ if not .LoggedIn }}
@@ -44,9 +44,9 @@
 <div id="phone-menu">
     <button class="phone-menu-button" popovertarget="phone-filters">{{ template "burger" }}</button>
     <div id="phone-filters" popover="auto">
-        {{ template "search-bar" . }}
+        {{ template "search-bar" (dict "Filters" .Filters "Form" "phone-search") }}
 
-        {{ template "side-filters" . }}
+        {{ template "side-filters" (dict "Filters" .Filters "Categories" .Categories "LoggedIn" .LoggedIn "Form" "phone-search") }}
     </div>
 </div>
 {{ end }}

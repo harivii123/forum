@@ -14,7 +14,7 @@ func Posts(userID int) (param string, arg int) {
 }
 
 func Likes(userID int) (param string, arg int) {
-	return "vu.id = ?", userID
+	return "p.id IN (SELECT post_id FROM post_vote WHERE user_id = ? AND vote = 1)", userID
 }
 
 func Categories(ids []int) (param string, arg []any) {

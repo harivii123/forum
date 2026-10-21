@@ -817,7 +817,7 @@ li:has(input:checked) .icon-unchecked {
         padding: unset;
     }
 
-    #filters {
+    #phone-search {
         display: flex;
         max-width: unset;
         width: 100%;
