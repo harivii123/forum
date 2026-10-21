@@ -92,9 +92,9 @@ func UpdateCommentVote(tx *sql.Tx, userID, commentID, vote int) error {
 	return err
 }
 
-func DeleteCommentVote(tx *sql.Tx, userID, CommentID int) error {
+func DeleteCommentVote(tx *sql.Tx, userID, commentID int) error {
 	_, err := tx.Exec(
-		"DELETE FROM comment_vote WHERE user_id=? AND comment_id=?", userID, CommentID,
+		"DELETE FROM comment_vote WHERE user_id=? AND comment_id=?", userID, commentID,
 	)
 	return err
 }
