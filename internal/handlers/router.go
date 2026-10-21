@@ -33,6 +33,7 @@ func Router(holder *Holder) *http.ServeMux {
 	mux.HandleFunc("POST /profile/edit", holder.UpdateProfile)
 	mux.HandleFunc("POST /posts/{id}/vote", holder.VoteOnPost)
 	mux.HandleFunc("POST /{ID}/comment", holder.AddComment)
+	mux.HandleFunc("POST /comments/{id}/vote", holder.VoteOnComment)
 
 	return mux
 }
