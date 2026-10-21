@@ -82,7 +82,7 @@
 {{ end }}
 
 {{ define "authors" }}
-{{ template "simple-search" "author-list" }}
+{{ template "simple-search" "sharp-borders" }}
 
 <ul id="author-list" class="bar">
 {{ range .Categories }}
@@ -102,7 +102,7 @@
 
 
 {{ define "genres" }}
-{{ template "simple-search" "genre-list" }}
+{{ template "simple-search" "sharp-borders" }}
 
 <ul id="genre-list" class="bar">
     {{ range .Categories }}
@@ -122,7 +122,7 @@
 {{ define "simple-search" }}
 <div class="relative">
     <div class="search-icon-small">{{ template "search-icon" }}</div>
-    <input class="py-(--px4) pl-[40px] text-sm" id="{{ . }}-search" type="text" onkeyup="simpleSearch(this, '{{ . }}')" placeholder="Search" />
+    <input class="py-(--px4) pl-[40px] text-sm" id="category-search" type="text" onkeyup="simpleSearch(this, '{{ . }}')" placeholder="Search" />
 </div>
 {{ end }}
 

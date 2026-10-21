@@ -26,23 +26,45 @@
                     </div>
                     <textarea type="text" name="body" placeholder="What’s in your mind?" ></textarea>
                 </div>
-                <div class="flex flex-row gap-(--px8)">
-                    <label class="icon-btn">
-                        <input type="file" name="image" accept="image/png, image/jpeg, image/gif">
-                        {{ template "add-imgage-icon" }}
-                    </label>
-                    <input type="submit" value="Post" placeholder="Submit" />     
+                <div class="flex flex-col gap-(--px4) w-full">
+                    <div class="category-chips bar">
+                        {{ range .Categories }}
+                            <label class="chip">
+                                <input type="checkbox" id="new-category-{{ .ID }}" name="category" value="{{ .ID }}" hidden />
+                                {{ .Category }} <span aria-hidden="true">×</span>
+                            </label>
+                        {{ end }}
+                    </div>
+                    <div class="create-post-bottom">
+                        <div class="category-menu">
+                            {{ template "simple-search" "category-option" }}
+                            <div class="category-options bar" tabindex="-1">
+                                {{ range .Categories }}
+                                    <label class="category-option" for="new-category-{{ .ID }}" data-name="{{ .Category }}">
+                                        <span>{{ .Category }}</span>
+                                    </label>
+                                {{ end }}
+                            </div>
+                        </div>
+                        <div class="flex flex-row items-center gap-(--px16)">
+                            <label class="icon-btn">
+                                <input type="file" name="image" accept="image/png, image/jpeg, image/gif">
+                                {{ template "add-imgage-icon" }}
+                            </label>
+                            <input type="submit" value="Post" />
+                        </div>
+                    </div>
                 </div>
             </form>
 
         <div class="post-creation-borders">{{ template "post-creation-borders" }}</div>
     </div>
 </div>
-{{ end }}
+{{end}}
 
 {{ define "post-content" }}
     {{ template "post-details" . }}
-    <div class="flex flex-col gap-(--px4)">
+    <div class="flex flex-col gap-(--px4) pt-(--px8)">
         <div class="px-(--px18) gap-(--px8) flex flex-row">
             {{ template "post-likes" . }}
             <button class="icon-btn comment-button" popovertarget="comments-{{ .Post.ID }}">
@@ -67,7 +89,7 @@
 {{ end }}
 
 {{ define "post-details" }}
-<div class="post-piece">
+<div class="post-piece pb-(--px8)">
     <div class="flex flex-row gap-(--px8)">
         {{ template "profile-pic" .Post.Poster }}
         <div class="flex flex-col gap-(--px4) justify-center">
@@ -81,8 +103,9 @@
         </div>
     </div>
 </div>    
-{{ if .Post.Image }}<img src="{{ .Post.Image }}"></img>{{ end }}
-<div class="post-content flex flex-col gap-(--px8) w-0 min-w-full">
+
+{{ if .Post.Image }}<img class="pt-(--px8)" src="{{ .Post.Image }}"></img>{{ end }}
+<div class="post-content flex flex-col w-0 min-w-full pt-(--px8)">
     <div class="flex flex-col gap-(--px4)">
         <h3>{{ .Post.Title }}</h3>
         {{ if gt (len .Post.Body) 200 }}
@@ -100,7 +123,7 @@
         {{ end }}
     </div>
     {{ if .Post.Categories }}
-    <div class="category-bar mask-(--small-overflow-gradient) gap-(--px4) overflow-x-auto flex pb-(--px4) h-fit w-full">
+    <div class="category-bar bar mask-(--small-overflow-gradient) gap-(--px4) overflow-x-auto flex pb-(--px4) h-fit w-full pt-(--px8)">
         {{ range .Post.Categories }}
         <small>
             {{ .Category }}
@@ -108,6 +131,7 @@
         {{ end }}
     </div>
     {{ end }}
+
 </div>
 {{ end }}
 
@@ -115,7 +139,7 @@
 <div class="comment-section" id="comments-{{ .Post.ID }}" popover="auto">
     <div class="w-fit relative flex flex-col h-fit">
         <div class="post-frame">{{ template "post-borders" . }}</div>
-        <div class="w-fit flex flex-col [&>img]:px-4 [&>img]:py-1 [&>img]:max-h-[calc(95dvh-65px)] [&>img]:h-fit [&>img]:w-auto [&>img]:max-w-[calc(100dvw-42px)] [&>img]:self-center [&>img]:object-contain">
+        <div class="w-fit flex flex-col [&>img]:px-4 [&>img]:max-h-[calc(95dvh-65px)] [&>img]:h-fit [&>img]:w-auto [&>img]:max-w-[calc(100dvw-42px)] [&>img]:self-center [&>img]:object-contain">
             {{ template "post-details" . }}
             <button class="close-section" popovertarget="comments-{{ .Post.ID }}" popovertargetaction="hide">{{ template "close-icon" }}</button>
             <div class="divider"></div>
@@ -134,7 +158,7 @@
                         </div>
                         {{ end }}
                     {{ else }}
-                        <p class="px-(--px8)">No comments yet.</p>
+                        <p>No comments yet.</p>
                     {{ end }}
                 </div>
                 <div class="flex flex-col gap-(--px8)">
@@ -168,3 +192,4 @@
     </label>
 </form>
 {{ end }}
+

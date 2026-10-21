@@ -1,7 +1,7 @@
 function simpleSearch(value1, value2) {
     var filter = value1.value.toUpperCase();
-    var ul = document.getElementById(value2);
-    var li = ul.getElementsByTagName("li")
+    var ul = value1.parentElement.nextElementSibling;
+    var li = ul.getElementsByClassName(value2)
 
     for (i = 0; i < li.length; i++) {
         var name = li[i].dataset.name;
