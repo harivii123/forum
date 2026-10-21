@@ -3,10 +3,12 @@ package service
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"forum/internal/database"
 	"forum/internal/models"
 	"net/http"
-	"sort" 
+	"os"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -151,9 +153,9 @@ func CreatePost(ctx context.Context, cookie *http.Cookie, newPost models.Post, d
 	if err != nil {
 		return err, http.StatusInternalServerError
 	}
-	for i:=range categories{
-		cID, err :=strconv.Atoi(categories[i])
-		if err != nil{
+	for i := range categories {
+		cID, err := strconv.Atoi(categories[i])
+		if err != nil {
 			return err, 0
 		}
 		err = database.AddCategoryPostRelationship(ctx, tx, pID, cID)
@@ -169,6 +171,33 @@ func CreatePost(ctx context.Context, cookie *http.Cookie, newPost models.Post, d
 	return nil, http.StatusSeeOther
 }
 
-func DeletePost(db *sql.DB, userID int, postID int) error {
+func DeletePost(ctx context.Context, db *sql.DB, userID int, postID int) error {
+	tx, err := db.BeginTx(ctx, nil)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
 
+	creatorID, image, err := database.SearchCreater(ctx, tx, postID)
+	if errors.Is(err, sql.ErrNoRows) {
+		return ErrPostNotFound
+	}
+	if err != nil {
+		return err
+	}
+	if userID != creatorID {
+		return ErrNotOwner
+	}
+	if err = database.DeletePost(ctx, tx, postID); err != nil {
+		return err
+	}
+	if err = tx.Commit(); err != nil {
+		return err
+	}
+	if image != "" {
+		if err = os.Remove(strings.TrimPrefix(image, "/")); err != nil {
+			return err
+		}
+	}
+	return nil
 }

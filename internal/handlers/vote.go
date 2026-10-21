@@ -37,15 +37,15 @@ func (h *Holder) VoteOnPost(w http.ResponseWriter, r *http.Request) {
 	err = service.SetPostVote(h.db, user.ID, postID, vote)
 	switch {
 	case errors.Is(err, service.ErrPostNotFound):
-		h.err.Er, h.err.Code = errors.New("Post not found"),  http.StatusNotFound
+		h.err.Er, h.err.Code = errors.New("Post not found"), http.StatusNotFound
 		h.ErrorOut(w)
 		return
 	case err != nil:
-		h.err.Er, h.err.Code = err, http.StatusInternalServerError 
+		h.err.Er, h.err.Code = err, http.StatusInternalServerError
 		h.ErrorOut(w)
 		return
 	}
 	query := r.FormValue("redirect")
 
-	http.Redirect(w, r, "/?"+query, http.StatusSeeOther)
+	http.Redirect(w, r, "/?"+query+"#post-"+strconv.Itoa(postID), http.StatusSeeOther)
 }

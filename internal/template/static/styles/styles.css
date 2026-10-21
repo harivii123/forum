@@ -1210,7 +1210,6 @@ li:has(input:checked) .icon-unchecked {
     margin: var(--px8) 0 0;
 
     width: min(160px, calc(100vw - 32px));
-    padding: var(--px8);
 
     background: var(--blue);
     color: var(--peach);
@@ -1218,12 +1217,15 @@ li:has(input:checked) .icon-unchecked {
     border-radius: 12px;
     box-shadow: 0 4px 12px rgb(0 0 0 / 20%);
     overflow-x: hidden;
+    .divider{
+        margin-left: 8px;
+        margin-right: 8px;
+    }
 }
 
 #profile-menu:popover-open {
     display: flex;
     flex-direction: column;
-    gap: var(--px4);
 }
 
 /* Menu items */
@@ -1235,7 +1237,6 @@ li:has(input:checked) .icon-unchecked {
     width: 100%;
     padding: var(--px8);
     border: none;
-    border-radius: 6px;
     background: transparent;
     color: var(--peach);
     font: inherit;
@@ -1418,4 +1419,59 @@ li:has(input:checked) .icon-unchecked {
 
 .auth-error {
     color: var(--error);
+}
+
+.post-menu[popover] {
+    box-sizing: border-box;
+    inset: auto;
+    position: fixed;
+
+    top: anchor(top);
+    right: anchor(left);
+    margin: var(--px8) 0 0;
+
+    width: min(160px, calc(100vw - 32px));
+
+    background: var(--blue);
+    color: var(--peach);
+    border: 2px solid var(--peach-30);
+    border-radius: var(--px8);
+    box-shadow: 0 4px 12px rgb(0 0 0 / 20%);
+    overflow-x: hidden;
+}
+
+.post-menu:popover-open {
+    display: flex;
+    flex-direction: column;
+    gap: var(--px4);
+}
+
+.post-menu a,
+.post-menu>button,
+.post-menu form button {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    padding: var(--px8);
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--peach);
+    font: inherit;
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+    min-width: 0;
+}
+
+.post-menu a:hover,
+.post-menu>button:hover,
+.post-menu form button:hover {
+    background: var(--blue--light-15);
+}
+
+.post-menu form {
+    min-width: 0;
+    width: 100%;
+    margin: 0;
 }

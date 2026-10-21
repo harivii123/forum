@@ -2,12 +2,8 @@ package service
 
 import (
 	"database/sql"
-	"errors"
 	"forum/internal/database"
 )
-
-var ErrPostNotFound = errors.New("post not found")
-var ErrInvalidVote = errors.New("invalid vote value")
 
 func SetPostVote(db *sql.DB, userID, postID, vote int) error {
 

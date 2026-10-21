@@ -380,3 +380,40 @@ var postErrorMessages = map[string]string{
 func postError(w http.ResponseWriter, r *http.Request, code string) {
 	http.Redirect(w, r, "/?post_error="+code, http.StatusSeeOther)
 }
+
+func (h *Holder) DeletePost(w http.ResponseWriter, r *http.Request) {
+	user, loggedIn, err := h.GetCurrentUser(w, r)
+	if err != nil {
+		h.err.Er, h.err.Code = err, http.StatusInternalServerError
+		h.ErrorOut(w)
+		return
+	}
+	if !loggedIn {
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		return
+	}
+	postIDStr := r.PathValue("id")
+	postID, err := strconv.Atoi(postIDStr)
+	if err != nil {
+		h.err.Er, h.err.Code = err, http.StatusBadRequest
+		h.ErrorOut(w)
+		return
+	}
+	ctx := r.Context()
+	err = service.DeletePost(ctx, h.db, user.ID, postID)
+	switch {
+	case errors.Is(err, service.ErrPostNotFound):
+		h.err.Er, h.err.Code = err, http.StatusNotFound
+		h.ErrorOut(w)
+		return
+	case errors.Is(err, service.ErrNotOwner):
+		h.err.Er, h.err.Code = err, http.StatusForbidden
+		h.ErrorOut(w)
+		return
+	case err != nil:
+		h.err.Er, h.err.Code = err, http.StatusInternalServerError
+		h.ErrorOut(w)
+		return
+	}
+	http.Redirect(w, r, "/?"+r.FormValue("redirect"), http.StatusSeeOther)
+}
