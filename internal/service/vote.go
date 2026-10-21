@@ -68,7 +68,7 @@ func SetCommentVote(db *sql.DB, userID, commentID, vote int) error {
 		return err
 	}
 	if !exists {
-		return ErrPostNotFound
+		return ErrCommentNotFound
 	}
 
 	current, err := database.GetCommentVote(tx, userID, commentID)
