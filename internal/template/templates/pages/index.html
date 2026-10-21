@@ -18,7 +18,7 @@
 
     {{ if not .IsPublicProfile }}
     <div id="computer-menu">
-        {{ template "side-filters" . }}
+        {{ template "side-filters" (dict "Filters" .Filters "Categories" .Categories "LoggedIn" .LoggedIn "Form" "filters") }}
     </div>
     {{ end }}
 

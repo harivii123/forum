@@ -1,5 +1,5 @@
 {{ define "search-bar" }}
-    <form id="filters" class="relative w-full max-w-[300px] flex flex-row justify-center"  method="GET" action="/">
+    <form id="{{ .Form }}" class="relative w-full max-w-[300px] flex flex-row justify-center"  method="GET" action="/">
             <button class="hidden" type="submit">
             </button>
             <div class="search-icon">{{ template "search-icon" }}</div>
@@ -32,7 +32,7 @@
     </fieldset>
     </div>
     <div class="divider"></div>
-    <button class="main-btn" type="submit" form="filters">Search</button>
+    <button class="main-btn" type="submit" form="{{ .Form }}">Search</button>
 </aside>
 {{ end }}
 
@@ -41,14 +41,14 @@
     <li>
         <label>
             <span>Posts</span>
-            <input type="checkbox"  id="posts" name="posts" form="filters" value="Posts" {{ if .Filters.Posts }}checked{{ end }} />
+            <input type="checkbox"  id="posts" name="posts" form="{{ .Form }}" value="Posts" {{ if .Filters.Posts }}checked{{ end }} />
             {{ template "checkbox" }}
         </label>
     </li>
     <li>
         <label>
             <span>Likes</span>
-            <input type="checkbox"  id="likes" name="likes" form="filters" value="Likes" {{ if .Filters.Likes }}checked{{ end }}/>
+            <input type="checkbox"  id="likes" name="likes" form="{{ .Form }}" value="Likes" {{ if .Filters.Likes }}checked{{ end }}/>
             {{ template "checkbox" }}
         </label>
     </li>
@@ -60,21 +60,21 @@
     <li>
         <label>
             <span>Newest first</span>
-            <input type="radio"  name="order" form="filters" value="Newest" {{ if or (eq .Filters.Order "Newest") (eq .Filters.Order "") }}checked{{ end }}/>
+            <input type="radio"  name="order" form="{{ .Form }}" value="Newest" {{ if or (eq .Filters.Order "Newest") (eq .Filters.Order "") }}checked{{ end }}/>
             {{ template "checkbox" }}
         </label>
     </li>
     <li>
         <label>
             <span>Oldest first</span>
-            <input type="radio" name="order" form="filters" value="Oldest" {{ if eq .Filters.Order "Oldest" }}checked{{ end }} />
+            <input type="radio" name="order" form="{{ .Form }}" value="Oldest" {{ if eq .Filters.Order "Oldest" }}checked{{ end }} />
             {{ template "checkbox" }}
         </label>
     </li>
     <li>
         <label>
             <span>Most liked</span>
-            <input type="radio" name="order" form="filters" value="Liked" {{ if eq .Filters.Order "Liked" }}checked{{ end }} />
+            <input type="radio" name="order" form="{{ .Form }}" value="Liked" {{ if eq .Filters.Order "Liked" }}checked{{ end }} />
             {{ template "checkbox" }}
         </label>
     </li>
@@ -90,7 +90,7 @@
 <li class="sharp-borders" data-name="{{ .Category }}">
     <label>
         <span>{{ .Category }}</span> 
-        <input type="checkbox" id="category-{{ .ID }}" name="category" form="filters" value="{{ .ID }}"  {{if index $.Filters.Categories .ID }}checked{{ end }} />
+        <input type="checkbox" id="category-{{ .ID }}" name="category" form="{{ $.Form }}" value="{{ .ID }}"  {{if index $.Filters.Categories .ID }}checked{{ end }} />
         {{ template "checkbox" }}
     </label>
 </li>
@@ -110,7 +110,7 @@
     <li class="sharp-borders" data-name="{{ .Category }}">
         <label>
             <span>{{ .Category }}</span>
-            <input type="checkbox" id="category-{{ .ID }}" name="category" form="filters" value="{{ .ID }}" {{ if index $.Filters.Categories .ID }}checked{{ end }} />
+            <input type="checkbox" id="category-{{ .ID }}" name="category" form="{{ $.Form }}" value="{{ .ID }}" {{ if index $.Filters.Categories .ID }}checked{{ end }} />
             {{ template "checkbox" }}
         </label>
     </li>
