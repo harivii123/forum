@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"errors"
 	"forum/internal/database"
+	"forum/internal/models"
+	"forum/internal/service"
 	"net/http"
 	"strconv"
 	"strings"
@@ -52,6 +54,13 @@ func (h *Holder) UpdateProfile(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Holder) LoadPublicProfilePage(w http.ResponseWriter, r *http.Request) {
+	viewer, loggedIn, err := h.GetCurrentUser(w, r)
+	if err != nil {
+		h.err.Er, h.err.Code = err, http.StatusInternalServerError
+		h.ErrorOut(w)
+		return
+	}
+
 	id, err := strconv.Atoi(r.PathValue("id"))
 	if err != nil || id <= 0 {
 		http.NotFound(w, r)
@@ -67,11 +76,45 @@ func (h *Holder) LoadPublicProfilePage(w http.ResponseWriter, r *http.Request) {
 		h.ErrorOut(w)
 		return
 	}
+	var profile models.UserView
+	if viewer != nil {
+		profile.ID = user.ID
+		profile.Username = user.Username
+		profile.ProfilePicture = user.ProfilePicture
+	}
 
 	data := map[string]any{
-		"User":            user,
+		"LoggedIn":        loggedIn,
+		"Profile":         profile,
+		"Owner":           user,
+		"User":            viewer,
 		"IsPublicProfile": true,
+		"IsOwnProfile":    loggedIn && viewer.ID == user.ID,
 	}
 
 	w.Write(h.engine.Render("index.html", "base", data))
+}
+
+func (h *Holder) DeleteAccount(w http.ResponseWriter, r *http.Request) {
+	user, loggedIn, err := h.GetCurrentUser(w, r)
+	if err != nil {
+		h.err.Er, h.err.Code = err, http.StatusInternalServerError
+		h.ErrorOut(w)
+		return
+	}
+	if !loggedIn {
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		return
+	}
+
+	ctx := r.Context()
+	if err := service.DeleteUser(ctx, h.db, user.ID); err != nil {
+		h.err.Er, h.err.Code = err, http.StatusInternalServerError
+		h.ErrorOut(w)
+		return
+	}
+
+	clearSessionCookie(w)
+
+	http.Redirect(w, r, "/", http.StatusSeeOther)
 }

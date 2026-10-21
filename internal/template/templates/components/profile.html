@@ -9,6 +9,8 @@
 
 {{ define "profile-menu"}}
 <nav id="profile-menu" popover="auto" class="profile-menu-dropdown">
+    <a href="/users/{{ .Profile.ID }}">Your profile</a>
+    <div class="divider"></div>
     <button type="button" popovertarget="edit-profile">
         Edit profile
     </button>
