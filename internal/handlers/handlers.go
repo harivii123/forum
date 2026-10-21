@@ -118,8 +118,6 @@ func (h *Holder) RenderFrontPage(w http.ResponseWriter, r *http.Request, showAut
 
 	categories, err = service.GetCategories(ctx, h.db)
 
-	// post_error is a one-time message from CreatePost; drop it from Query so
-	// vote redirects don't carry it along and show it again
 	q := r.URL.Query()
 	postErr := postErrorMessages[q.Get("post_error")]
 	q.Del("post_error")
@@ -272,11 +270,6 @@ func (h *Holder) CreatePost(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/", httpStatus)
 }
 
-func (h *Holder) LoadProfilePage(w http.ResponseWriter, r *http.Request) {
-	// get stuff from db insert into page bang
-	// can be maybe also used to checkout other profiles not just ur own?
-}
-
 func (h *Holder) AddComment(w http.ResponseWriter, r *http.Request) {
 	//get the post_id from request
 	_, loggedIn, err := h.GetCurrentUser(w, r)
@@ -368,8 +361,6 @@ func filtersFromQuery(q url.Values, userID int, loggedIn bool) (string, []any) {
 	return result, args
 }
 
-// user-facing messages for create post validation errors, keyed by the
-// post_error query value so arbitrary text can't be injected via the URL
 var postErrorMessages = map[string]string{
 	"empty":     "Title and text cannot be empty.",
 	"too_large": "Image is too large (max 5 MB).",
