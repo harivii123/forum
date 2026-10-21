@@ -1260,7 +1260,8 @@ li:has(input:checked) .icon-unchecked {
 
 
 /* Edit profile popup */
-#edit-profile[popover] {
+#edit-profile[popover],
+#delete-account[popover] {
     box-sizing: border-box;
     position: fixed;
     inset: 0;
@@ -1277,13 +1278,18 @@ li:has(input:checked) .icon-unchecked {
     border-radius: 18px;
     box-shadow: 0 8px 24px var(--blue-dark-40);
 }
+#delete-account[popover] {
+    width: fit-content;
+}
 
-#edit-profile h2 {
+#edit-profile h2,
+#delete-account h2 {
     margin: 0 0 var(--px8);
     text-align: center;
 }
 
-#edit-profile p {
+#edit-profile p,
+#delete-account p {
     margin: 0 0 var(--px8);
 }
 
@@ -1319,7 +1325,8 @@ li:has(input:checked) .icon-unchecked {
 
 #edit-profile::backdrop,
 #login::backdrop,
-#register::backdrop {
+#register::backdrop,
+#delete-account::backdrop {
     background: rgba(8, 19, 32, 0.55);
     backdrop-filter: blur(1px);
 }

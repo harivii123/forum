@@ -4,28 +4,42 @@
         <div class="public-profile-banner"></div>
 
         <div class="public-profile-content">
-            {{ template "profile-pic" .User }}
+            {{ template "profile-pic" .Owner }}
 
-            <h1>{{ .User.Username }}</h1>
+            <h1>{{ .Owner.Username }}</h1>
 
             <div class="public-profile-divider">
                 <span>✧</span>
             </div>
 
             <div class="public-profile-bio">
-                {{ if .User.Bio }}
-                <p>{{ .User.Bio }}</p>
+                {{ if .Owner.Bio }}
+                <p>{{ .Owner.Bio }}</p>
                 {{ else }}
                 <p>No bio yet.</p>
                 {{ end }}
             </div>
 
+            {{ if .IsOwnProfile }}
+            <button class="mb-(--px16)" type="button" popovertarget="delete-account">Delete account</button>
+            <div id="delete-account" popover="auto">
+                <form method="POST" action="/profile/delete">
+                    Are you sure you want to delete your account?
+                    <div class="edit-profile-actions">
+                        <button type="button" popovertarget="delete-account" popovertargetaction="hide">Cancel</button>
+                        <button class="auth-error" type="submit">Delete</button>
+                    </div>
+                </form>
+            </div>
+            {{ end }}
             <a href="/" class="public-profile-back">
                 ← Back to forum
             </a>
+
         </div>
 
         <span class="public-profile-ornament">✧</span>
     </div>
 </section>
 {{ end }}
+

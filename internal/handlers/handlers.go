@@ -95,7 +95,7 @@ func (h *Holder) RenderFrontPage(w http.ResponseWriter, r *http.Request, showAut
 	if user != nil {
 		profile.ID = user.ID
 		profile.Username = user.Username
-		profile.ProfilePicture = ""
+		profile.ProfilePicture = user.ProfilePicture
 	}
 
 	var userID int
