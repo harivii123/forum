@@ -12,4 +12,5 @@ var (
 	ErrNotOwner           = errors.New("not the owner of the post")
 	ErrPostNotFound       = errors.New("post not found")
 	ErrInvalidVote        = errors.New("invalid vote value")
+	ErrCommentNotFound    = errors.New("comment not found")
 )

@@ -45,3 +45,43 @@ func SetPostVote(db *sql.DB, userID, postID, vote int) error {
 
 	return tx.Commit()
 }
+
+func SetCommentVote(db *sql.DB, userID, commentID, vote int) error {
+
+	if vote != 1 && vote != -1 {
+		return ErrInvalidVote
+	}
+
+	tx, err := db.Begin()
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+
+	exists, err := database.CommentExists(tx, commentID)
+	if err != nil {
+		return err
+	}
+	if !exists {
+		return ErrCommentNotFound
+	}
+
+	current, err := database.GetCommentVote(tx, userID, commentID)
+	if err != nil {
+		return err
+	}
+
+	switch {
+	case current == 0:
+		err = database.InsertCommentVote(tx, userID, commentID, vote)
+	case current == vote:
+		err = database.DeleteCommentVote(tx, userID, commentID)
+	default:
+		err = database.UpdateCommentVote(tx, userID, commentID, vote)
+	}
+	if err != nil {
+		return err
+	}
+
+	return tx.Commit()
+}
